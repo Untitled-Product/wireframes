@@ -19,6 +19,8 @@
   sidebarOpen: true,
   mobileMenu: false,
   viewMode: 'weekly',
+  mobileDate: '2026-07-15',
+  mobileDateDisplay: '15 Temmuz 2026, Carsamba',
   selectedSlot: null,
   showSlotModal: false
 }">
@@ -114,8 +116,8 @@
         </div>
       </div>
 
-      <!-- Filters -->
-      <div class="wf-card mb-6">
+      <!-- Filters (Desktop) -->
+      <div class="wf-card mb-6 hidden lg:block">
         <div class="flex flex-wrap items-center gap-4">
           <!-- Bilet Secici -->
           <div class="flex-1 min-w-[200px]">
@@ -157,6 +159,22 @@
         </div>
       </div>
 
+      <!-- Filters (Mobile) -->
+      <div class="wf-card mb-4 lg:hidden">
+        <div class="space-y-3">
+          <!-- Bilet Secici Mobile -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Bilet</label>
+            <select class="wf-select w-full">
+              <option>Su Parki Girisi (2 saat)</option>
+              <option>VR Deneyimi (30 dk)</option>
+              <option>Dalga Havuzu (1 saat)</option>
+              <option>Rafting Turu (2 saat)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- Legend -->
       <div class="flex flex-wrap items-center gap-4 mb-4 text-sm">
         <div class="flex items-center gap-2">
@@ -177,8 +195,123 @@
         </div>
       </div>
 
-      <!-- Weekly View -->
-      <div x-show="viewMode === 'weekly'" class="wf-card p-0 overflow-hidden">
+      <!-- Mobile Daily View -->
+      <div class="lg:hidden mb-6">
+        <!-- Mobile Date Navigation -->
+        <div class="wf-card mb-4">
+          <div class="flex items-center justify-between">
+            <button class="wf-btn py-2 px-4 text-lg">←</button>
+            <div class="text-center">
+              <div class="font-medium text-lg" x-text="mobileDateDisplay">15 Temmuz 2026, Carsamba</div>
+            </div>
+            <button class="wf-btn py-2 px-4 text-lg">→</button>
+          </div>
+        </div>
+
+        <!-- Mobile Slot List -->
+        <div class="space-y-3">
+          <!-- Slot 10:00 -->
+          <div class="wf-card p-4 border-l-4 border-yellow-500 cursor-pointer" @click="showSlotModal = true">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-lg">10:00 - 12:00</span>
+              <span class="wf-badge wf-badge-warning">70%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="bg-yellow-500 h-3 rounded-full" style="width: 70%"></div>
+                </div>
+              </div>
+              <span class="text-sm font-medium">35/50 kisi</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-200">
+              <span class="text-sm text-gray-500">Su Parki Girisi (2 saat)</span>
+              <button class="wf-btn py-1 px-3 text-sm">Duzenle</button>
+            </div>
+          </div>
+
+          <!-- Slot 12:00 -->
+          <div class="wf-card p-4 border-l-4 border-red-500 cursor-pointer" @click="showSlotModal = true">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-lg">12:00 - 14:00</span>
+              <span class="wf-badge wf-badge-error">90%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="bg-red-500 h-3 rounded-full" style="width: 90%"></div>
+                </div>
+              </div>
+              <span class="text-sm font-medium">45/50 kisi</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-200">
+              <span class="text-sm text-gray-500">Su Parki Girisi (2 saat)</span>
+              <button class="wf-btn py-1 px-3 text-sm">Duzenle</button>
+            </div>
+          </div>
+
+          <!-- Slot 14:00 -->
+          <div class="wf-card p-4 border-l-4 border-yellow-500 cursor-pointer" @click="showSlotModal = true">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-lg">14:00 - 16:00</span>
+              <span class="wf-badge wf-badge-warning">76%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="bg-yellow-500 h-3 rounded-full" style="width: 76%"></div>
+                </div>
+              </div>
+              <span class="text-sm font-medium">38/50 kisi</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-200">
+              <span class="text-sm text-gray-500">Su Parki Girisi (2 saat)</span>
+              <button class="wf-btn py-1 px-3 text-sm">Duzenle</button>
+            </div>
+          </div>
+
+          <!-- Slot 16:00 -->
+          <div class="wf-card p-4 border-l-4 border-green-500 cursor-pointer" @click="showSlotModal = true">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-lg">16:00 - 18:00</span>
+              <span class="wf-badge wf-badge-success">44%</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="bg-green-500 h-3 rounded-full" style="width: 44%"></div>
+                </div>
+              </div>
+              <span class="text-sm font-medium">22/50 kisi</span>
+            </div>
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-gray-200">
+              <span class="text-sm text-gray-500">Su Parki Girisi (2 saat)</span>
+              <button class="wf-btn py-1 px-3 text-sm">Duzenle</button>
+            </div>
+          </div>
+
+          <!-- Slot 18:00 - Kapali -->
+          <div class="wf-card p-4 border-l-4 border-gray-400 opacity-60">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-lg text-gray-500">18:00 - 20:00</span>
+              <span class="wf-badge">Kapali</span>
+            </div>
+            <p class="text-sm text-gray-500">Bu slot hafta ici kapalidir</p>
+          </div>
+        </div>
+
+        <!-- Mobile Summary -->
+        <div class="wf-card mt-4 bg-gray-50">
+          <div class="text-center">
+            <div class="text-sm text-gray-500 mb-1">Gunun Toplam Dolulugu</div>
+            <div class="text-2xl font-medium">140 / 200 kisi</div>
+            <div class="text-yellow-600 font-medium">70%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weekly View (Desktop Only) -->
+      <div x-show="viewMode === 'weekly'" class="wf-card p-0 overflow-hidden hidden lg:block">
         <div class="overflow-x-auto">
           <table class="w-full border-collapse">
             <thead>
@@ -406,8 +539,8 @@
         </div>
       </div>
 
-      <!-- Monthly View -->
-      <div x-show="viewMode === 'monthly'" class="wf-card">
+      <!-- Monthly View (Desktop Only) -->
+      <div x-show="viewMode === 'monthly'" class="wf-card hidden lg:block">
         <div class="wf-calendar" style="max-width: none;">
           <div class="wf-calendar-header">
             <button class="wf-btn py-1 px-3">←</button>
@@ -482,12 +615,17 @@
   </div>
 
   <!-- Slot Detail Modal -->
-  <div x-show="showSlotModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
-    <div class="fixed inset-0 bg-black/50" @click="showSlotModal = false"></div>
-    <div class="wf-card relative z-10 w-full max-w-md">
-      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Slot Detay</h2>
+  <div x-show="showSlotModal" class="fixed inset-0 z-50 flex items-center justify-center p-0 lg:p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 hidden lg:block" @click="showSlotModal = false"></div>
+    <div class="wf-card relative z-10 w-full h-full lg:h-auto lg:max-w-md lg:rounded-lg rounded-none flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
+        <h2 class="text-xl">Slot Detay</h2>
+        <button @click="showSlotModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+      </div>
 
-      <div class="space-y-4">
+      <!-- Modal Content - Scrollable on mobile -->
+      <div class="flex-1 overflow-y-auto lg:overflow-visible space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
             <p class="text-sm text-gray-500">Tarih</p>
@@ -527,11 +665,12 @@
         </div>
       </div>
 
-      <div class="flex justify-between mt-6 pt-4 border-t-2 border-gray-300">
-        <button class="wf-btn text-sm">Rezervasyonlari Gor</button>
-        <div class="flex gap-2">
-          <button @click="showSlotModal = false" class="wf-btn">Kapat</button>
-          <button class="wf-btn wf-btn-primary">Kaydet</button>
+      <!-- Modal Footer - Fixed at bottom on mobile -->
+      <div class="flex flex-col lg:flex-row lg:justify-between gap-3 mt-6 pt-4 border-t-2 border-gray-300">
+        <button class="wf-btn text-sm order-2 lg:order-1">Rezervasyonlari Gor</button>
+        <div class="flex gap-2 order-1 lg:order-2">
+          <button @click="showSlotModal = false" class="wf-btn flex-1 lg:flex-none hidden lg:inline-flex">Kapat</button>
+          <button class="wf-btn wf-btn-primary flex-1 lg:flex-none">Kaydet</button>
         </div>
       </div>
     </div>

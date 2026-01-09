@@ -20,7 +20,9 @@
   mobileMenu: false,
   showCancelModal: false,
   showRefundModal: false,
-  showRescheduleModal: false
+  showRescheduleModal: false,
+  mobileActionsOpen: false,
+  mobileHistoryOpen: false
 }">
 
   <div class="flex min-h-screen">
@@ -302,8 +304,8 @@
           </div>
         </div>
 
-        <!-- Sag Kolon (1/3) -->
-        <div class="space-y-6">
+        <!-- Sag Kolon (1/3) - Desktop -->
+        <div class="space-y-6 hidden lg:block">
 
           <!-- Aksiyonlar -->
           <div class="wf-card">
@@ -374,6 +376,90 @@
           </div>
 
         </div>
+
+        <!-- Mobile Sidebar Content - Accordion Style -->
+        <div class="lg:hidden space-y-4">
+
+          <!-- Mobile Quick Summary -->
+          <div class="wf-card bg-gray-50">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm text-gray-500">Toplam Tutar</div>
+                <div class="text-2xl font-medium">3,135 TL</div>
+              </div>
+              <div class="text-center">
+                <div class="border-2 border-gray-400 rounded p-2 bg-white">
+                  <div class="w-16 h-16 bg-gray-200 flex items-center justify-center text-2xl">📱</div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">QR Kod</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aksiyonlar Accordion -->
+          <div class="wf-card">
+            <button
+              @click="mobileActionsOpen = !mobileActionsOpen"
+              class="w-full flex items-center justify-between py-2"
+            >
+              <h2 class="text-lg font-medium">Aksiyonlar</h2>
+              <span class="text-xl transition-transform" :class="{ 'rotate-180': mobileActionsOpen }">▼</span>
+            </button>
+            <div x-show="mobileActionsOpen" x-collapse class="pt-4 border-t border-gray-200 mt-2">
+              <div class="grid grid-cols-2 gap-2">
+                <button @click="showRescheduleModal = true" class="wf-btn wf-btn-info justify-center text-sm py-3">
+                  📅 Tarih Degistir
+                </button>
+                <button @click="showRefundModal = true" class="wf-btn wf-btn-warning justify-center text-sm py-3">
+                  💰 Iade Baslat
+                </button>
+                <button @click="showCancelModal = true" class="wf-btn wf-btn-danger justify-center text-sm py-3">
+                  ❌ Iptal Et
+                </button>
+                <button class="wf-btn justify-center text-sm py-3">
+                  📧 E-posta
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Islem Gecmisi Accordion -->
+          <div class="wf-card">
+            <button
+              @click="mobileHistoryOpen = !mobileHistoryOpen"
+              class="w-full flex items-center justify-between py-2"
+            >
+              <h2 class="text-lg font-medium">Islem Gecmisi</h2>
+              <span class="text-xl transition-transform" :class="{ 'rotate-180': mobileHistoryOpen }">▼</span>
+            </button>
+            <div x-show="mobileHistoryOpen" x-collapse class="pt-4 border-t border-gray-200 mt-2">
+              <div class="wf-timeline">
+                <div class="wf-timeline-item success">
+                  <div class="wf-timeline-dot"></div>
+                  <div class="wf-timeline-content">
+                    <div class="wf-timeline-title">Siparis Onaylandi</div>
+                    <div class="wf-timeline-time">08 Oca 2026, 14:35</div>
+                  </div>
+                </div>
+                <div class="wf-timeline-item info">
+                  <div class="wf-timeline-dot"></div>
+                  <div class="wf-timeline-content">
+                    <div class="wf-timeline-title">Odeme Islendi</div>
+                    <div class="wf-timeline-time">08 Oca 2026, 14:34</div>
+                  </div>
+                </div>
+                <div class="wf-timeline-item info">
+                  <div class="wf-timeline-dot"></div>
+                  <div class="wf-timeline-content">
+                    <div class="wf-timeline-title">Siparis Olusturuldu</div>
+                    <div class="wf-timeline-time">08 Oca 2026, 14:32</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- Annotation Note -->
@@ -388,12 +474,17 @@
   <!-- MODALS -->
 
   <!-- Cancel Modal -->
-  <div x-show="showCancelModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
-    <div class="fixed inset-0 bg-black/50" @click="showCancelModal = false"></div>
-    <div class="wf-card relative z-10 w-full max-w-md">
-      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Bilet Iptali</h2>
+  <div x-show="showCancelModal" class="fixed inset-0 z-50 flex items-center justify-center p-0 lg:p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 hidden lg:block" @click="showCancelModal = false"></div>
+    <div class="wf-card relative z-10 w-full h-full lg:h-auto lg:max-w-md lg:rounded-lg rounded-none flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
+        <h2 class="text-xl">Bilet Iptali</h2>
+        <button @click="showCancelModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+      </div>
 
-      <div class="space-y-4">
+      <!-- Modal Content -->
+      <div class="flex-1 overflow-y-auto lg:overflow-visible space-y-4">
         <div class="wf-form-group">
           <label class="block text-sm font-medium mb-1">Iptal Nedeni *</label>
           <select class="wf-select">
@@ -415,9 +506,10 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
-        <button @click="showCancelModal = false" class="wf-btn">Vazgec</button>
-        <button class="wf-btn wf-btn-danger">
+      <!-- Modal Footer -->
+      <div class="flex flex-col-reverse lg:flex-row lg:justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
+        <button @click="showCancelModal = false" class="wf-btn w-full lg:w-auto justify-center">Vazgec</button>
+        <button class="wf-btn wf-btn-danger w-full lg:w-auto justify-center">
           Iptal Et
         </button>
       </div>
@@ -425,12 +517,17 @@
   </div>
 
   <!-- Refund Modal -->
-  <div x-show="showRefundModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
-    <div class="fixed inset-0 bg-black/50" @click="showRefundModal = false"></div>
-    <div class="wf-card relative z-10 w-full max-w-md">
-      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Iade Islemi</h2>
+  <div x-show="showRefundModal" class="fixed inset-0 z-50 flex items-center justify-center p-0 lg:p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 hidden lg:block" @click="showRefundModal = false"></div>
+    <div class="wf-card relative z-10 w-full h-full lg:h-auto lg:max-w-md lg:rounded-lg rounded-none flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
+        <h2 class="text-xl">Iade Islemi</h2>
+        <button @click="showRefundModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+      </div>
 
-      <div class="space-y-4">
+      <!-- Modal Content -->
+      <div class="flex-1 overflow-y-auto lg:overflow-visible space-y-4">
         <div class="wf-form-group">
           <label class="block text-sm font-medium mb-2">Iade Tipi</label>
           <div class="wf-radio-group">
@@ -463,9 +560,10 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
-        <button @click="showRefundModal = false" class="wf-btn">Vazgec</button>
-        <button class="wf-btn wf-btn-warning">
+      <!-- Modal Footer -->
+      <div class="flex flex-col-reverse lg:flex-row lg:justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
+        <button @click="showRefundModal = false" class="wf-btn w-full lg:w-auto justify-center">Vazgec</button>
+        <button class="wf-btn wf-btn-warning w-full lg:w-auto justify-center">
           Iade Baslat
         </button>
       </div>
@@ -473,12 +571,17 @@
   </div>
 
   <!-- Reschedule Modal -->
-  <div x-show="showRescheduleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
-    <div class="fixed inset-0 bg-black/50" @click="showRescheduleModal = false"></div>
-    <div class="wf-card relative z-10 w-full max-w-lg">
-      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Tarih/Saat Degisikligi</h2>
+  <div x-show="showRescheduleModal" class="fixed inset-0 z-50 flex items-center justify-center p-0 lg:p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50 hidden lg:block" @click="showRescheduleModal = false"></div>
+    <div class="wf-card relative z-10 w-full h-full lg:h-auto lg:max-w-lg lg:rounded-lg rounded-none flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
+        <h2 class="text-xl">Tarih/Saat Degisikligi</h2>
+        <button @click="showRescheduleModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+      </div>
 
-      <div class="space-y-4">
+      <!-- Modal Content -->
+      <div class="flex-1 overflow-y-auto lg:overflow-visible space-y-4">
         <!-- Mevcut -->
         <div class="border-2 border-gray-300 rounded p-3 bg-gray-50">
           <p class="text-sm text-gray-500 mb-1">Mevcut Tarih/Saat</p>
@@ -508,9 +611,10 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
-        <button @click="showRescheduleModal = false" class="wf-btn">Vazgec</button>
-        <button class="wf-btn wf-btn-primary">Degisikligi Uygula</button>
+      <!-- Modal Footer -->
+      <div class="flex flex-col-reverse lg:flex-row lg:justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
+        <button @click="showRescheduleModal = false" class="wf-btn w-full lg:w-auto justify-center">Vazgec</button>
+        <button class="wf-btn wf-btn-primary w-full lg:w-auto justify-center">Degisikligi Uygula</button>
       </div>
     </div>
   </div>

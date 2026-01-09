@@ -141,8 +141,56 @@
       <!-- Wizard Layout -->
       <div class="flex flex-col lg:flex-row gap-6">
 
-        <!-- Stepper (Sol Sidebar) -->
-        <div class="lg:w-64 flex-shrink-0">
+        <!-- Mobile Horizontal Stepper -->
+        <div class="lg:hidden">
+          <div class="wf-card p-4">
+            <!-- Progress Bar -->
+            <div class="flex items-center justify-between mb-4">
+              <template x-for="step in totalSteps" :key="step">
+                <div class="flex items-center" :class="{ 'flex-1': step < totalSteps }">
+                  <!-- Step Circle -->
+                  <div
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium border-2 transition-all"
+                    :class="{
+                      'bg-theme-500 text-white border-theme-500': currentStep === step,
+                      'bg-green-500 text-white border-green-500': currentStep > step,
+                      'bg-white text-gray-400 border-gray-300': currentStep < step
+                    }"
+                    @click="currentStep = step"
+                  >
+                    <span x-text="currentStep > step ? '✓' : step"></span>
+                  </div>
+                  <!-- Connector Line -->
+                  <div
+                    x-show="step < totalSteps"
+                    class="flex-1 h-1 mx-2"
+                    :class="currentStep > step ? 'bg-green-500' : 'bg-gray-200'"
+                  ></div>
+                </div>
+              </template>
+            </div>
+            <!-- Current Step Title -->
+            <div class="text-center">
+              <p class="font-medium" x-text="
+                currentStep === 1 ? 'Temel Bilgiler' :
+                currentStep === 2 ? 'Fiyatlandirma' :
+                currentStep === 3 ? 'Kapasite & Slot' :
+                currentStep === 4 ? 'Combo/Paket' :
+                'Gecerlilik'
+              "></p>
+              <p class="text-sm text-gray-500" x-text="
+                currentStep === 1 ? 'Ad, tip, aciklama' :
+                currentStep === 2 ? 'Ucretler, vergiler' :
+                currentStep === 3 ? 'Kontenjan ayarlari' :
+                currentStep === 4 ? 'Bilet paketi (opsiyonel)' :
+                'Tarih ve gunler'
+              "></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stepper (Sol Sidebar - Desktop Only) -->
+        <div class="lg:w-64 flex-shrink-0 hidden lg:block">
           <div class="wf-card p-0">
             <div class="wf-stepper">
               <div class="wf-step" :class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }" @click="currentStep = 1">
