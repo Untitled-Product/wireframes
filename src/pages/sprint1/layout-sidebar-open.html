@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -33,28 +34,28 @@
 
       <nav class="flex-1 py-4 overflow-y-auto">
         <a href="layout-sidebar-open.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">H</div>
+          <iconify-icon icon="streamline-freehand:interface-dashboard-layout-circle" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Dashboard</span>
         </a>
         <a href="../admin/ticket-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">T</div>
+          <iconify-icon icon="streamline-freehand:entertainment-ticket" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Biletler</span>
         </a>
         <a href="../admin/addon-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">+</div>
+          <iconify-icon icon="streamline-freehand:interface-add-circle" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Eklentiler</span>
         </a>
         <a href="../admin/order-detail.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">S</div>
+          <iconify-icon icon="streamline-freehand:shopping-cart-1" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Siparisler</span>
         </a>
         <a href="../admin/slot-calendar.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">C</div>
+          <iconify-icon icon="streamline-freehand:calendar-date" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Slot Takvimi</span>
         </a>
         <div class="border-t border-gray-300 my-2 mx-3"></div>
         <a href="user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">U</div>
+          <iconify-icon icon="streamline-freehand:interface-user-single" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Kullanicilar</span>
         </a>
       </nav>
@@ -88,28 +89,28 @@
 
       <nav class="flex-1 py-4 overflow-y-auto">
         <a href="layout-sidebar-open.html" class="wf-sidebar-item active">
-          <div class="wf-icon">H</div>
+          <iconify-icon icon="streamline-freehand:interface-dashboard-layout-circle" width="20" height="20"></iconify-icon>
           <span>Dashboard</span>
         </a>
         <a href="../admin/ticket-list.html" class="wf-sidebar-item">
-          <div class="wf-icon">T</div>
+          <iconify-icon icon="streamline-freehand:entertainment-ticket" width="20" height="20"></iconify-icon>
           <span>Biletler</span>
         </a>
         <a href="../admin/addon-list.html" class="wf-sidebar-item">
-          <div class="wf-icon">+</div>
+          <iconify-icon icon="streamline-freehand:interface-add-circle" width="20" height="20"></iconify-icon>
           <span>Eklentiler</span>
         </a>
         <a href="../admin/order-detail.html" class="wf-sidebar-item">
-          <div class="wf-icon">S</div>
+          <iconify-icon icon="streamline-freehand:shopping-cart-1" width="20" height="20"></iconify-icon>
           <span>Siparisler</span>
         </a>
         <a href="../admin/slot-calendar.html" class="wf-sidebar-item">
-          <div class="wf-icon">C</div>
+          <iconify-icon icon="streamline-freehand:calendar-date" width="20" height="20"></iconify-icon>
           <span>Slot Takvimi</span>
         </a>
         <div class="border-t border-gray-300 my-2 mx-3"></div>
         <a href="user-list.html" class="wf-sidebar-item">
-          <div class="wf-icon">U</div>
+          <iconify-icon icon="streamline-freehand:interface-user-single" width="20" height="20"></iconify-icon>
           <span>Kullanicilar</span>
         </a>
       </nav>
