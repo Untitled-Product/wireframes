@@ -114,8 +114,8 @@
         </a>
       </div>
 
-      <!-- Filters -->
-      <div class="wf-card mb-6">
+      <!-- Filters (Desktop) -->
+      <div class="wf-card mb-6 hidden lg:block">
         <div class="flex flex-wrap gap-4">
           <!-- Search -->
           <div class="flex-1 min-w-[200px]">
@@ -150,8 +150,35 @@
         </div>
       </div>
 
-      <!-- Table -->
-      <div class="wf-card p-0 overflow-hidden">
+      <!-- Filters (Mobile) -->
+      <div class="wf-card mb-4 lg:hidden">
+        <div class="space-y-3">
+          <!-- Search -->
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <input type="text" placeholder="Eklenti ara..." class="wf-input pl-10 w-full">
+          </div>
+          <!-- Filters Row -->
+          <div class="grid grid-cols-2 gap-2">
+            <select class="wf-select w-full text-sm">
+              <option>Tum Kategoriler</option>
+              <option>Parking</option>
+              <option>Locker</option>
+              <option>Equipment</option>
+              <option>F&B</option>
+              <option>Experience</option>
+            </select>
+            <select class="wf-select w-full text-sm">
+              <option>Tum Durum</option>
+              <option>Aktif</option>
+              <option>Pasif</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table (Desktop) -->
+      <div class="wf-card p-0 overflow-hidden hidden lg:block">
         <div class="overflow-x-auto">
           <table class="wf-table">
             <thead>
@@ -317,6 +344,189 @@
             <span class="wf-btn wf-btn-primary py-1 text-sm">1</span>
             <button class="wf-btn py-1 text-sm">2</button>
             <button class="wf-btn py-1 text-sm">Sonraki</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card List (Mobile) -->
+      <div class="lg:hidden space-y-3">
+        <!-- Card 1 - Parking -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Otopark - Tam Gun</div>
+              <div class="text-sm text-gray-500">Arac park alani</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-parking">Parking</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-001</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">150 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 - Locker -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Dolap - Buyuk (L)</div>
+              <div class="text-sm text-gray-500">Giris alani</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-locker">Locker</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-002</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">75 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 - Equipment -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Simidi Kiralama</div>
+              <div class="text-sm text-gray-500">2 saat kullanim</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-equipment">Equipment</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-003</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">50 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 - F&B -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Ogle Yemegi Paketi</div>
+              <div class="text-sm text-gray-500">Ana yemek + icecek</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-fnb">F&B</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-004</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">200 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 - Experience -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">VR Deneyimi</div>
+              <div class="text-sm text-gray-500">30 dakika seans</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-experience">Experience</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-005</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">250 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 - Locker (Pasif) -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Dolap - Kucuk (S)</div>
+              <div class="text-sm text-gray-500">Havuz yani</div>
+            </div>
+            <span class="wf-badge wf-badge-warning">Pasif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-locker">Locker</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-006</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">40 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7 - Parking (Zorunlu) -->
+        <div class="wf-card">
+          <div class="flex items-start justify-between mb-3">
+            <div>
+              <div class="font-medium">Otopark - Yarim Gun</div>
+              <div class="text-sm text-orange-600">Zorunlu eklenti</div>
+            </div>
+            <span class="wf-badge wf-badge-success">Aktif</span>
+          </div>
+          <div class="flex items-center gap-2 mb-3">
+            <span class="wf-badge wf-badge-parking">Parking</span>
+            <span class="text-gray-400">•</span>
+            <span class="font-mono text-sm text-gray-500">ADD-007</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-lg font-medium">80 TL</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm">✏️</button>
+              <button class="wf-btn py-2 px-3 text-sm">📋</button>
+              <button class="wf-btn py-2 px-3 text-sm">🗑️</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Pagination -->
+        <div class="wf-card">
+          <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-500">7 eklenti</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3 text-sm opacity-50" disabled>←</button>
+              <span class="text-sm font-medium">1 / 2</span>
+              <button class="wf-btn py-2 px-3 text-sm">→</button>
+            </div>
           </div>
         </div>
       </div>
