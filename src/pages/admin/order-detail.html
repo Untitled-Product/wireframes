@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,28 +44,28 @@
       <!-- Navigation -->
       <nav class="flex-1 py-4 overflow-y-auto">
         <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">H</div>
+          <iconify-icon icon="streamline-freehand:dashboard-layout" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Dashboard</span>
         </a>
         <a href="ticket-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">T</div>
+          <iconify-icon icon="streamline-freehand:coupon-cut" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Biletler</span>
         </a>
         <a href="addon-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">+</div>
+          <iconify-icon icon="streamline-freehand:add-sign-bold" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Eklentiler</span>
         </a>
         <a href="order-detail.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">S</div>
+          <iconify-icon icon="streamline-freehand:shop-cart" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Siparisler</span>
         </a>
         <a href="slot-calendar.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">C</div>
+          <iconify-icon icon="streamline-freehand:calendar-grid" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Slot Takvimi</span>
         </a>
         <div class="border-t border-gray-300 my-2 mx-3"></div>
         <a href="../sprint1/user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <div class="wf-icon">U</div>
+          <iconify-icon icon="streamline-freehand:app-window-user" width="20" height="20"></iconify-icon>
           <span x-show="sidebarOpen">Kullanicilar</span>
         </a>
       </nav>
@@ -638,28 +639,28 @@
     </div>
     <nav class="flex-1 py-4 overflow-y-auto">
       <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item">
-        <div class="wf-icon">H</div>
+        <iconify-icon icon="streamline-freehand:dashboard-layout" width="20" height="20"></iconify-icon>
         <span>Dashboard</span>
       </a>
       <a href="ticket-list.html" class="wf-sidebar-item">
-        <div class="wf-icon">T</div>
+        <iconify-icon icon="streamline-freehand:coupon-cut" width="20" height="20"></iconify-icon>
         <span>Biletler</span>
       </a>
       <a href="addon-list.html" class="wf-sidebar-item">
-        <div class="wf-icon">+</div>
+        <iconify-icon icon="streamline-freehand:add-sign-bold" width="20" height="20"></iconify-icon>
         <span>Eklentiler</span>
       </a>
       <a href="order-detail.html" class="wf-sidebar-item active">
-        <div class="wf-icon">S</div>
+        <iconify-icon icon="streamline-freehand:shop-cart" width="20" height="20"></iconify-icon>
         <span>Siparisler</span>
       </a>
       <a href="slot-calendar.html" class="wf-sidebar-item">
-        <div class="wf-icon">C</div>
+        <iconify-icon icon="streamline-freehand:calendar-grid" width="20" height="20"></iconify-icon>
         <span>Slot Takvimi</span>
       </a>
       <div class="border-t border-gray-300 my-2 mx-3"></div>
       <a href="../sprint1/user-list.html" class="wf-sidebar-item">
-        <div class="wf-icon">U</div>
+        <iconify-icon icon="streamline-freehand:app-window-user" width="20" height="20"></iconify-icon>
         <span>Kullanicilar</span>
       </a>
     </nav>
