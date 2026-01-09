@@ -1,0 +1,17 @@
+{
+  "name": "legends-wireframe-kit",
+  "version": "1.0.0",
+  "description": "HTML Wireframe Kit for Legends DXP Dashboard",
+  "scripts": {
+    "dev": "npx tailwindcss -i ./src/styles/base.css -o ./dist/output.css --watch & npx live-server --port=3000 --open=/index.html",
+    "build": "npx tailwindcss -i ./src/styles/base.css -o ./dist/output.css --minify",
+    "serve": "npx live-server --port=3000"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "live-server": "^1.2.2"
+  },
+  "keywords": ["wireframe", "legends-dxp", "tailwindcss"],
+  "author": "Legends DXP Team",
+  "license": "UNLICENSED"
+}

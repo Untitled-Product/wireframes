@@ -1,0 +1,47 @@
+<!--
+  Header Component
+  Usage: Place after sidebar, with ml-60 for sidebar offset
+  Variables:
+    - data-breadcrumb: Set breadcrumb text
+    - data-title: Set page title
+-->
+
+<header class="h-14 bg-white border-b border-slate-4 flex items-center justify-between px-6">
+  <!-- Left: Breadcrumb -->
+  <div class="flex items-center gap-2 text-sm">
+    <a href="#" class="text-slate-6 hover:text-slate-9">Dashboard</a>
+    <svg class="w-4 h-4 text-slate-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+    <span class="text-slate-12 font-medium">Biletler</span>
+  </div>
+
+  <!-- Right: Actions -->
+  <div class="flex items-center gap-4">
+    <!-- Search -->
+    <div class="relative">
+      <svg class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <input type="text" placeholder="Ara..." class="input pl-9 py-1.5 w-48 text-sm">
+    </div>
+
+    <!-- Notifications -->
+    <button class="relative p-2 text-slate-6 hover:text-slate-9 hover:bg-slate-3 rounded">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+      </svg>
+      <span class="absolute top-1 right-1 w-2 h-2 bg-ruby-9 rounded-full"></span>
+    </button>
+
+    <!-- User Menu -->
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-slate-4 rounded-full flex items-center justify-center text-sm font-medium text-slate-9">
+        AY
+      </div>
+      <svg class="w-4 h-4 text-slate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
+  </div>
+</header>

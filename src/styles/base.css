@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@400;500&display=swap');
+
+/* Base Styles */
+@layer base {
+  html, body {
+    @apply h-full;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-slate-2 text-slate-12 antialiased min-h-screen;
+  }
+
+  /* Admin Layout - Full Height */
+  .admin-layout {
+    @apply min-h-screen flex;
+  }
+
+  .admin-content {
+    @apply flex-1 flex flex-col min-h-screen;
+  }
+
+  .admin-main {
+    @apply flex-1;
+  }
+}
+
+/* Component Utilities */
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply px-4 py-2 rounded font-medium transition-colors duration-150;
+  }
+
+  .btn-primary {
+    @apply bg-teal-9 text-white hover:bg-teal-10;
+  }
+
+  .btn-secondary {
+    @apply bg-white border border-slate-4 text-slate-11 hover:bg-slate-3;
+  }
+
+  .btn-outline {
+    @apply bg-transparent border text-slate-11 hover:bg-slate-3;
+  }
+
+  .btn-danger {
+    @apply bg-ruby-9 text-white hover:bg-red-600;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-slate-11 hover:bg-slate-3;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-lg border border-slate-4;
+  }
+
+  .card-padding {
+    @apply p-4;
+  }
+
+  /* Form Elements */
+  .input {
+    @apply w-full px-3 py-2 border border-slate-4 rounded bg-white text-slate-12 placeholder:text-slate-6;
+    @apply focus:outline-none focus:ring-2 focus:ring-teal-9 focus:border-transparent;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-11 mb-1;
+  }
+
+  .select {
+    @apply input appearance-none cursor-pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+  }
+
+  /* Ticket Type Badges */
+  .badge-gunluk { @apply bg-indigo-4 text-indigo-11; }
+  .badge-vip { @apply bg-amber-4 text-amber-11; }
+  .badge-combo { @apply bg-pink-3 text-crimson-11; }
+  .badge-slot { @apply bg-orange-4 text-orange-11; }
+  .badge-grup { @apply bg-green-4 text-green-11; }
+  .badge-sezonluk { @apply bg-violet-4 text-violet-11; }
+
+  /* Add-on Category Badges */
+  .badge-parking { @apply bg-blue-4 text-blue-11; }
+  .badge-locker { @apply bg-cyan-4 text-cyan-11; }
+  .badge-equipment { @apply bg-orange-4 text-orange-11; }
+  .badge-fnb { @apply bg-red-4 text-red-11; }
+  .badge-experience { @apply bg-purple-4 text-purple-11; }
+
+  /* Status Badges */
+  .badge-success { @apply bg-mint-4 text-mint-11; }
+  .badge-warning { @apply bg-amber-4 text-amber-11; }
+  .badge-error { @apply bg-ruby-4 text-ruby-11; }
+  .badge-neutral { @apply bg-slate-4 text-slate-11; }
+
+  /* Tables */
+  .table {
+    @apply w-full text-left;
+  }
+
+  .table th {
+    @apply px-4 py-3 text-xs font-medium text-slate-6 uppercase tracking-wider bg-slate-3 border-b border-slate-4;
+  }
+
+  .table td {
+    @apply px-4 py-3 border-b border-slate-4;
+  }
+
+  .table tr:hover td {
+    @apply bg-slate-2;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    @apply w-60 h-screen bg-teal-12 text-white flex flex-col;
+  }
+
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-2.5 mx-2 rounded text-sm text-white/80 hover:bg-jade-8 transition-colors;
+  }
+
+  .sidebar-item.active {
+    @apply bg-jade-8 text-white;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+  }
+
+  .modal {
+    @apply bg-white rounded-lg shadow-xl max-w-md w-full mx-4;
+  }
+
+  .modal-header {
+    @apply px-6 py-4 border-b border-slate-4;
+  }
+
+  .modal-body {
+    @apply px-6 py-4;
+  }
+
+  .modal-footer {
+    @apply px-6 py-4 border-t border-slate-4 flex justify-end gap-3;
+  }
+}
+
+/* Wireframe Mode Overrides */
+@layer utilities {
+  .wireframe-mode * {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .wireframe-mode {
+    font-family: 'Caveat', cursive !important;
+  }
+
+  .wireframe-mode .card,
+  .wireframe-mode .btn,
+  .wireframe-mode .input,
+  .wireframe-mode .badge,
+  .wireframe-mode .modal {
+    border-style: dashed !important;
+    border-color: #94a3b8 !important;
+  }
+
+  .wireframe-mode .btn-primary,
+  .wireframe-mode .sidebar {
+    background-color: #e2e8f0 !important;
+    color: #334155 !important;
+  }
+
+  .wireframe-mode img,
+  .wireframe-mode .image-placeholder {
+    background-color: #cbd5e1 !important;
+    border: 2px dashed #94a3b8 !important;
+  }
+}

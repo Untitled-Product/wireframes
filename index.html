@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legends DXP - Wireframe Kit</title>
+  <link rel="stylesheet" href="dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="min-h-screen" x-data="{ wireframeMode: false }">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-4 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div>
+        <h1 class="text-xl font-semibold text-teal-12">Legends DXP</h1>
+        <p class="text-sm text-slate-6">Wireframe Kit v1.0</p>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center gap-4">
+        <!-- Wireframe Toggle -->
+        <label class="flex items-center gap-2 cursor-pointer">
+          <span class="text-sm text-slate-7">Wireframe Mode</span>
+          <button
+            @click="wireframeMode = !wireframeMode; document.body.classList.toggle('wireframe-mode')"
+            :class="wireframeMode ? 'bg-teal-9' : 'bg-slate-4'"
+            class="relative w-12 h-6 rounded-full transition-colors"
+          >
+            <span
+              :class="wireframeMode ? 'translate-x-6' : 'translate-x-1'"
+              class="absolute top-1 left-0 w-4 h-4 bg-white rounded-full transition-transform"
+            ></span>
+          </button>
+        </label>
+
+        <!-- Keyboard Shortcut Hint -->
+        <span class="text-xs text-slate-6 bg-slate-3 px-2 py-1 rounded">
+          Press <kbd class="font-mono bg-slate-4 px-1 rounded">W</kbd> to toggle
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Stats -->
+    <div class="grid grid-cols-4 gap-4 mb-8">
+      <div class="card card-padding text-center">
+        <div class="text-3xl font-bold text-teal-9">7</div>
+        <div class="text-sm text-slate-6">Tamamlanan</div>
+      </div>
+      <div class="card card-padding text-center">
+        <div class="text-3xl font-bold text-amber-9">12</div>
+        <div class="text-sm text-slate-6">Bekleyen</div>
+      </div>
+      <div class="card card-padding text-center">
+        <div class="text-3xl font-bold text-slate-9">19</div>
+        <div class="text-sm text-slate-6">Toplam Sayfa</div>
+      </div>
+      <div class="card card-padding text-center">
+        <div class="text-3xl font-bold text-iris-9">8</div>
+        <div class="text-sm text-slate-6">Component</div>
+      </div>
+    </div>
+
+    <!-- Page List -->
+    <section class="mb-12">
+      <h2 class="text-lg font-semibold text-slate-12 mb-4">Admin Sayfalari</h2>
+      <div class="grid grid-cols-3 gap-4">
+
+        <!-- Ticket List -->
+        <a href="src/pages/admin/ticket-list.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-success">Hazir</span>
+            <span class="text-xs text-slate-6">P1</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Bilet Listesi</h3>
+          <p class="text-sm text-slate-6 mt-1">Admin bilet yonetimi tablosu</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Mobile</span>
+          </div>
+        </a>
+
+        <!-- Ticket Form -->
+        <a href="src/pages/admin/ticket-form.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-warning">Devam</span>
+            <span class="text-xs text-slate-6">P1</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Bilet Formu</h3>
+          <p class="text-sm text-slate-6 mt-1">Bilet olusturma/duzenleme wizard</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Mobile</span>
+          </div>
+        </a>
+
+        <!-- Add-on List -->
+        <a href="src/pages/admin/addon-list.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P1</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Add-on Listesi</h3>
+          <p class="text-sm text-slate-6 mt-1">Eklenti yonetimi tablosu</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Mobile</span>
+          </div>
+        </a>
+
+        <!-- Add-on Form -->
+        <a href="src/pages/admin/addon-form.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P1</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Add-on Formu</h3>
+          <p class="text-sm text-slate-6 mt-1">Eklenti olusturma/duzenleme</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+          </div>
+        </a>
+
+        <!-- Order Detail -->
+        <a href="src/pages/admin/order-detail.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P2</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Siparis Detay</h3>
+          <p class="text-sm text-slate-6 mt-1">PNR detay ve islem gecmisi</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+          </div>
+        </a>
+
+        <!-- Slot Calendar -->
+        <a href="src/pages/admin/slot-calendar.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P3</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Slot Takvimi</h3>
+          <p class="text-sm text-slate-6 mt-1">Kapasite ve slot yonetimi</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Public Pages -->
+    <section class="mb-12">
+      <h2 class="text-lg font-semibold text-slate-12 mb-4">Public Sayfalari</h2>
+      <div class="grid grid-cols-3 gap-4">
+
+        <!-- Ticket Catalog -->
+        <a href="src/pages/public/ticket-catalog.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P2</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Bilet Katalogu</h3>
+          <p class="text-sm text-slate-6 mt-1">Tarih secimi ve bilet kartlari</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Mobile</span>
+          </div>
+        </a>
+
+        <!-- Add-on Selection -->
+        <a href="src/pages/public/addon-selection.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P3</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Add-on Secimi</h3>
+          <p class="text-sm text-slate-6 mt-1">Eklenti secim arayuzu</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">Desktop</span>
+          </div>
+        </a>
+
+        <!-- Forms -->
+        <a href="src/pages/public/forms/" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P4</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Basvuru Formlari</h3>
+          <p class="text-sm text-slate-6 mt-1">Okul, Acente, Talep formlari</p>
+          <div class="flex gap-2 mt-3">
+            <span class="text-xs bg-slate-3 px-2 py-1 rounded">3 form</span>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Modals -->
+    <section class="mb-12">
+      <h2 class="text-lg font-semibold text-slate-12 mb-4">Modal Componentleri</h2>
+      <div class="grid grid-cols-3 gap-4">
+
+        <a href="src/pages/modals/cancel-modal.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P3</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Iptal Modal</h3>
+          <p class="text-sm text-slate-6 mt-1">Siparis iptal onay</p>
+        </a>
+
+        <a href="src/pages/modals/refund-modal.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P3</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Iade Modal</h3>
+          <p class="text-sm text-slate-6 mt-1">Tam/kismi iade islemi</p>
+        </a>
+
+        <a href="src/pages/modals/reschedule-modal.html" class="card card-padding hover:border-teal-9 transition-colors group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="badge badge-neutral">Bekliyor</span>
+            <span class="text-xs text-slate-6">P3</span>
+          </div>
+          <h3 class="font-medium text-slate-12 group-hover:text-teal-9">Degisiklik Modal</h3>
+          <p class="text-sm text-slate-6 mt-1">Tarih/saat degisikligi</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Components -->
+    <section>
+      <h2 class="text-lg font-semibold text-slate-12 mb-4">Component Kutuphanesi</h2>
+      <div class="grid grid-cols-4 gap-4">
+
+        <a href="src/components/sidebar.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Sidebar</span>
+        </a>
+
+        <a href="src/components/header.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Header</span>
+        </a>
+
+        <a href="src/components/table.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Table</span>
+        </a>
+
+        <a href="src/components/card.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Card</span>
+        </a>
+
+        <a href="src/components/form-elements.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Form Elements</span>
+        </a>
+
+        <a href="src/components/badge.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Badge</span>
+        </a>
+
+        <a href="src/components/button.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Button</span>
+        </a>
+
+        <a href="src/components/modal.html" class="card card-padding text-center hover:border-teal-9 transition-colors">
+          <div class="w-10 h-10 bg-teal-4 rounded mx-auto mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 text-teal-11" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <span class="text-sm font-medium">Modal</span>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-4 mt-12 py-6">
+    <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-6">
+      Legends DXP Wireframe Kit - Sprint 2
+    </div>
+  </footer>
+
+  <!-- Keyboard Shortcuts -->
+  <script>
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'w' || e.key === 'W') {
+        document.body.classList.toggle('wireframe-mode');
+      }
+    });
+  </script>
+</body>
+</html>
