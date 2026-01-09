@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eklenti Olustur - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeTab: 'basic',
+  category: 'parking',
+  compatMode: 'all'
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="wf-sidebar hidden lg:flex" :class="{ 'w-56': sidebarOpen, 'w-16': !sidebarOpen }">
+      <!-- Logo + Collapse Button -->
+      <div class="p-4 border-b-2 border-gray-300 flex items-center" :class="{ 'justify-between': sidebarOpen, 'flex-col gap-2': !sidebarOpen }">
+        <div class="flex items-center gap-2" x-show="sidebarOpen">
+          <div class="w-6 h-6 border-2 border-current"></div>
+          <span class="font-medium">Legends DXP</span>
+        </div>
+        <div class="w-6 h-6 border-2 border-current" x-show="!sidebarOpen"></div>
+        <button @click="sidebarOpen = !sidebarOpen" class="wf-btn py-1 px-2 text-sm">
+          <span x-text="sidebarOpen ? '<<' : '>>'"></span>
+        </button>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 py-4 overflow-y-auto">
+        <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">H</div>
+          <span x-show="sidebarOpen">Dashboard</span>
+        </a>
+        <a href="ticket-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">T</div>
+          <span x-show="sidebarOpen">Biletler</span>
+        </a>
+        <a href="addon-list.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">+</div>
+          <span x-show="sidebarOpen">Eklentiler</span>
+        </a>
+        <a href="order-detail.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">S</div>
+          <span x-show="sidebarOpen">Siparisler</span>
+        </a>
+        <a href="slot-calendar.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">C</div>
+          <span x-show="sidebarOpen">Slot Takvimi</span>
+        </a>
+        <div class="border-t border-gray-300 my-2 mx-3"></div>
+        <a href="../sprint1/user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">U</div>
+          <span x-show="sidebarOpen">Kullanicilar</span>
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="p-4 border-t-2 border-gray-300">
+        <div class="flex items-center gap-3" x-show="sidebarOpen">
+          <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+          <div>
+            <p class="font-medium text-sm">Admin User</p>
+            <p class="text-xs text-gray-500">admin@legends.com</p>
+          </div>
+        </div>
+        <div class="flex justify-center" x-show="!sidebarOpen">
+          <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">AY</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="wf-header sticky top-0 z-30">
+      <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 -ml-2 border-2 border-gray-400">
+        <span class="text-lg">=</span>
+      </button>
+
+      <div class="hidden sm:flex items-center gap-2 text-base">
+        <a href="#" class="text-gray-500 hover:text-gray-700">Dashboard</a>
+        <span class="text-gray-400">/</span>
+        <a href="addon-list.html" class="text-gray-500 hover:text-gray-700">Eklentiler</a>
+        <span class="text-gray-400">/</span>
+        <span class="font-medium">Yeni Eklenti</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+        <button class="wf-btn text-sm py-1 px-2" title="Bildirimler">🔔</button>
+        <span class="text-sm text-gray-500 hidden sm:inline">Admin User</span>
+        <div class="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center text-sm">AY</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-6 flex-1">
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-3xl">Yeni Eklenti Olustur</h1>
+          <p class="text-gray-500 mt-1">Add-on urun bilgilerini girin</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a href="addon-list.html" class="wf-btn">Iptal</a>
+          <button class="wf-btn wf-btn-primary">Kaydet</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="wf-tabs mb-0">
+        <button class="wf-tab" :class="{ 'active': activeTab === 'basic' }" @click="activeTab = 'basic'">
+          Temel Bilgiler
+        </button>
+        <button class="wf-tab" :class="{ 'active': activeTab === 'pricing' }" @click="activeTab = 'pricing'">
+          Fiyatlandirma
+        </button>
+        <button class="wf-tab" :class="{ 'active': activeTab === 'category' }" @click="activeTab = 'category'">
+          Kategori Ayarlari
+        </button>
+        <button class="wf-tab" :class="{ 'active': activeTab === 'compat' }" @click="activeTab = 'compat'">
+          Bilet Uyumlulugu
+        </button>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="wf-tab-content">
+
+        <!-- Tab 1: Temel Bilgiler -->
+        <div x-show="activeTab === 'basic'" class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Sol Kolon -->
+            <div class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Eklenti Adi (TR) *</label>
+                <input type="text" class="wf-input" placeholder="ornek: Otopark - Tam Gun">
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Eklenti Adi (EN)</label>
+                <input type="text" class="wf-input" placeholder="e.g. Full Day Parking">
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Aciklama (TR)</label>
+                <textarea class="wf-textarea" rows="3" placeholder="Eklenti hakkinda kisa aciklama..."></textarea>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">SKU Kodu</label>
+                <div class="flex gap-2">
+                  <input type="text" class="wf-input flex-1" value="ADD-008" readonly>
+                  <button class="wf-btn">Yenile</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sag Kolon -->
+            <div class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Kategori *</label>
+                <select class="wf-select" x-model="category">
+                  <option value="parking">Parking (Otopark)</option>
+                  <option value="locker">Locker (Dolap)</option>
+                  <option value="equipment">Equipment (Ekipman)</option>
+                  <option value="fnb">F&B (Yiyecek-Icecek)</option>
+                  <option value="experience">Experience (Deneyim)</option>
+                </select>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-2">Gorsel</label>
+                <div class="border-2 border-dashed border-gray-400 rounded p-8 text-center bg-gray-50">
+                  <div class="text-4xl mb-2">📷</div>
+                  <p class="text-gray-500 mb-2">Gorsel yuklemek icin tiklayin</p>
+                  <p class="text-xs text-gray-400">PNG, JPG max 2MB</p>
+                </div>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-2">Durum</label>
+                <div class="flex items-center gap-3">
+                  <label class="wf-toggle">
+                    <input type="checkbox" class="wf-toggle-input" checked>
+                    <span class="wf-toggle-slider"></span>
+                  </label>
+                  <span>Aktif</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Fiyatlandirma -->
+        <div x-show="activeTab === 'pricing'" class="space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Fiyat (TL) *</label>
+                <div class="relative">
+                  <input type="number" class="wf-input pr-12" placeholder="0.00">
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">TL</span>
+                </div>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Fiyat Tipi *</label>
+                <select class="wf-select">
+                  <option value="fixed">Sabit Ucret</option>
+                  <option value="per_person">Kisi Basi</option>
+                  <option value="per_hour">Saat Bazli</option>
+                  <option value="per_day">Gun Bazli</option>
+                </select>
+                <p class="wf-form-help">Ucretlendirme yontemi</p>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">KDV Orani *</label>
+                <select class="wf-select">
+                  <option value="10">%10 KDV</option>
+                  <option value="20">%20 KDV</option>
+                  <option value="0">KDV Haric</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <div class="wf-alert wf-alert-info">
+                <strong>Fiyat Onizleme</strong><br><br>
+                Sabit Ucret: 150 TL<br>
+                KDV (%10): 15 TL<br>
+                <strong>Toplam: 165 TL</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Kategori Ayarlari -->
+        <div x-show="activeTab === 'category'" class="space-y-4">
+
+          <!-- Parking -->
+          <div x-show="category === 'parking'" class="space-y-4">
+            <h3 class="text-lg font-medium border-b-2 border-gray-300 pb-2">Otopark Ayarlari</h3>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-2">Arac Tipi</label>
+              <div class="wf-checkbox-group">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox" checked>
+                  <span>Otomobil</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox" checked>
+                  <span>Motosiklet</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Minibus</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Otobus</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Park Suresi</label>
+              <select class="wf-select">
+                <option>Yarim Gun (4 saat)</option>
+                <option selected>Tam Gun (8+ saat)</option>
+                <option>Sinirsiz</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Locker -->
+          <div x-show="category === 'locker'" class="space-y-4">
+            <h3 class="text-lg font-medium border-b-2 border-gray-300 pb-2">Dolap Ayarlari</h3>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-2">Dolap Boyutu</label>
+              <div class="wf-radio-group">
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="locker_size" class="wf-radio">
+                  <span>S - Kucuk (30x30cm)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="locker_size" class="wf-radio">
+                  <span>M - Orta (40x40cm)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="locker_size" class="wf-radio" checked>
+                  <span>L - Buyuk (50x50cm)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="radio" name="locker_size" class="wf-radio">
+                  <span>XL - Ekstra Buyuk (60x60cm)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-2">Konum</label>
+              <div class="wf-checkbox-group">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox" checked>
+                  <span>Ana Giris</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Havuz Yani</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Tema Alan</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Equipment -->
+          <div x-show="category === 'equipment'" class="space-y-4">
+            <h3 class="text-lg font-medium border-b-2 border-gray-300 pb-2">Ekipman Ayarlari</h3>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Depozito Tutari (TL)</label>
+              <div class="relative">
+                <input type="number" class="wf-input pr-12" placeholder="0.00" value="100">
+                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">TL</span>
+              </div>
+              <p class="wf-form-help">Ekipman iade edildiginde geri odenir</p>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Kullanim Suresi</label>
+              <select class="wf-select">
+                <option>1 Saat</option>
+                <option selected>2 Saat</option>
+                <option>4 Saat</option>
+                <option>Tam Gun</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- F&B -->
+          <div x-show="category === 'fnb'" class="space-y-4">
+            <h3 class="text-lg font-medium border-b-2 border-gray-300 pb-2">Yiyecek-Icecek Ayarlari</h3>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Menu Icerigi</label>
+              <textarea class="wf-textarea" rows="4" placeholder="Paket icerigini yazin...&#10;- Ana yemek&#10;- Icecek&#10;- Tatli"></textarea>
+              <p class="wf-form-help">Her satira bir urun yazin</p>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Servis Noktasi</label>
+              <select class="wf-select">
+                <option>Ana Restoran</option>
+                <option>Havuz Bar</option>
+                <option>Fast Food Alani</option>
+                <option>Tum Noktalar</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Experience -->
+          <div x-show="category === 'experience'" class="space-y-4">
+            <h3 class="text-lg font-medium border-b-2 border-gray-300 pb-2">Deneyim Ayarlari</h3>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Sure (dakika)</label>
+                <input type="number" class="wf-input" value="30">
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Kapasite (kisi)</label>
+                <input type="number" class="wf-input" value="10">
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Yas Siniri</label>
+                <select class="wf-select">
+                  <option>Yok</option>
+                  <option>7+</option>
+                  <option>12+</option>
+                  <option selected>16+</option>
+                  <option>18+</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Deneyim Aciklamasi</label>
+              <textarea class="wf-textarea" rows="3" placeholder="Deneyim detaylarini yazin..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Bilet Uyumlulugu -->
+        <div x-show="activeTab === 'compat'" class="space-y-4">
+          <div class="wf-form-group">
+            <label class="block text-sm font-medium mb-2">Uyumluluk Modu</label>
+            <div class="wf-radio-group">
+              <label class="flex items-center gap-2">
+                <input type="radio" name="compat" class="wf-radio" value="all" x-model="compatMode" checked>
+                <span>Tum Biletlerle Uyumlu</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="compat" class="wf-radio" value="selected" x-model="compatMode">
+                <span>Secili Biletler</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="compat" class="wf-radio" value="exclude" x-model="compatMode">
+                <span>Haric Tutulanlar</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Bilet Secimi -->
+          <div x-show="compatMode !== 'all'" class="wf-form-group">
+            <label class="block text-sm font-medium mb-2" x-text="compatMode === 'selected' ? 'Uyumlu Biletler' : 'Haric Tutulan Biletler'"></label>
+            <div class="wf-checkbox-group border-2 border-gray-300 rounded p-4 bg-gray-50">
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox" checked>
+                <span>Gunluk Giris Bileti</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox" checked>
+                <span>VIP Deneyim Paketi</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Aile Paketi (Combo)</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Su Parki Girisi</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Grup Bileti</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Sezonluk Pase</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="wf-divider my-4"></div>
+
+          <div class="wf-form-group">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" class="wf-checkbox">
+              <span class="font-medium">Otomatik Oner</span>
+            </label>
+            <p class="wf-form-help ml-7">Bilet secimi sirasinda bu eklentiyi otomatik olarak oner</p>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" class="wf-checkbox">
+              <span class="font-medium">Zorunlu Eklenti</span>
+            </label>
+            <p class="wf-form-help ml-7">Uyumlu biletler icin bu eklenti zorunlu olarak sepete eklenir</p>
+          </div>
+
+          <div class="wf-alert wf-alert-warning">
+            <strong>Dikkat:</strong> Zorunlu eklenti isaretlendiginde, musteriler bu eklentiyi sepetten cikaramaz.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t-2 border-gray-300">
+        <a href="addon-list.html" class="wf-btn">Iptal</a>
+        <button class="wf-btn">Taslak Kaydet</button>
+        <button class="wf-btn wf-btn-primary">Kaydet ve Yayinla</button>
+      </div>
+
+      <!-- Annotation Note -->
+      <div class="wf-note mt-6">
+        📝 Not: Add-on form sayfasi. Sekmeli yapi ile bolumlendirilmis.
+        Kategori secimina gore dinamik alanlar gosterilir.
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div x-show="mobileMenu" @click="mobileMenu = false"
+    class="fixed inset-0 bg-black/30 z-40 lg:hidden"></div>
+
+  <!-- Mobile Menu -->
+  <aside x-show="mobileMenu"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    class="wf-sidebar fixed left-0 top-0 z-50 lg:hidden">
+    <div class="px-4 py-4 border-b-2 border-gray-300 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-6 h-6 border-2 border-current"></div>
+        <span class="text-lg">Legends DXP</span>
+      </div>
+      <button @click="mobileMenu = false" class="p-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item">
+        <div class="wf-icon">H</div>
+        <span>Dashboard</span>
+      </a>
+      <a href="ticket-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">T</div>
+        <span>Biletler</span>
+      </a>
+      <a href="addon-list.html" class="wf-sidebar-item active">
+        <div class="wf-icon">+</div>
+        <span>Eklentiler</span>
+      </a>
+      <a href="order-detail.html" class="wf-sidebar-item">
+        <div class="wf-icon">S</div>
+        <span>Siparisler</span>
+      </a>
+      <a href="slot-calendar.html" class="wf-sidebar-item">
+        <div class="wf-icon">C</div>
+        <span>Slot Takvimi</span>
+      </a>
+      <div class="border-t border-gray-300 my-2 mx-3"></div>
+      <a href="../sprint1/user-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">U</div>
+        <span>Kullanicilar</span>
+      </a>
+    </nav>
+    <div class="p-4 border-t-2 border-gray-300">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+        <div>
+          <p class="font-medium text-sm">Admin User</p>
+          <p class="text-xs text-gray-500">admin@legends.com</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

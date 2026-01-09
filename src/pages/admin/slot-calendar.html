@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Takvimi - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  viewMode: 'weekly',
+  selectedSlot: null,
+  showSlotModal: false
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="wf-sidebar hidden lg:flex" :class="{ 'w-56': sidebarOpen, 'w-16': !sidebarOpen }">
+      <!-- Logo + Collapse Button -->
+      <div class="p-4 border-b-2 border-gray-300 flex items-center" :class="{ 'justify-between': sidebarOpen, 'flex-col gap-2': !sidebarOpen }">
+        <div class="flex items-center gap-2" x-show="sidebarOpen">
+          <div class="w-6 h-6 border-2 border-current"></div>
+          <span class="font-medium">Legends DXP</span>
+        </div>
+        <div class="w-6 h-6 border-2 border-current" x-show="!sidebarOpen"></div>
+        <button @click="sidebarOpen = !sidebarOpen" class="wf-btn py-1 px-2 text-sm">
+          <span x-text="sidebarOpen ? '<<' : '>>'"></span>
+        </button>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 py-4 overflow-y-auto">
+        <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">H</div>
+          <span x-show="sidebarOpen">Dashboard</span>
+        </a>
+        <a href="ticket-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">T</div>
+          <span x-show="sidebarOpen">Biletler</span>
+        </a>
+        <a href="addon-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">+</div>
+          <span x-show="sidebarOpen">Eklentiler</span>
+        </a>
+        <a href="order-detail.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">S</div>
+          <span x-show="sidebarOpen">Siparisler</span>
+        </a>
+        <a href="slot-calendar.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">C</div>
+          <span x-show="sidebarOpen">Slot Takvimi</span>
+        </a>
+        <div class="border-t border-gray-300 my-2 mx-3"></div>
+        <a href="../sprint1/user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">U</div>
+          <span x-show="sidebarOpen">Kullanicilar</span>
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="p-4 border-t-2 border-gray-300">
+        <div class="flex items-center gap-3" x-show="sidebarOpen">
+          <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+          <div>
+            <p class="font-medium text-sm">Admin User</p>
+            <p class="text-xs text-gray-500">admin@legends.com</p>
+          </div>
+        </div>
+        <div class="flex justify-center" x-show="!sidebarOpen">
+          <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">AY</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="wf-header sticky top-0 z-30">
+      <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 -ml-2 border-2 border-gray-400">
+        <span class="text-lg">=</span>
+      </button>
+
+      <div class="hidden sm:flex items-center gap-2 text-base">
+        <a href="#" class="text-gray-500 hover:text-gray-700">Dashboard</a>
+        <span class="text-gray-400">/</span>
+        <span class="font-medium">Slot Takvimi</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+        <button class="wf-btn text-sm py-1 px-2" title="Bildirimler">🔔</button>
+        <span class="text-sm text-gray-500 hidden sm:inline">Admin User</span>
+        <div class="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center text-sm">AY</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-6 flex-1">
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-3xl">Slot Takvimi</h1>
+          <p class="text-gray-500 mt-1">Slot bazli biletlerin doluluk durumu</p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="wf-card mb-6">
+        <div class="flex flex-wrap items-center gap-4">
+          <!-- Bilet Secici -->
+          <div class="flex-1 min-w-[200px]">
+            <label class="block text-sm font-medium mb-1">Bilet</label>
+            <select class="wf-select">
+              <option>Su Parki Girisi (2 saat)</option>
+              <option>VR Deneyimi (30 dk)</option>
+              <option>Dalga Havuzu (1 saat)</option>
+              <option>Rafting Turu (2 saat)</option>
+            </select>
+          </div>
+
+          <!-- Tarih Secici -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Tarih</label>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-2 px-3">←</button>
+              <input type="date" class="wf-input" value="2026-07-15">
+              <button class="wf-btn py-2 px-3">→</button>
+            </div>
+          </div>
+
+          <!-- Gorunum Modu -->
+          <div>
+            <label class="block text-sm font-medium mb-1">Gorunum</label>
+            <div class="flex">
+              <button
+                class="wf-btn rounded-r-none"
+                :class="{ 'wf-btn-primary': viewMode === 'weekly' }"
+                @click="viewMode = 'weekly'"
+              >Haftalik</button>
+              <button
+                class="wf-btn rounded-l-none -ml-0.5"
+                :class="{ 'wf-btn-primary': viewMode === 'monthly' }"
+                @click="viewMode = 'monthly'"
+              >Aylik</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="flex flex-wrap items-center gap-4 mb-4 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-green-100 border-2 border-green-500 rounded"></div>
+          <span>Musait (0-50%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-yellow-100 border-2 border-yellow-500 rounded"></div>
+          <span>Dolmak Uzere (50-80%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-red-100 border-2 border-red-500 rounded"></div>
+          <span>Dolu (80-100%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 bg-gray-100 border-2 border-gray-400 rounded"></div>
+          <span>Kapali</span>
+        </div>
+      </div>
+
+      <!-- Weekly View -->
+      <div x-show="viewMode === 'weekly'" class="wf-card p-0 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-gray-50">
+                <th class="border-2 border-gray-300 p-3 text-left w-20">Saat</th>
+                <th class="border-2 border-gray-300 p-3 text-center">Pzt<br><span class="text-xs text-gray-500">13 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center">Sal<br><span class="text-xs text-gray-500">14 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center bg-blue-50">Car<br><span class="text-xs text-gray-500">15 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center">Per<br><span class="text-xs text-gray-500">16 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center">Cum<br><span class="text-xs text-gray-500">17 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center">Cmt<br><span class="text-xs text-gray-500">18 Tem</span></th>
+                <th class="border-2 border-gray-300 p-3 text-center">Paz<br><span class="text-xs text-gray-500">19 Tem</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 10:00 -->
+              <tr>
+                <td class="border-2 border-gray-300 p-2 font-medium bg-gray-50">10:00</td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">15/50</div>
+                    <div class="text-xs text-green-600">30%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">22/50</div>
+                    <div class="text-xs text-green-600">44%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">35/50</div>
+                    <div class="text-xs text-yellow-600">70%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">18/50</div>
+                    <div class="text-xs text-green-600">36%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">38/50</div>
+                    <div class="text-xs text-yellow-600">76%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">48/50</div>
+                    <div class="text-xs text-red-600">96%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">50/50</div>
+                    <div class="text-xs text-red-600">100%</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 12:00 -->
+              <tr>
+                <td class="border-2 border-gray-300 p-2 font-medium bg-gray-50">12:00</td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">32/50</div>
+                    <div class="text-xs text-yellow-600">64%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">28/50</div>
+                    <div class="text-xs text-yellow-600">56%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">45/50</div>
+                    <div class="text-xs text-red-600">90%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">20/50</div>
+                    <div class="text-xs text-green-600">40%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">50/50</div>
+                    <div class="text-xs text-red-600">100%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">50/50</div>
+                    <div class="text-xs text-red-600">100%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">50/50</div>
+                    <div class="text-xs text-red-600">100%</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 14:00 -->
+              <tr>
+                <td class="border-2 border-gray-300 p-2 font-medium bg-gray-50">14:00</td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">25/50</div>
+                    <div class="text-xs text-green-600">50%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">30/50</div>
+                    <div class="text-xs text-yellow-600">60%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">38/50</div>
+                    <div class="text-xs text-yellow-600">76%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">12/50</div>
+                    <div class="text-xs text-green-600">24%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">35/50</div>
+                    <div class="text-xs text-yellow-600">70%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">42/50</div>
+                    <div class="text-xs text-red-600">84%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-red-50 cursor-pointer hover:bg-red-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">48/50</div>
+                    <div class="text-xs text-red-600">96%</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 16:00 -->
+              <tr>
+                <td class="border-2 border-gray-300 p-2 font-medium bg-gray-50">16:00</td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">10/50</div>
+                    <div class="text-xs text-green-600">20%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">18/50</div>
+                    <div class="text-xs text-green-600">36%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">22/50</div>
+                    <div class="text-xs text-green-600">44%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">8/50</div>
+                    <div class="text-xs text-green-600">16%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">28/50</div>
+                    <div class="text-xs text-yellow-600">56%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">32/50</div>
+                    <div class="text-xs text-yellow-600">64%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-yellow-50 cursor-pointer hover:bg-yellow-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">35/50</div>
+                    <div class="text-xs text-yellow-600">70%</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- 18:00 (Kapali) -->
+              <tr>
+                <td class="border-2 border-gray-300 p-2 font-medium bg-gray-50">18:00</td>
+                <td class="border-2 border-gray-300 p-2 bg-gray-100 text-gray-400 text-center" colspan="5">
+                  <div class="text-sm">Kapali</div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">15/50</div>
+                    <div class="text-xs text-green-600">30%</div>
+                  </div>
+                </td>
+                <td class="border-2 border-gray-300 p-2 bg-green-50 cursor-pointer hover:bg-green-100" @click="showSlotModal = true">
+                  <div class="text-center">
+                    <div class="text-sm font-medium">20/50</div>
+                    <div class="text-xs text-green-600">40%</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Monthly View -->
+      <div x-show="viewMode === 'monthly'" class="wf-card">
+        <div class="wf-calendar" style="max-width: none;">
+          <div class="wf-calendar-header">
+            <button class="wf-btn py-1 px-3">←</button>
+            <span class="font-medium text-xl">Temmuz 2026</span>
+            <button class="wf-btn py-1 px-3">→</button>
+          </div>
+          <div class="wf-calendar-weekdays grid grid-cols-7 gap-1 p-2">
+            <div class="text-center py-2">Pzt</div>
+            <div class="text-center py-2">Sal</div>
+            <div class="text-center py-2">Car</div>
+            <div class="text-center py-2">Per</div>
+            <div class="text-center py-2">Cum</div>
+            <div class="text-center py-2">Cmt</div>
+            <div class="text-center py-2">Paz</div>
+          </div>
+          <div class="grid grid-cols-7 gap-1 p-2">
+            <!-- Week 1 -->
+            <div class="wf-calendar-day other p-3 text-center">29</div>
+            <div class="wf-calendar-day other p-3 text-center">30</div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">1<br><span class="text-xs">32%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">2<br><span class="text-xs">45%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">3<br><span class="text-xs">68%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">4<br><span class="text-xs">95%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">5<br><span class="text-xs">100%</span></div>
+
+            <!-- Week 2 -->
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">6<br><span class="text-xs">28%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">7<br><span class="text-xs">35%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">8<br><span class="text-xs">42%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">9<br><span class="text-xs">55%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">10<br><span class="text-xs">72%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">11<br><span class="text-xs">88%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">12<br><span class="text-xs">92%</span></div>
+
+            <!-- Week 3 -->
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">13<br><span class="text-xs">30%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">14<br><span class="text-xs">38%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer border-4 border-blue-500">15<br><span class="text-xs">65%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">16<br><span class="text-xs">25%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">17<br><span class="text-xs">58%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">18<br><span class="text-xs">85%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">19<br><span class="text-xs">90%</span></div>
+
+            <!-- Week 4 -->
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">20<br><span class="text-xs">22%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">21<br><span class="text-xs">35%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">22<br><span class="text-xs">40%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">23<br><span class="text-xs">28%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">24<br><span class="text-xs">62%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">25<br><span class="text-xs">82%</span></div>
+            <div class="wf-calendar-day full p-3 text-center cursor-pointer">26<br><span class="text-xs">88%</span></div>
+
+            <!-- Week 5 -->
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">27<br><span class="text-xs">18%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">28<br><span class="text-xs">25%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">29<br><span class="text-xs">32%</span></div>
+            <div class="wf-calendar-day available p-3 text-center cursor-pointer">30<br><span class="text-xs">38%</span></div>
+            <div class="wf-calendar-day limited p-3 text-center cursor-pointer">31<br><span class="text-xs">55%</span></div>
+            <div class="wf-calendar-day other p-3 text-center">1</div>
+            <div class="wf-calendar-day other p-3 text-center">2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotation Note -->
+      <div class="wf-note mt-6">
+        📝 Not: Slot takvimi. Haftalik/Aylik gorunum. Renk kodlari doluluk oranini gosterir.
+        Hucrelere tiklayarak detay modali acilir.
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <!-- Slot Detail Modal -->
+  <div x-show="showSlotModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50" @click="showSlotModal = false"></div>
+    <div class="wf-card relative z-10 w-full max-w-md">
+      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Slot Detay</h2>
+
+      <div class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-500">Tarih</p>
+            <p class="font-medium">15 Temmuz 2026</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Saat</p>
+            <p class="font-medium">14:00 - 16:00</p>
+          </div>
+        </div>
+
+        <div class="border-2 border-gray-300 rounded p-4 bg-yellow-50">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-gray-500">Doluluk</span>
+            <span class="font-medium text-yellow-600">38 / 50 kisi (76%)</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="bg-yellow-500 h-3 rounded-full" style="width: 76%"></div>
+          </div>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="block text-sm font-medium mb-1">Kapasite Duzenleme</label>
+          <div class="flex gap-2">
+            <input type="number" class="wf-input flex-1" value="50">
+            <button class="wf-btn wf-btn-primary">Guncelle</button>
+          </div>
+          <p class="wf-form-help">Mevcut rezervasyonlar: 38 kisi</p>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" class="wf-checkbox">
+            <span>Bu slotu kapat</span>
+          </label>
+          <p class="wf-form-help ml-7">Kapali slotlar satis icin musait olmaz</p>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-6 pt-4 border-t-2 border-gray-300">
+        <button class="wf-btn text-sm">Rezervasyonlari Gor</button>
+        <div class="flex gap-2">
+          <button @click="showSlotModal = false" class="wf-btn">Kapat</button>
+          <button class="wf-btn wf-btn-primary">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div x-show="mobileMenu" @click="mobileMenu = false"
+    class="fixed inset-0 bg-black/30 z-40 lg:hidden"></div>
+
+  <!-- Mobile Menu -->
+  <aside x-show="mobileMenu"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    class="wf-sidebar fixed left-0 top-0 z-50 lg:hidden">
+    <div class="px-4 py-4 border-b-2 border-gray-300 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-6 h-6 border-2 border-current"></div>
+        <span class="text-lg">Legends DXP</span>
+      </div>
+      <button @click="mobileMenu = false" class="p-2 text-gray-500 hover:text-gray-700">✕</button>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item">
+        <div class="wf-icon">H</div>
+        <span>Dashboard</span>
+      </a>
+      <a href="ticket-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">T</div>
+        <span>Biletler</span>
+      </a>
+      <a href="addon-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">+</div>
+        <span>Eklentiler</span>
+      </a>
+      <a href="order-detail.html" class="wf-sidebar-item">
+        <div class="wf-icon">S</div>
+        <span>Siparisler</span>
+      </a>
+      <a href="slot-calendar.html" class="wf-sidebar-item active">
+        <div class="wf-icon">C</div>
+        <span>Slot Takvimi</span>
+      </a>
+      <div class="border-t border-gray-300 my-2 mx-3"></div>
+      <a href="../sprint1/user-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">U</div>
+        <span>Kullanicilar</span>
+      </a>
+    </nav>
+    <div class="p-4 border-t-2 border-gray-300">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+        <div>
+          <p class="font-medium text-sm">Admin User</p>
+          <p class="text-xs text-gray-500">admin@legends.com</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

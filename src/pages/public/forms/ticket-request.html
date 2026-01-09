@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilet Talebi - Legends Theme Park</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  submitted: false,
+  requestType: 'cancel',
+  pnrFound: false
+}">
+
+  <!-- Public Header -->
+  <header class="wf-header sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center">🎢</div>
+      <span class="text-xl font-medium">Legends Theme Park</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="../../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto p-4 sm:p-6">
+
+    <!-- Success State -->
+    <div x-show="submitted" class="text-center py-12">
+      <div class="w-24 h-24 mx-auto border-4 border-green-500 rounded-full flex items-center justify-center text-5xl mb-6 bg-green-50">
+        ✓
+      </div>
+      <h1 class="text-3xl mb-4">Talebiniz Alindi!</h1>
+      <p class="text-gray-500 mb-6">Talebiniz 24-48 saat icinde incelenecek ve e-posta ile bilgilendirileceksiniz.</p>
+      <div class="wf-card inline-block">
+        <p class="text-sm text-gray-500">Talep Numarasi</p>
+        <p class="text-2xl font-bold font-mono">REQ-2026-45678</p>
+      </div>
+      <div class="mt-8">
+        <a href="../../../../index.html" class="wf-btn wf-btn-primary">Ana Sayfaya Don</a>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div x-show="!submitted">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl sm:text-4xl mb-2">Iptal / Iade / Degisiklik Talebi</h1>
+        <p class="text-gray-500">Biletinizle ilgili islem talebinde bulunun</p>
+      </div>
+
+      <div class="wf-card">
+        <form @submit.prevent="submitted = true" class="space-y-4">
+
+          <!-- PNR Sorgulama -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Bilet Bilgileri</legend>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">PNR Numarasi *</label>
+              <div class="flex gap-2">
+                <input type="text" class="wf-input flex-1" placeholder="PNR-2026-XXXXXX" required
+                  @input="pnrFound = $event.target.value.length > 10">
+                <button type="button" class="wf-btn" @click="pnrFound = true">Sorgula</button>
+              </div>
+              <p class="wf-form-help">Bilet e-postanizda bulunan PNR numarasini girin</p>
+            </div>
+
+            <!-- Bilet Detay (PNR bulunursa) -->
+            <div x-show="pnrFound" class="mt-4 border-2 border-gray-300 rounded p-4 bg-gray-50">
+              <div class="flex justify-between items-start mb-3">
+                <div>
+                  <p class="font-medium">Gunluk Giris Bileti</p>
+                  <p class="text-sm text-gray-500">2 Yetiskin, 1 Cocuk</p>
+                </div>
+                <span class="wf-badge wf-badge-success">Aktif</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                <div>
+                  <span class="text-gray-500">Tarih:</span>
+                  <p>15 Temmuz 2026</p>
+                </div>
+                <div>
+                  <span class="text-gray-500">Toplam:</span>
+                  <p>2,000 TL</p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Iletisim Bilgileri -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Iletisim Bilgileri</legend>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">E-posta *</label>
+                <input type="email" class="wf-input" placeholder="email@example.com" required>
+                <p class="wf-form-help">Bilet alinirken kullanilan e-posta</p>
+              </div>
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Telefon *</label>
+                <input type="tel" class="wf-input" placeholder="0532 123 45 67" required>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Talep Tipi -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Talep Detaylari</legend>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-2">Islem Tipi *</label>
+              <div class="wf-radio-group">
+                <label class="flex items-center gap-2 p-3 border-2 border-gray-300 rounded cursor-pointer"
+                  :class="{ 'border-red-500 bg-red-50': requestType === 'cancel' }">
+                  <input type="radio" name="request_type" class="wf-radio" value="cancel" x-model="requestType">
+                  <div>
+                    <span class="font-medium">❌ Iptal</span>
+                    <p class="text-sm text-gray-500">Biletimi tamamen iptal etmek istiyorum</p>
+                  </div>
+                </label>
+                <label class="flex items-center gap-2 p-3 border-2 border-gray-300 rounded cursor-pointer mt-2"
+                  :class="{ 'border-orange-500 bg-orange-50': requestType === 'refund' }">
+                  <input type="radio" name="request_type" class="wf-radio" value="refund" x-model="requestType">
+                  <div>
+                    <span class="font-medium">💰 Iade</span>
+                    <p class="text-sm text-gray-500">Odedigim tutarin iadesini istiyorum</p>
+                  </div>
+                </label>
+                <label class="flex items-center gap-2 p-3 border-2 border-gray-300 rounded cursor-pointer mt-2"
+                  :class="{ 'border-blue-500 bg-blue-50': requestType === 'change' }">
+                  <input type="radio" name="request_type" class="wf-radio" value="change" x-model="requestType">
+                  <div>
+                    <span class="font-medium">📅 Tarih Degisikligi</span>
+                    <p class="text-sm text-gray-500">Biletimi farkli bir tarihe tasimak istiyorum</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Yeni Tarih (Degisiklik icin) -->
+            <div x-show="requestType === 'change'" class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Yeni Tarih *</label>
+              <input type="date" class="wf-input">
+              <p class="wf-form-help">Tercih ettiginiz yeni ziyaret tarihini secin</p>
+            </div>
+
+            <!-- Neden -->
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Talep Nedeni</label>
+              <select class="wf-select">
+                <option value="">Secin...</option>
+                <option>Plan degisikligi</option>
+                <option>Saglik sorunu</option>
+                <option>Hava kosullari</option>
+                <option>Is/Okul engeli</option>
+                <option>Diger</option>
+              </select>
+            </div>
+
+            <!-- Aciklama -->
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Aciklama</label>
+              <textarea class="wf-textarea" rows="3" placeholder="Talebinizle ilgili ek bilgi..."></textarea>
+            </div>
+          </fieldset>
+
+          <!-- Uyari -->
+          <div class="wf-alert wf-alert-warning" x-show="requestType === 'cancel' || requestType === 'refund'">
+            <strong>Onemli:</strong> Iptal/iade talepleri bilet kosullarina tabidir. Ziyaret tarihine 48 saatten az kala yapilan taleplerde iade yapilamamaktadir.
+          </div>
+
+          <!-- KVKK -->
+          <div class="wf-form-group">
+            <label class="flex items-start gap-2">
+              <input type="checkbox" class="wf-checkbox mt-1" required>
+              <span class="text-sm">
+                <a href="#" class="underline">KVKK Aydinlatma Metni</a>'ni okudum ve kabul ediyorum. *
+              </span>
+            </label>
+          </div>
+
+          <!-- Captcha Placeholder -->
+          <div class="border-2 border-gray-300 rounded p-4 bg-gray-50 text-center">
+            <p class="text-sm text-gray-500">reCAPTCHA v3 (Invisible)</p>
+            <p class="text-xs text-gray-400 mt-1">Bu site reCAPTCHA ile korunmaktadir</p>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="wf-btn wf-btn-primary w-full justify-center text-lg py-3">
+            Talep Gonder
+          </button>
+        </form>
+      </div>
+
+      <!-- Annotation Note -->
+      <div class="wf-note mt-6">
+        📝 Not: Iptal/Iade/Degisiklik talep formu. PNR sorgulama, islem tipi secimi.
+        Secilen islem tipine gore form dinamik olarak degisir.
+      </div>
+    </div>
+  </main>
+
+  <!-- Comments System -->
+  <script src="../../../js/comments.js"></script>
+
+</body>
+</html>

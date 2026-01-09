@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Okul Basvurusu - Legends Theme Park</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ submitted: false }">
+
+  <!-- Public Header -->
+  <header class="wf-header sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center">🎢</div>
+      <span class="text-xl font-medium">Legends Theme Park</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="../../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-2xl mx-auto p-4 sm:p-6">
+
+    <!-- Success State -->
+    <div x-show="submitted" class="text-center py-12">
+      <div class="w-24 h-24 mx-auto border-4 border-green-500 rounded-full flex items-center justify-center text-5xl mb-6 bg-green-50">
+        ✓
+      </div>
+      <h1 class="text-3xl mb-4">Basvurunuz Alindi!</h1>
+      <p class="text-gray-500 mb-6">En kisa surede sizinle iletisime gececegiz.</p>
+      <div class="wf-card inline-block">
+        <p class="text-sm text-gray-500">Referans Numarasi</p>
+        <p class="text-2xl font-bold font-mono">SCH-2026-78456</p>
+      </div>
+      <div class="mt-8">
+        <a href="../../../../index.html" class="wf-btn wf-btn-primary">Ana Sayfaya Don</a>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div x-show="!submitted">
+      <div class="text-center mb-8">
+        <h1 class="text-2xl sm:text-4xl mb-2">Okul Gezisi Basvurusu</h1>
+        <p class="text-gray-500">Ogrencileriniz icin ozel fiyat ve program</p>
+      </div>
+
+      <div class="wf-card">
+        <form @submit.prevent="submitted = true" class="space-y-4">
+
+          <!-- Okul Bilgileri -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Okul Bilgileri</legend>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Okul Adi *</label>
+              <input type="text" class="wf-input" placeholder="ornek: Ataturk Ilkokulu" required>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Il *</label>
+                <select class="wf-select" required>
+                  <option value="">Secin...</option>
+                  <option>Istanbul</option>
+                  <option>Ankara</option>
+                  <option>Izmir</option>
+                  <option>Antalya</option>
+                  <option>Diger</option>
+                </select>
+              </div>
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Ilce</label>
+                <input type="text" class="wf-input" placeholder="Ilce">
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Yetkili Bilgileri -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Yetkili Bilgileri</legend>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Yetkili Adi Soyadi *</label>
+              <input type="text" class="wf-input" placeholder="Ad Soyad" required>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Telefon *</label>
+                <input type="tel" class="wf-input" placeholder="0532 123 45 67" required>
+              </div>
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">E-posta *</label>
+                <input type="email" class="wf-input" placeholder="email@okul.edu.tr" required>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Gezi Detaylari -->
+          <fieldset class="wf-fieldset">
+            <legend class="wf-fieldset-legend">Gezi Detaylari</legend>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Ogrenci Sayisi *</label>
+                <input type="number" class="wf-input" placeholder="ornek: 50" min="10" required>
+                <p class="wf-form-help">Minimum 10 ogrenci</p>
+              </div>
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Ogretmen Sayisi</label>
+                <input type="number" class="wf-input" placeholder="ornek: 5">
+              </div>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Tercih Edilen Tarih(ler) *</label>
+              <input type="date" class="wf-input mb-2">
+              <input type="date" class="wf-input mb-2">
+              <p class="wf-form-help">Alternatif tarihler girebilirsiniz</p>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Yas Grubu</label>
+              <div class="wf-checkbox-group">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Anaokulu (3-6 yas)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox" checked>
+                  <span>Ilkokul (7-10 yas)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Ortaokul (11-14 yas)</span>
+                </label>
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox">
+                  <span>Lise (15-18 yas)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Ek Notlar</label>
+              <textarea class="wf-textarea" rows="3" placeholder="Ozel istekleriniz varsa belirtin..."></textarea>
+            </div>
+          </fieldset>
+
+          <!-- KVKK -->
+          <div class="wf-form-group">
+            <label class="flex items-start gap-2">
+              <input type="checkbox" class="wf-checkbox mt-1" required>
+              <span class="text-sm">
+                <a href="#" class="underline">KVKK Aydinlatma Metni</a>'ni okudum ve kabul ediyorum. *
+              </span>
+            </label>
+          </div>
+
+          <!-- Captcha Placeholder -->
+          <div class="border-2 border-gray-300 rounded p-4 bg-gray-50 text-center">
+            <p class="text-sm text-gray-500">reCAPTCHA v3 (Invisible)</p>
+            <p class="text-xs text-gray-400 mt-1">Bu site reCAPTCHA ile korunmaktadir</p>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="wf-btn wf-btn-primary w-full justify-center text-lg py-3">
+            Basvuru Gonder
+          </button>
+        </form>
+      </div>
+
+      <!-- Annotation Note -->
+      <div class="wf-note mt-6">
+        📝 Not: Okul gezisi basvuru formu. Form gonderildikten sonra success state gosterilir.
+      </div>
+    </div>
+  </main>
+
+  <!-- Comments System -->
+  <script src="../../../js/comments.js"></script>
+
+</body>
+</html>

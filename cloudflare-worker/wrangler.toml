@@ -5,7 +5,7 @@ compatibility_date = "2024-01-01"
 # KV Namespace - Cloudflare Dashboard'dan olusturup ID'yi buraya ekle
 [[kv_namespaces]]
 binding = "WIREFRAME_PROJECTS"
-id = "YOUR_KV_NAMESPACE_ID"
+id = "3fd5297b3ad147dcac4a32eb0e2ef6e7"
 
 # Routes - wildcard subdomain
 routes = [

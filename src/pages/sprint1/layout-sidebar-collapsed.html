@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Sidebar Kapali</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar - COLLAPSED -->
+    <aside class="wf-sidebar w-16">
+      <div class="p-3 border-b-2 border-gray-300 flex flex-col items-center gap-2">
+        <div class="w-6 h-6 border-2 border-current"></div>
+        <a href="layout-sidebar-open.html" class="wf-btn py-1 px-2 text-xs" title="Genislet">
+          >>
+        </a>
+      </div>
+
+      <nav class="flex-1 py-4">
+        <a href="layout-sidebar-open.html" class="wf-sidebar-item justify-center active" title="Dashboard">
+          <div class="wf-icon">H</div>
+        </a>
+        <a href="../admin/ticket-list.html" class="wf-sidebar-item justify-center" title="Biletler">
+          <div class="wf-icon">T</div>
+        </a>
+        <a href="../admin/addon-list.html" class="wf-sidebar-item justify-center" title="Eklentiler">
+          <div class="wf-icon">+</div>
+        </a>
+        <a href="../admin/order-detail.html" class="wf-sidebar-item justify-center" title="Siparisler">
+          <div class="wf-icon">S</div>
+        </a>
+        <a href="../admin/slot-calendar.html" class="wf-sidebar-item justify-center" title="Slot Takvimi">
+          <div class="wf-icon">C</div>
+        </a>
+        <div class="border-t border-gray-300 my-2 mx-2"></div>
+        <a href="user-list.html" class="wf-sidebar-item justify-center" title="Kullanicilar">
+          <div class="wf-icon">U</div>
+        </a>
+      </nav>
+
+      <div class="p-2 border-t-2 border-gray-300 flex justify-center">
+        <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">AY</div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="wf-header">
+        <div class="flex items-center gap-4">
+          <nav class="text-sm text-gray-500">
+            <span class="text-gray-900 font-medium">Dashboard</span>
+          </nav>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="../../../index.html?sprint=sprint1" class="wf-btn text-sm py-1 px-3">Ana Sayfa</a>
+          <button class="wf-btn text-sm py-1 px-2" title="Bildirimler">🔔</button>
+          <span class="text-sm text-gray-500">Admin User</span>
+          <div class="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center">AY</div>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="flex-1 p-6 bg-gray-50">
+        <div class="grid grid-cols-4 gap-6 mb-6">
+          <div class="wf-card text-center">
+            <div class="text-3xl mb-2">$</div>
+            <div class="text-2xl font-bold">1,234</div>
+            <div class="text-sm text-gray-500">Bugunun Satisi</div>
+          </div>
+          <div class="wf-card text-center">
+            <div class="text-3xl mb-2">T</div>
+            <div class="text-2xl font-bold">567</div>
+            <div class="text-sm text-gray-500">Aktif Bilet</div>
+          </div>
+          <div class="wf-card text-center">
+            <div class="text-3xl mb-2">U</div>
+            <div class="text-2xl font-bold">89</div>
+            <div class="text-sm text-gray-500">Bugunku Ziyaretci</div>
+          </div>
+          <div class="wf-card text-center">
+            <div class="text-3xl mb-2">TL</div>
+            <div class="text-2xl font-bold">45,678</div>
+            <div class="text-sm text-gray-500">Gunluk Ciro</div>
+          </div>
+        </div>
+
+        <div class="wf-card">
+          <h2 class="text-xl mb-4">Icerik Alani (Genis)</h2>
+          <p class="text-gray-500">
+            Sidebar kapali durumda icerik alani daha genis gorunur.
+            Sadece ikonlar gosterilir, hover'da tooltip belirir.
+          </p>
+
+          <div class="mt-4 p-8 border-2 border-dashed border-gray-300 rounded text-center text-gray-400">
+            [Sayfa Icerigi Buraya Gelir - Daha Genis Alan]
+          </div>
+        </div>
+
+        <!-- Annotation Note -->
+        <div class="wf-note mt-6">
+          Admin layout - Sidebar kapali/daraltilmis durumu. 64px dar sidebar, sadece ikonlar.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

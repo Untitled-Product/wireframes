@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - OTP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page flex items-center justify-center p-4">
+
+  <div class="w-full max-w-sm">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 border-2 border-gray-400 mx-auto mb-4 flex items-center justify-center text-2xl">
+        L
+      </div>
+      <h1 class="text-2xl">Legends DXP</h1>
+    </div>
+
+    <!-- OTP Form -->
+    <div class="wf-card">
+      <h2 class="text-xl mb-2 text-center">Dogrulama Kodu</h2>
+      <p class="text-sm text-gray-500 text-center mb-6">+90 5XX XXX XX XX numarasina gonderilen 6 haneli kodu girin</p>
+
+      <form action="layout-sidebar-open.html" class="space-y-4">
+        <!-- OTP Input Boxes -->
+        <div class="flex justify-center gap-1 sm:gap-2 mb-4">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+          <input type="text" maxlength="1" class="wf-input w-10 h-10 sm:w-12 sm:h-12 text-center text-lg sm:text-xl" placeholder="-">
+        </div>
+
+        <button type="submit" class="wf-btn wf-btn-primary w-full">
+          Giris Yap
+        </button>
+
+        <div class="text-center">
+          <button type="button" class="text-sm text-gray-500 hover:text-gray-700">
+            Kodu tekrar gonder (45s)
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Back Link -->
+    <div class="text-center mt-4">
+      <a href="login-phone.html" class="text-sm text-gray-500 hover:text-gray-700">Telefon numarasini degistir</a>
+    </div>
+
+    <!-- Annotation Note -->
+    <div class="wf-note mt-6 text-sm">
+      6 haneli OTP girisi. 45 saniye sonra tekrar kod gonderilebilir.
+    </div>
+  </div>
+
+  <!-- Back Link -->
+  <a href="../../../index.html?sprint=sprint1" class="fixed bottom-4 right-4 wf-btn text-sm">Ana Sayfa</a>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

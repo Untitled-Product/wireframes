@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilet Olustur - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    // URL'den tema al
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  currentStep: 1,
+  totalSteps: 5,
+  ticketType: 'daily',
+  comboItems: [
+    { id: 1, name: 'Gunluk Giris', qty: 2 },
+    { id: 2, name: 'Su Parki', qty: 2 }
+  ]
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="wf-sidebar hidden lg:flex" :class="{ 'w-56': sidebarOpen, 'w-16': !sidebarOpen }">
+      <!-- Logo + Collapse Button -->
+      <div class="p-4 border-b-2 border-gray-300 flex items-center" :class="{ 'justify-between': sidebarOpen, 'flex-col gap-2': !sidebarOpen }">
+        <div class="flex items-center gap-2" x-show="sidebarOpen">
+          <div class="w-6 h-6 border-2 border-current"></div>
+          <span class="font-medium">Legends DXP</span>
+        </div>
+        <div class="w-6 h-6 border-2 border-current" x-show="!sidebarOpen"></div>
+        <button @click="sidebarOpen = !sidebarOpen" class="wf-btn py-1 px-2 text-sm">
+          <span x-text="sidebarOpen ? '<<' : '>>'"></span>
+        </button>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex-1 py-4 overflow-y-auto">
+        <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">H</div>
+          <span x-show="sidebarOpen">Dashboard</span>
+        </a>
+
+        <a href="ticket-list.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">T</div>
+          <span x-show="sidebarOpen">Biletler</span>
+        </a>
+
+        <a href="addon-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">+</div>
+          <span x-show="sidebarOpen">Eklentiler</span>
+        </a>
+
+        <a href="order-detail.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">S</div>
+          <span x-show="sidebarOpen">Siparisler</span>
+        </a>
+
+        <a href="slot-calendar.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">C</div>
+          <span x-show="sidebarOpen">Slot Takvimi</span>
+        </a>
+
+        <div class="border-t border-gray-300 my-2 mx-3"></div>
+
+        <a href="../sprint1/user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
+          <div class="wf-icon">U</div>
+          <span x-show="sidebarOpen">Kullanicilar</span>
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="p-4 border-t-2 border-gray-300">
+        <div class="flex items-center gap-3" x-show="sidebarOpen">
+          <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+          <div>
+            <p class="font-medium text-sm">Admin User</p>
+            <p class="text-xs text-gray-500">admin@legends.com</p>
+          </div>
+        </div>
+        <div class="flex justify-center" x-show="!sidebarOpen">
+          <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">AY</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+    <!-- Header -->
+    <header class="wf-header sticky top-0 z-30">
+      <!-- Mobile Menu Toggle -->
+      <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 -ml-2 border-2 border-gray-400">
+        <span class="text-lg">=</span>
+      </button>
+
+      <!-- Breadcrumb -->
+      <div class="hidden sm:flex items-center gap-2 text-base">
+        <a href="#" class="text-gray-500 hover:text-gray-700">Dashboard</a>
+        <span class="text-gray-400">/</span>
+        <a href="ticket-list.html" class="text-gray-500 hover:text-gray-700">Biletler</a>
+        <span class="text-gray-400">/</span>
+        <span class="font-medium">Yeni Bilet</span>
+      </div>
+
+      <!-- Right Actions -->
+      <div class="flex items-center gap-4">
+        <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+        <button class="wf-btn text-sm py-1 px-2" title="Bildirimler">🔔</button>
+        <span class="text-sm text-gray-500 hidden sm:inline">Admin User</span>
+        <div class="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center text-sm">AY</div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="p-6 flex-1">
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-3xl">Yeni Bilet Olustur</h1>
+          <p class="text-gray-500 mt-1">Adim <span x-text="currentStep"></span> / <span x-text="totalSteps"></span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="wf-btn">
+            Iptal
+          </button>
+          <button class="wf-btn wf-btn-primary">
+            Taslak Kaydet
+          </button>
+        </div>
+      </div>
+
+      <!-- Wizard Layout -->
+      <div class="flex flex-col lg:flex-row gap-6">
+
+        <!-- Stepper (Sol Sidebar) -->
+        <div class="lg:w-64 flex-shrink-0">
+          <div class="wf-card p-0">
+            <div class="wf-stepper">
+              <div class="wf-step" :class="{ 'active': currentStep === 1, 'completed': currentStep > 1 }" @click="currentStep = 1">
+                <div class="wf-step-number" x-text="currentStep > 1 ? '✓' : '1'"></div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Temel Bilgiler</div>
+                  <div class="wf-step-desc">Ad, tip, aciklama</div>
+                </div>
+              </div>
+
+              <div class="wf-step" :class="{ 'active': currentStep === 2, 'completed': currentStep > 2 }" @click="currentStep = 2">
+                <div class="wf-step-number" x-text="currentStep > 2 ? '✓' : '2'"></div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Fiyatlandirma</div>
+                  <div class="wf-step-desc">Ucretler, vergiler</div>
+                </div>
+              </div>
+
+              <div class="wf-step" :class="{ 'active': currentStep === 3, 'completed': currentStep > 3 }" @click="currentStep = 3">
+                <div class="wf-step-number" x-text="currentStep > 3 ? '✓' : '3'"></div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Kapasite & Slot</div>
+                  <div class="wf-step-desc">Kontenjan ayarlari</div>
+                </div>
+              </div>
+
+              <div class="wf-step" :class="{ 'active': currentStep === 4, 'completed': currentStep > 4 }" @click="currentStep = 4">
+                <div class="wf-step-number" x-text="currentStep > 4 ? '✓' : '4'"></div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Combo/Paket</div>
+                  <div class="wf-step-desc">Bilet paketi (opsiyonel)</div>
+                </div>
+              </div>
+
+              <div class="wf-step" :class="{ 'active': currentStep === 5, 'completed': currentStep > 5 }" @click="currentStep = 5">
+                <div class="wf-step-number">5</div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Gecerlilik</div>
+                  <div class="wf-step-desc">Tarih ve gunler</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Content -->
+        <div class="flex-1">
+
+          <!-- Step 1: Temel Bilgiler -->
+          <div class="wf-card" x-show="currentStep === 1">
+            <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Temel Bilgiler</h2>
+
+            <div class="space-y-4">
+              <!-- Bilet Adi TR -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Bilet Adi (TR) *</label>
+                <input type="text" class="wf-input" placeholder="ornek: Gunluk Giris Bileti">
+              </div>
+
+              <!-- Bilet Adi EN -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Bilet Adi (EN)</label>
+                <input type="text" class="wf-input" placeholder="e.g. Daily Entry Ticket">
+              </div>
+
+              <!-- Aciklama -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Aciklama (TR)</label>
+                <textarea class="wf-textarea" rows="3" placeholder="Bilet hakkinda kisa aciklama..."></textarea>
+                <p class="wf-form-help">Musterilere gosterilecek aciklama metni</p>
+              </div>
+
+              <!-- SKU -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">SKU Kodu</label>
+                <div class="flex gap-2">
+                  <input type="text" class="wf-input flex-1" value="TKT-007" readonly>
+                  <button class="wf-btn">Yenile</button>
+                </div>
+                <p class="wf-form-help">Otomatik olusturulur, istege bagli degistirilebilir</p>
+              </div>
+
+              <!-- Bilet Tipi -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Bilet Tipi *</label>
+                <select class="wf-select" x-model="ticketType">
+                  <option value="daily">Gunluk Giris</option>
+                  <option value="season">Sezonluk Pase</option>
+                  <option value="vip">VIP Deneyim</option>
+                  <option value="group">Grup Bileti</option>
+                  <option value="slot">Slot Bazli</option>
+                  <option value="combo">Combo/Paket</option>
+                </select>
+                <p class="wf-form-help">Tip secimi sonraki adimlardaki form alanlarini etkiler</p>
+              </div>
+
+              <!-- Durum Toggle -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-2">Durum</label>
+                <div class="flex items-center gap-3">
+                  <label class="wf-toggle">
+                    <input type="checkbox" checked>
+                    <span class="wf-toggle-slider"></span>
+                  </label>
+                  <span>Aktif</span>
+                </div>
+                <p class="wf-form-help">Pasif biletler satisa kapalidir</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Fiyatlandirma -->
+          <div class="wf-card" x-show="currentStep === 2">
+            <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Fiyatlandirma</h2>
+
+            <div class="space-y-4">
+              <!-- Yetiskin Fiyati -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Yetiskin Fiyati (TL) *</label>
+                <div class="relative">
+                  <input type="number" class="wf-input pr-12" placeholder="0.00">
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">TL</span>
+                </div>
+              </div>
+
+              <!-- Cocuk Fiyati -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Cocuk Fiyati (3-12 yas)</label>
+                <div class="relative">
+                  <input type="number" class="wf-input pr-12" placeholder="0.00">
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">TL</span>
+                </div>
+              </div>
+
+              <!-- Bebek Fiyati -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Bebek Fiyati (0-2 yas)</label>
+                <div class="relative">
+                  <input type="number" class="wf-input pr-12" placeholder="0.00" value="0">
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">TL</span>
+                </div>
+                <p class="wf-form-help">Genellikle ucretsizdir</p>
+              </div>
+
+              <!-- Grup Indirimi (sadece grup tipi) -->
+              <div class="wf-form-group" x-show="ticketType === 'group'">
+                <label class="block text-sm font-medium mb-1">Grup Indirimi (%)</label>
+                <div class="relative">
+                  <input type="number" class="wf-input pr-8" placeholder="0" min="0" max="100">
+                  <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">%</span>
+                </div>
+                <p class="wf-form-help">10+ kisi icin uygulanacak indirim</p>
+              </div>
+
+              <!-- Vergi -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">KDV Orani *</label>
+                <select class="wf-select">
+                  <option value="10">%10 KDV</option>
+                  <option value="20">%20 KDV</option>
+                  <option value="0">KDV Haric</option>
+                </select>
+              </div>
+
+              <!-- Fiyat Onizleme -->
+              <div class="wf-alert wf-alert-info">
+                <strong>Fiyat Onizleme:</strong><br>
+                Yetiskin: 750 TL + 75 TL KDV = <strong>825 TL</strong><br>
+                Cocuk: 500 TL + 50 TL KDV = <strong>550 TL</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: Kapasite & Slot -->
+          <div class="wf-card" x-show="currentStep === 3">
+            <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Kapasite & Slot Ayarlari</h2>
+
+            <!-- Gunluk Tip icin -->
+            <div x-show="ticketType === 'daily' || ticketType === 'vip' || ticketType === 'group'" class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Gunluk Kapasite *</label>
+                <input type="number" class="wf-input" placeholder="ornek: 500">
+                <p class="wf-form-help">Bir gunde satilabilecek maksimum bilet sayisi</p>
+              </div>
+
+              <div class="wf-form-group" x-show="ticketType === 'group'">
+                <label class="block text-sm font-medium mb-1">Minimum Grup Buyuklugu</label>
+                <input type="number" class="wf-input" value="10">
+              </div>
+
+              <div class="wf-form-group" x-show="ticketType === 'group'">
+                <label class="block text-sm font-medium mb-1">Maksimum Grup Buyuklugu</label>
+                <input type="number" class="wf-input" value="50">
+              </div>
+            </div>
+
+            <!-- Slot Tip icin -->
+            <div x-show="ticketType === 'slot'" class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Slot Araligi *</label>
+                <select class="wf-select">
+                  <option value="30">30 Dakika</option>
+                  <option value="60" selected>1 Saat</option>
+                  <option value="120">2 Saat</option>
+                </select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Baslangic Saati</label>
+                  <input type="time" class="wf-input" value="09:00">
+                </div>
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Bitis Saati</label>
+                  <input type="time" class="wf-input" value="18:00">
+                </div>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Slot Basi Kapasite *</label>
+                <input type="number" class="wf-input" placeholder="ornek: 50">
+                <p class="wf-form-help">Her slot icin maksimum kisi sayisi</p>
+              </div>
+
+              <!-- Mini Takvim Onizleme -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-2">Slot Onizleme</label>
+                <div class="border-2 border-gray-400 rounded p-3 bg-gray-50">
+                  <div class="grid grid-cols-5 gap-2 text-center text-sm">
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">09:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">10:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">11:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">12:00</div>
+                    <div class="p-2 border-2 border-gray-300 bg-gray-100 rounded text-gray-400">13:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">14:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">15:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">16:00</div>
+                    <div class="p-2 border-2 border-green-400 bg-green-50 rounded">17:00</div>
+                    <div class="p-2 border-2 border-gray-300 bg-gray-100 rounded text-gray-400">18:00</div>
+                  </div>
+                  <p class="text-xs text-gray-500 mt-2 text-center">Yesil = Musait | Gri = Kapali</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sezonluk Tip icin -->
+            <div x-show="ticketType === 'season'" class="space-y-4">
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-1">Toplam Kapasite *</label>
+                <input type="number" class="wf-input" placeholder="ornek: 1000">
+                <p class="wf-form-help">Sezon boyunca satilabilecek toplam pase sayisi</p>
+              </div>
+
+              <div class="wf-alert wf-alert-warning">
+                Sezonluk paseler icin gunluk limit uygulanmaz. Pase sahipleri sinirsiz giris hakkina sahiptir.
+              </div>
+            </div>
+
+            <!-- Combo Tip icin -->
+            <div x-show="ticketType === 'combo'" class="space-y-4">
+              <div class="wf-alert wf-alert-info">
+                Combo biletler icin kapasite, paket icerigindeki biletlerin kapasitesine bagli olarak otomatik hesaplanir.
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Combo/Paket -->
+          <div class="wf-card" x-show="currentStep === 4">
+            <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Combo/Paket Icerik</h2>
+
+            <template x-if="ticketType !== 'combo'">
+              <div class="wf-alert wf-alert-info">
+                Bu adim sadece "Combo/Paket" tipi biletler icin gecerlidir.<br>
+                Tip degistirmek icin Adim 1'e donun.
+              </div>
+            </template>
+
+            <div x-show="ticketType === 'combo'" class="space-y-4">
+              <!-- Paket Biletleri -->
+              <div class="wf-form-group">
+                <label class="block text-sm font-medium mb-2">Paket Icerigindeki Biletler</label>
+
+                <!-- Eklenen Biletler Listesi -->
+                <div class="space-y-2 mb-3">
+                  <template x-for="item in comboItems" :key="item.id">
+                    <div class="flex items-center gap-3 p-3 border-2 border-gray-300 rounded bg-white">
+                      <div class="flex-1" x-text="item.name"></div>
+                      <div class="wf-number-input">
+                        <button class="wf-number-btn" @click="item.qty > 1 && item.qty--">-</button>
+                        <input type="number" class="wf-number-value" x-model="item.qty" min="1">
+                        <button class="wf-number-btn" @click="item.qty++">+</button>
+                      </div>
+                      <button class="text-red-500 hover:text-red-700" @click="comboItems = comboItems.filter(i => i.id !== item.id)">
+                        ✕
+                      </button>
+                    </div>
+                  </template>
+                </div>
+
+                <!-- Yeni Bilet Ekle -->
+                <div class="flex gap-2">
+                  <select class="wf-select flex-1">
+                    <option value="">Bilet secin...</option>
+                    <option value="daily">Gunluk Giris Bileti</option>
+                    <option value="waterpark">Su Parki Girisi</option>
+                    <option value="vip">VIP Alan Girisi</option>
+                    <option value="parking">Otopark</option>
+                  </select>
+                  <button class="wf-btn wf-btn-primary" @click="comboItems.push({ id: Date.now(), name: 'Yeni Bilet', qty: 1 })">
+                    + Ekle
+                  </button>
+                </div>
+              </div>
+
+              <!-- Fiyatlandirma -->
+              <div class="wf-divider my-6"></div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Normal Toplam</label>
+                  <input type="text" class="wf-input bg-gray-100" value="3,000 TL" readonly>
+                  <p class="wf-form-help">Tek tek alindigi zaman</p>
+                </div>
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Paket Fiyati *</label>
+                  <input type="number" class="wf-input" value="2400">
+                </div>
+              </div>
+
+              <!-- Tasarruf Gosterimi -->
+              <div class="wf-form-group">
+                <label class="flex items-center gap-2">
+                  <input type="checkbox" class="wf-checkbox" checked>
+                  <span>Tasarruf tutarini goster</span>
+                </label>
+                <p class="wf-form-help">"600 TL Tasarruf!" gibi bir mesaj gosterilir</p>
+              </div>
+
+              <!-- Onizleme -->
+              <div class="wf-alert wf-alert-success">
+                <strong>Paket Onizleme:</strong><br>
+                2x Gunluk Giris + 2x Su Parki = 3,000 TL<br>
+                <strong>Paket Fiyati: 2,400 TL</strong> (600 TL tasarruf!)
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 5: Gecerlilik -->
+          <div class="wf-card" x-show="currentStep === 5">
+            <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Gecerlilik Tarihleri</h2>
+
+            <div class="space-y-4">
+              <!-- Satis Tarihleri -->
+              <fieldset class="wf-fieldset">
+                <legend class="wf-fieldset-legend">Satis Donemi</legend>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-form-group">
+                    <label class="block text-sm font-medium mb-1">Baslangic</label>
+                    <input type="date" class="wf-input" value="2026-01-15">
+                  </div>
+                  <div class="wf-form-group">
+                    <label class="block text-sm font-medium mb-1">Bitis</label>
+                    <input type="date" class="wf-input" value="2026-12-31">
+                  </div>
+                </div>
+                <p class="wf-form-help">Biletin satisa acik olacagi tarih araligi</p>
+              </fieldset>
+
+              <!-- Kullanim Tarihleri -->
+              <fieldset class="wf-fieldset">
+                <legend class="wf-fieldset-legend">Kullanim Donemi</legend>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-form-group">
+                    <label class="block text-sm font-medium mb-1">Baslangic</label>
+                    <input type="date" class="wf-input" value="2026-04-01">
+                  </div>
+                  <div class="wf-form-group">
+                    <label class="block text-sm font-medium mb-1">Bitis</label>
+                    <input type="date" class="wf-input" value="2026-10-31">
+                  </div>
+                </div>
+                <p class="wf-form-help">Biletin kullanilabilecegi tarih araligi (sezon)</p>
+              </fieldset>
+
+              <!-- Gecerli Gunler -->
+              <fieldset class="wf-fieldset">
+                <legend class="wf-fieldset-legend">Gecerli Gunler</legend>
+                <div class="wf-checkbox-group">
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Pazartesi</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Sali</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Carsamba</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Persembe</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Cuma</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Cumartesi</span>
+                  </label>
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" class="wf-checkbox" checked>
+                    <span>Pazar</span>
+                  </label>
+                </div>
+                <p class="wf-form-help">Isaretli olmayan gunlerde bilet kullanilamaz</p>
+              </fieldset>
+
+              <!-- Kara Gunler -->
+              <fieldset class="wf-fieldset">
+                <legend class="wf-fieldset-legend">Kara Gunler (Blackout Dates)</legend>
+                <div class="wf-calendar">
+                  <div class="wf-calendar-header">
+                    <button class="wf-btn py-1 px-2">←</button>
+                    <span class="font-medium">Temmuz 2026</span>
+                    <button class="wf-btn py-1 px-2">→</button>
+                  </div>
+                  <div class="wf-calendar-weekdays">
+                    <div>Pzt</div>
+                    <div>Sal</div>
+                    <div>Car</div>
+                    <div>Per</div>
+                    <div>Cum</div>
+                    <div>Cmt</div>
+                    <div>Paz</div>
+                  </div>
+                  <div class="wf-calendar-days">
+                    <div class="wf-calendar-day other">29</div>
+                    <div class="wf-calendar-day other">30</div>
+                    <div class="wf-calendar-day">1</div>
+                    <div class="wf-calendar-day">2</div>
+                    <div class="wf-calendar-day">3</div>
+                    <div class="wf-calendar-day full">4</div>
+                    <div class="wf-calendar-day full">5</div>
+                    <div class="wf-calendar-day">6</div>
+                    <div class="wf-calendar-day">7</div>
+                    <div class="wf-calendar-day">8</div>
+                    <div class="wf-calendar-day">9</div>
+                    <div class="wf-calendar-day">10</div>
+                    <div class="wf-calendar-day">11</div>
+                    <div class="wf-calendar-day">12</div>
+                    <div class="wf-calendar-day">13</div>
+                    <div class="wf-calendar-day">14</div>
+                    <div class="wf-calendar-day full">15</div>
+                    <div class="wf-calendar-day">16</div>
+                    <div class="wf-calendar-day">17</div>
+                    <div class="wf-calendar-day">18</div>
+                    <div class="wf-calendar-day">19</div>
+                    <div class="wf-calendar-day">20</div>
+                    <div class="wf-calendar-day">21</div>
+                    <div class="wf-calendar-day">22</div>
+                    <div class="wf-calendar-day">23</div>
+                    <div class="wf-calendar-day">24</div>
+                    <div class="wf-calendar-day">25</div>
+                    <div class="wf-calendar-day">26</div>
+                    <div class="wf-calendar-day">27</div>
+                    <div class="wf-calendar-day">28</div>
+                    <div class="wf-calendar-day">29</div>
+                    <div class="wf-calendar-day">30</div>
+                    <div class="wf-calendar-day">31</div>
+                    <div class="wf-calendar-day other">1</div>
+                    <div class="wf-calendar-day other">2</div>
+                  </div>
+                </div>
+                <p class="wf-form-help">Kirmizi isaretli gunlerde bilet kullanilamaz (bayramlar, ozel etkinlikler vb.)</p>
+              </fieldset>
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="flex items-center justify-between mt-6">
+            <button
+              class="wf-btn"
+              :class="{ 'invisible': currentStep === 1 }"
+              @click="currentStep > 1 && currentStep--"
+            >
+              ← Onceki
+            </button>
+
+            <div class="flex items-center gap-2">
+              <template x-if="currentStep < totalSteps">
+                <button
+                  class="wf-btn wf-btn-primary"
+                  @click="currentStep++"
+                >
+                  Sonraki →
+                </button>
+              </template>
+              <template x-if="currentStep === totalSteps">
+                <button class="wf-btn wf-btn-primary">
+                  Bileti Yayinla
+                </button>
+              </template>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Annotation Note -->
+      <div class="wf-note mt-6">
+        📝 Not: Multi-step wizard form. Sol tarafta adimlar, sag tarafta form icerik.
+        Bilet tipine gore form alanlari dinamik olarak degisir.
+      </div>
+    </main>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Overlay -->
+  <div
+    x-show="mobileMenu"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="mobileMenu = false"
+    class="fixed inset-0 bg-black/30 z-40 lg:hidden"
+  ></div>
+
+  <!-- Mobile Menu -->
+  <aside
+    x-show="mobileMenu"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    class="wf-sidebar fixed left-0 top-0 z-50 lg:hidden"
+  >
+    <div class="px-4 py-4 border-b-2 border-gray-300 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-6 h-6 border-2 border-current"></div>
+        <span class="text-lg">Legends DXP</span>
+      </div>
+      <button @click="mobileMenu = false" class="p-2 text-gray-500 hover:text-gray-700">
+        ✕
+      </button>
+    </div>
+    <nav class="flex-1 py-4 overflow-y-auto">
+      <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item">
+        <div class="wf-icon">H</div>
+        <span>Dashboard</span>
+      </a>
+      <a href="ticket-list.html" class="wf-sidebar-item active">
+        <div class="wf-icon">T</div>
+        <span>Biletler</span>
+      </a>
+      <a href="addon-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">+</div>
+        <span>Eklentiler</span>
+      </a>
+      <a href="order-detail.html" class="wf-sidebar-item">
+        <div class="wf-icon">S</div>
+        <span>Siparisler</span>
+      </a>
+      <a href="slot-calendar.html" class="wf-sidebar-item">
+        <div class="wf-icon">C</div>
+        <span>Slot Takvimi</span>
+      </a>
+      <div class="border-t border-gray-300 my-2 mx-3"></div>
+      <a href="../sprint1/user-list.html" class="wf-sidebar-item">
+        <div class="wf-icon">U</div>
+        <span>Kullanicilar</span>
+      </a>
+    </nav>
+    <div class="p-4 border-t-2 border-gray-300">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+        <div>
+          <p class="font-medium text-sm">Admin User</p>
+          <p class="text-xs text-gray-500">admin@legends.com</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

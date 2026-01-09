@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Guide - Wireframe Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+  <style>
+    .component-section {
+      scroll-margin-top: 80px;
+    }
+    .code-block {
+      background: #1f2937;
+      color: #e5e7eb;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      padding: 12px 16px;
+      border-radius: 4px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+  </style>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  activeSection: 'buttons',
+  sidebarOpen: true,
+  showModal: false,
+  toggleValue: false
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r-2 border-gray-300 fixed left-0 top-0 bottom-0 overflow-y-auto z-40">
+      <div class="p-4 border-b-2 border-gray-300">
+        <h1 class="text-xl font-medium">Component Guide</h1>
+        <p class="text-sm text-gray-500 mt-1">Wireframe Kit v1.0</p>
+      </div>
+
+      <nav class="p-4">
+        <p class="text-xs uppercase text-gray-400 mb-2 tracking-wider">Temel Elementler</p>
+        <a href="#buttons" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'buttons' }" @click="activeSection = 'buttons'">Buttons</a>
+        <a href="#badges" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'badges' }" @click="activeSection = 'badges'">Badges</a>
+        <a href="#inputs" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'inputs' }" @click="activeSection = 'inputs'">Inputs</a>
+        <a href="#selects" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'selects' }" @click="activeSection = 'selects'">Select & Dropdown</a>
+        <a href="#checkboxes" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'checkboxes' }" @click="activeSection = 'checkboxes'">Checkbox & Radio</a>
+        <a href="#toggles" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'toggles' }" @click="activeSection = 'toggles'">Toggle Switch</a>
+
+        <p class="text-xs uppercase text-gray-400 mb-2 mt-6 tracking-wider">Layout</p>
+        <a href="#cards" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'cards' }" @click="activeSection = 'cards'">Cards</a>
+        <a href="#tables" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'tables' }" @click="activeSection = 'tables'">Tables</a>
+        <a href="#modals" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'modals' }" @click="activeSection = 'modals'">Modals</a>
+
+        <p class="text-xs uppercase text-gray-400 mb-2 mt-6 tracking-wider">Feedback</p>
+        <a href="#alerts" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'alerts' }" @click="activeSection = 'alerts'">Alerts</a>
+        <a href="#notes" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'notes' }" @click="activeSection = 'notes'">Notes</a>
+
+        <p class="text-xs uppercase text-gray-400 mb-2 mt-6 tracking-wider">Navigation</p>
+        <a href="#sidebar" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'sidebar' }" @click="activeSection = 'sidebar'">Sidebar</a>
+        <a href="#tabs" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'tabs' }" @click="activeSection = 'tabs'">Tabs</a>
+        <a href="#stepper" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'stepper' }" @click="activeSection = 'stepper'">Stepper</a>
+
+        <p class="text-xs uppercase text-gray-400 mb-2 mt-6 tracking-wider">Data Display</p>
+        <a href="#timeline" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'timeline' }" @click="activeSection = 'timeline'">Timeline</a>
+        <a href="#calendar" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'calendar' }" @click="activeSection = 'calendar'">Calendar</a>
+        <a href="#number-input" class="block py-2 px-3 rounded mb-1 hover:bg-gray-100" :class="{ 'bg-gray-100 font-medium': activeSection === 'number-input' }" @click="activeSection = 'number-input'">Number Input</a>
+
+        <div class="mt-8 pt-4 border-t border-gray-200">
+          <a href="../../index.html" class="wf-btn text-sm w-full justify-center">← Ana Sayfa</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 p-8">
+      <div class="max-w-4xl">
+
+        <!-- Header -->
+        <div class="mb-8">
+          <h1 class="text-4xl mb-2">Wireframe Kit Components</h1>
+          <p class="text-gray-500 text-lg">Legends DXP wireframe'lerinde kullanilan tum component'ler</p>
+
+          <!-- Theme Switcher -->
+          <div class="mt-4 flex items-center gap-2">
+            <span class="text-sm text-gray-500">Tema:</span>
+            <a href="?theme=teal" class="w-6 h-6 rounded-full bg-teal-500 border-2" :class="theme === 'teal' ? 'border-gray-800' : 'border-transparent'"></a>
+            <a href="?theme=blue" class="w-6 h-6 rounded-full bg-blue-500 border-2" :class="theme === 'blue' ? 'border-gray-800' : 'border-transparent'"></a>
+            <a href="?theme=purple" class="w-6 h-6 rounded-full bg-purple-500 border-2" :class="theme === 'purple' ? 'border-gray-800' : 'border-transparent'"></a>
+            <a href="?theme=orange" class="w-6 h-6 rounded-full bg-orange-500 border-2" :class="theme === 'orange' ? 'border-gray-800' : 'border-transparent'"></a>
+            <a href="?theme=pink" class="w-6 h-6 rounded-full bg-pink-500 border-2" :class="theme === 'pink' ? 'border-gray-800' : 'border-transparent'"></a>
+            <a href="?theme=green" class="w-6 h-6 rounded-full bg-green-500 border-2" :class="theme === 'green' ? 'border-gray-800' : 'border-transparent'"></a>
+          </div>
+        </div>
+
+        <!-- ==================== BUTTONS ==================== -->
+        <section id="buttons" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Buttons</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Button Variants</h3>
+            <div class="flex flex-wrap gap-3 mb-4">
+              <button class="wf-btn">Default</button>
+              <button class="wf-btn wf-btn-primary">Primary</button>
+              <button class="wf-btn wf-btn-danger">Danger</button>
+              <button class="wf-btn wf-btn-warning">Warning</button>
+              <button class="wf-btn wf-btn-info">Info</button>
+            </div>
+            <div class="code-block">&lt;button class="wf-btn"&gt;Default&lt;/button&gt;
+&lt;button class="wf-btn wf-btn-primary"&gt;Primary&lt;/button&gt;
+&lt;button class="wf-btn wf-btn-danger"&gt;Danger&lt;/button&gt;
+&lt;button class="wf-btn wf-btn-warning"&gt;Warning&lt;/button&gt;
+&lt;button class="wf-btn wf-btn-info"&gt;Info&lt;/button&gt;</div>
+          </div>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Button Sizes</h3>
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              <button class="wf-btn text-sm py-1 px-2">Small</button>
+              <button class="wf-btn">Normal</button>
+              <button class="wf-btn text-lg py-3 px-6">Large</button>
+            </div>
+            <div class="code-block">&lt;button class="wf-btn text-sm py-1 px-2"&gt;Small&lt;/button&gt;
+&lt;button class="wf-btn"&gt;Normal&lt;/button&gt;
+&lt;button class="wf-btn text-lg py-3 px-6"&gt;Large&lt;/button&gt;</div>
+          </div>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Full Width Button</h3>
+            <button class="wf-btn wf-btn-primary w-full justify-center mb-4">Full Width Button</button>
+            <div class="code-block">&lt;button class="wf-btn wf-btn-primary w-full justify-center"&gt;Full Width&lt;/button&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== BADGES ==================== -->
+        <section id="badges" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Badges</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Temel Badge'ler</h3>
+            <div class="flex flex-wrap gap-3 mb-4">
+              <span class="wf-badge">Default</span>
+              <span class="wf-badge wf-badge-primary">Primary</span>
+              <span class="wf-badge wf-badge-success">Success</span>
+              <span class="wf-badge wf-badge-warning">Warning</span>
+              <span class="wf-badge wf-badge-error">Error</span>
+            </div>
+            <div class="code-block">&lt;span class="wf-badge"&gt;Default&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-primary"&gt;Primary&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-success"&gt;Success&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-warning"&gt;Warning&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-error"&gt;Error&lt;/span&gt;</div>
+          </div>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Kategori Badge'leri</h3>
+            <div class="flex flex-wrap gap-3 mb-4">
+              <span class="wf-badge wf-badge-combo">Combo</span>
+              <span class="wf-badge wf-badge-slot">Slot</span>
+              <span class="wf-badge wf-badge-parking">Parking</span>
+              <span class="wf-badge wf-badge-locker">Locker</span>
+              <span class="wf-badge wf-badge-equipment">Equipment</span>
+              <span class="wf-badge wf-badge-fnb">F&B</span>
+              <span class="wf-badge wf-badge-experience">Experience</span>
+              <span class="wf-badge wf-badge-seasonal">Seasonal</span>
+              <span class="wf-badge wf-badge-group">Group</span>
+            </div>
+            <div class="code-block">&lt;span class="wf-badge wf-badge-combo"&gt;Combo&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-slot"&gt;Slot&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-parking"&gt;Parking&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-locker"&gt;Locker&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-equipment"&gt;Equipment&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-fnb"&gt;F&B&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-experience"&gt;Experience&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-seasonal"&gt;Seasonal&lt;/span&gt;
+&lt;span class="wf-badge wf-badge-group"&gt;Group&lt;/span&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== INPUTS ==================== -->
+        <section id="inputs" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Inputs</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Text Input</h3>
+            <div class="space-y-4 mb-4">
+              <input type="text" class="wf-input" placeholder="Default input">
+              <input type="text" class="wf-input" value="Filled input">
+              <input type="text" class="wf-input" placeholder="Disabled input" disabled>
+            </div>
+            <div class="code-block">&lt;input type="text" class="wf-input" placeholder="Default input"&gt;
+&lt;input type="text" class="wf-input" value="Filled input"&gt;
+&lt;input type="text" class="wf-input" placeholder="Disabled" disabled&gt;</div>
+          </div>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Input with Label & Help Text</h3>
+            <div class="wf-form-group mb-4">
+              <label class="block text-sm font-medium mb-1">E-posta Adresi *</label>
+              <input type="email" class="wf-input" placeholder="ornek@email.com">
+              <p class="wf-form-help">Dogrulama kodu bu adrese gonderilecek</p>
+            </div>
+            <div class="code-block">&lt;div class="wf-form-group"&gt;
+  &lt;label class="block text-sm font-medium mb-1"&gt;E-posta *&lt;/label&gt;
+  &lt;input type="email" class="wf-input" placeholder="ornek@email.com"&gt;
+  &lt;p class="wf-form-help"&gt;Yardimci metin&lt;/p&gt;
+&lt;/div&gt;</div>
+          </div>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Textarea</h3>
+            <textarea class="wf-textarea mb-4" rows="3" placeholder="Aciklama yazin..."></textarea>
+            <div class="code-block">&lt;textarea class="wf-textarea" rows="3" placeholder="Aciklama..."&gt;&lt;/textarea&gt;</div>
+          </div>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Phone Input with Country Code</h3>
+            <div class="flex gap-2 mb-4">
+              <select class="wf-select w-24">
+                <option>+90</option>
+                <option>+1</option>
+                <option>+44</option>
+              </select>
+              <input type="tel" class="wf-input flex-1" placeholder="5XX XXX XX XX">
+            </div>
+            <div class="code-block">&lt;div class="flex gap-2"&gt;
+  &lt;select class="wf-select w-24"&gt;
+    &lt;option&gt;+90&lt;/option&gt;
+  &lt;/select&gt;
+  &lt;input type="tel" class="wf-input flex-1" placeholder="5XX XXX XX XX"&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== SELECTS ==================== -->
+        <section id="selects" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Select & Dropdown</h2>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Select</h3>
+            <div class="space-y-4 mb-4">
+              <select class="wf-select">
+                <option value="">Secin...</option>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
+              <select class="wf-select w-48">
+                <option>Kucuk genislik</option>
+              </select>
+            </div>
+            <div class="code-block">&lt;select class="wf-select"&gt;
+  &lt;option value=""&gt;Secin...&lt;/option&gt;
+  &lt;option&gt;Option 1&lt;/option&gt;
+  &lt;option&gt;Option 2&lt;/option&gt;
+&lt;/select&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== CHECKBOXES ==================== -->
+        <section id="checkboxes" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Checkbox & Radio</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Checkbox</h3>
+            <div class="space-y-2 mb-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Unchecked</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox" checked>
+                <span>Checked</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox" disabled>
+                <span class="text-gray-400">Disabled</span>
+              </label>
+            </div>
+            <div class="code-block">&lt;label class="flex items-center gap-2 cursor-pointer"&gt;
+  &lt;input type="checkbox" class="wf-checkbox"&gt;
+  &lt;span&gt;Label&lt;/span&gt;
+&lt;/label&gt;
+
+&lt;input type="checkbox" class="wf-checkbox" checked&gt;</div>
+          </div>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Radio Buttons</h3>
+            <div class="wf-radio-group mb-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="demo-radio" class="wf-radio" checked>
+                <span>Option A</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="demo-radio" class="wf-radio">
+                <span>Option B</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="demo-radio" class="wf-radio">
+                <span>Option C</span>
+              </label>
+            </div>
+            <div class="code-block">&lt;div class="wf-radio-group"&gt;
+  &lt;label class="flex items-center gap-2"&gt;
+    &lt;input type="radio" name="group" class="wf-radio" checked&gt;
+    &lt;span&gt;Option A&lt;/span&gt;
+  &lt;/label&gt;
+  &lt;label class="flex items-center gap-2"&gt;
+    &lt;input type="radio" name="group" class="wf-radio"&gt;
+    &lt;span&gt;Option B&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/div&gt;</div>
+          </div>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Checkbox Group (Horizontal)</h3>
+            <div class="wf-checkbox-group horizontal mb-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox" checked>
+                <span>Yurtici</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox">
+                <span>Yurtdisi</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="wf-checkbox" checked>
+                <span>Gunubirlik</span>
+              </label>
+            </div>
+            <div class="code-block">&lt;div class="wf-checkbox-group horizontal"&gt;
+  &lt;label&gt;...&lt;/label&gt;
+  &lt;label&gt;...&lt;/label&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== TOGGLES ==================== -->
+        <section id="toggles" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Toggle Switch</h2>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Toggle</h3>
+            <div class="space-y-4 mb-4">
+              <label class="wf-toggle">
+                <input type="checkbox" class="wf-toggle-input">
+                <span class="wf-toggle-slider"></span>
+                <span class="wf-toggle-label">Bildirimler kapali</span>
+              </label>
+              <label class="wf-toggle">
+                <input type="checkbox" class="wf-toggle-input" checked>
+                <span class="wf-toggle-slider"></span>
+                <span class="wf-toggle-label">Bildirimler acik</span>
+              </label>
+            </div>
+            <div class="code-block">&lt;label class="wf-toggle"&gt;
+  &lt;input type="checkbox" class="wf-toggle-input"&gt;
+  &lt;span class="wf-toggle-slider"&gt;&lt;/span&gt;
+  &lt;span class="wf-toggle-label"&gt;Label&lt;/span&gt;
+&lt;/label&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== CARDS ==================== -->
+        <section id="cards" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Cards</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Basic Card</h3>
+            <div class="wf-card bg-gray-50 mb-4">
+              <p>Bu bir temel kart ornegi. Icerik buraya gelir.</p>
+            </div>
+            <div class="code-block">&lt;div class="wf-card"&gt;
+  &lt;p&gt;Card content&lt;/p&gt;
+&lt;/div&gt;</div>
+          </div>
+
+          <div class="wf-card">
+            <h3 class="font-medium mb-4">Card with Header</h3>
+            <div class="wf-card bg-gray-50 mb-4">
+              <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Kart Basligi</h2>
+              <p>Kart icerigi buraya gelir.</p>
+            </div>
+            <div class="code-block">&lt;div class="wf-card"&gt;
+  &lt;h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300"&gt;Baslik&lt;/h2&gt;
+  &lt;p&gt;Content&lt;/p&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== TABLES ==================== -->
+        <section id="tables" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Tables</h2>
+
+          <div class="wf-card p-0 overflow-hidden mb-4">
+            <table class="wf-table">
+              <thead>
+                <tr>
+                  <th>Kullanici</th>
+                  <th>Rol</th>
+                  <th>Durum</th>
+                  <th class="text-right">Islem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+                      <div>
+                        <div class="font-medium">Ahmet Yilmaz</div>
+                        <div class="text-sm text-gray-500">ahmet@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="wf-badge wf-badge-primary">Admin</span></td>
+                  <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                  <td class="text-right"><button class="wf-btn py-1 px-2 text-sm">Duzenle</button></td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">MK</div>
+                      <div>
+                        <div class="font-medium">Mehmet Kaya</div>
+                        <div class="text-sm text-gray-500">mehmet@email.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td><span class="wf-badge wf-badge-warning">Operator</span></td>
+                  <td><span class="wf-badge wf-badge-error">Pasif</span></td>
+                  <td class="text-right"><button class="wf-btn py-1 px-2 text-sm">Duzenle</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="code-block">&lt;table class="wf-table"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Column 1&lt;/th&gt;
+      &lt;th&gt;Column 2&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Data&lt;/td&gt;
+      &lt;td&gt;Data&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</div>
+        </section>
+
+        <!-- ==================== MODALS ==================== -->
+        <section id="modals" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Modals</h2>
+
+          <div class="wf-card">
+            <button @click="showModal = true" class="wf-btn wf-btn-primary mb-4">Modal Ac</button>
+            <div class="code-block">&lt;!-- Trigger --&gt;
+&lt;button @click="showModal = true"&gt;Modal Ac&lt;/button&gt;
+
+&lt;!-- Modal --&gt;
+&lt;div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"&gt;
+  &lt;div class="fixed inset-0 bg-black/50" @click="showModal = false"&gt;&lt;/div&gt;
+  &lt;div class="wf-card relative z-10 w-full max-w-md"&gt;
+    &lt;h2&gt;Modal Basligi&lt;/h2&gt;
+    &lt;p&gt;Modal icerigi&lt;/p&gt;
+    &lt;div class="flex justify-end gap-3 mt-6"&gt;
+      &lt;button @click="showModal = false"&gt;Kapat&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== ALERTS ==================== -->
+        <section id="alerts" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Alerts</h2>
+
+          <div class="space-y-4 mb-4">
+            <div class="wf-alert wf-alert-info">
+              <strong>Bilgi:</strong> Bu bir bilgi mesajidir.
+            </div>
+            <div class="wf-alert wf-alert-success">
+              <strong>Basarili:</strong> Islem basariyla tamamlandi.
+            </div>
+            <div class="wf-alert wf-alert-warning">
+              <strong>Uyari:</strong> Dikkat edilmesi gereken bir durum var.
+            </div>
+            <div class="wf-alert wf-alert-error">
+              <strong>Hata:</strong> Bir hata olustu.
+            </div>
+          </div>
+          <div class="code-block">&lt;div class="wf-alert wf-alert-info"&gt;Info message&lt;/div&gt;
+&lt;div class="wf-alert wf-alert-success"&gt;Success message&lt;/div&gt;
+&lt;div class="wf-alert wf-alert-warning"&gt;Warning message&lt;/div&gt;
+&lt;div class="wf-alert wf-alert-error"&gt;Error message&lt;/div&gt;</div>
+        </section>
+
+        <!-- ==================== NOTES ==================== -->
+        <section id="notes" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Annotation Notes</h2>
+
+          <div class="wf-note mb-4">
+            Bu bir wireframe notudur. Tasarim aciklamalari icin kullanilir.
+          </div>
+          <div class="code-block">&lt;div class="wf-note"&gt;
+  Annotation note content
+&lt;/div&gt;</div>
+        </section>
+
+        <!-- ==================== SIDEBAR ==================== -->
+        <section id="sidebar" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Sidebar Items</h2>
+
+          <div class="wf-card">
+            <div class="w-56 border-2 border-gray-300 rounded mb-4">
+              <a href="#" class="wf-sidebar-item">
+                <div class="wf-icon">H</div>
+                <span>Dashboard</span>
+              </a>
+              <a href="#" class="wf-sidebar-item active">
+                <div class="wf-icon">T</div>
+                <span>Biletler (Aktif)</span>
+              </a>
+              <a href="#" class="wf-sidebar-item">
+                <div class="wf-icon">+</div>
+                <span>Eklentiler</span>
+              </a>
+            </div>
+            <div class="code-block">&lt;a href="#" class="wf-sidebar-item"&gt;
+  &lt;div class="wf-icon"&gt;H&lt;/div&gt;
+  &lt;span&gt;Dashboard&lt;/span&gt;
+&lt;/a&gt;
+
+&lt;a href="#" class="wf-sidebar-item active"&gt;
+  &lt;div class="wf-icon"&gt;T&lt;/div&gt;
+  &lt;span&gt;Aktif Item&lt;/span&gt;
+&lt;/a&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== TABS ==================== -->
+        <section id="tabs" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Tabs</h2>
+
+          <div class="mb-4">
+            <div class="wf-tabs">
+              <button class="wf-tab active">Tab 1</button>
+              <button class="wf-tab">Tab 2</button>
+              <button class="wf-tab">Tab 3</button>
+            </div>
+            <div class="wf-tab-content">
+              Tab 1 icerigi burada gorunur.
+            </div>
+          </div>
+          <div class="code-block">&lt;div class="wf-tabs"&gt;
+  &lt;button class="wf-tab active"&gt;Tab 1&lt;/button&gt;
+  &lt;button class="wf-tab"&gt;Tab 2&lt;/button&gt;
+&lt;/div&gt;
+&lt;div class="wf-tab-content"&gt;
+  Tab content
+&lt;/div&gt;</div>
+        </section>
+
+        <!-- ==================== STEPPER ==================== -->
+        <section id="stepper" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Stepper</h2>
+
+          <div class="wf-card mb-4">
+            <h3 class="font-medium mb-4">Vertical Stepper</h3>
+            <div class="wf-stepper mb-4">
+              <div class="wf-step completed">
+                <div class="wf-step-number">1</div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Bilet Secimi</div>
+                  <div class="wf-step-subtitle">Tamamlandi</div>
+                </div>
+              </div>
+              <div class="wf-step active">
+                <div class="wf-step-number">2</div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Eklentiler</div>
+                  <div class="wf-step-subtitle">Seciliyor</div>
+                </div>
+              </div>
+              <div class="wf-step">
+                <div class="wf-step-number">3</div>
+                <div class="wf-step-content">
+                  <div class="wf-step-title">Odeme</div>
+                  <div class="wf-step-subtitle">Bekliyor</div>
+                </div>
+              </div>
+            </div>
+            <div class="code-block">&lt;div class="wf-stepper"&gt;
+  &lt;div class="wf-step completed"&gt;
+    &lt;div class="wf-step-number"&gt;1&lt;/div&gt;
+    &lt;div class="wf-step-content"&gt;
+      &lt;div class="wf-step-title"&gt;Step 1&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="wf-step active"&gt;...&lt;/div&gt;
+  &lt;div class="wf-step"&gt;...&lt;/div&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== TIMELINE ==================== -->
+        <section id="timeline" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Timeline</h2>
+
+          <div class="wf-card">
+            <div class="wf-timeline mb-4">
+              <div class="wf-timeline-item success">
+                <div class="wf-timeline-dot"></div>
+                <div class="wf-timeline-content">
+                  <div class="wf-timeline-title">Siparis Onaylandi</div>
+                  <div class="wf-timeline-time">08 Oca 2026, 14:35</div>
+                  <div class="wf-timeline-description">Odeme basarili</div>
+                </div>
+              </div>
+              <div class="wf-timeline-item info">
+                <div class="wf-timeline-dot"></div>
+                <div class="wf-timeline-content">
+                  <div class="wf-timeline-title">Odeme Islendi</div>
+                  <div class="wf-timeline-time">08 Oca 2026, 14:34</div>
+                </div>
+              </div>
+              <div class="wf-timeline-item warning">
+                <div class="wf-timeline-dot"></div>
+                <div class="wf-timeline-content">
+                  <div class="wf-timeline-title">Uyari</div>
+                  <div class="wf-timeline-time">08 Oca 2026, 14:33</div>
+                </div>
+              </div>
+              <div class="wf-timeline-item error">
+                <div class="wf-timeline-dot"></div>
+                <div class="wf-timeline-content">
+                  <div class="wf-timeline-title">Hata Olustu</div>
+                  <div class="wf-timeline-time">08 Oca 2026, 14:32</div>
+                </div>
+              </div>
+            </div>
+            <div class="code-block">&lt;div class="wf-timeline"&gt;
+  &lt;div class="wf-timeline-item success"&gt;
+    &lt;div class="wf-timeline-dot"&gt;&lt;/div&gt;
+    &lt;div class="wf-timeline-content"&gt;
+      &lt;div class="wf-timeline-title"&gt;Title&lt;/div&gt;
+      &lt;div class="wf-timeline-time"&gt;Time&lt;/div&gt;
+      &lt;div class="wf-timeline-description"&gt;Desc&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;!-- info, warning, error variants --&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== CALENDAR ==================== -->
+        <section id="calendar" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Calendar</h2>
+
+          <div class="wf-card">
+            <div class="wf-calendar w-80 mb-4">
+              <div class="wf-calendar-header">
+                <div class="wf-calendar-nav">
+                  <button class="wf-calendar-nav-btn">&lt;</button>
+                </div>
+                <div class="wf-calendar-title">Ocak 2026</div>
+                <div class="wf-calendar-nav">
+                  <button class="wf-calendar-nav-btn">&gt;</button>
+                </div>
+              </div>
+              <div class="wf-calendar-grid">
+                <div class="wf-calendar-weekdays">
+                  <div class="wf-calendar-weekday">Pt</div>
+                  <div class="wf-calendar-weekday">Sa</div>
+                  <div class="wf-calendar-weekday">Ca</div>
+                  <div class="wf-calendar-weekday">Pe</div>
+                  <div class="wf-calendar-weekday">Cu</div>
+                  <div class="wf-calendar-weekday">Ct</div>
+                  <div class="wf-calendar-weekday">Pz</div>
+                </div>
+                <div class="wf-calendar-days">
+                  <div class="wf-calendar-day other">29</div>
+                  <div class="wf-calendar-day other">30</div>
+                  <div class="wf-calendar-day other">31</div>
+                  <div class="wf-calendar-day">1</div>
+                  <div class="wf-calendar-day">2</div>
+                  <div class="wf-calendar-day">3</div>
+                  <div class="wf-calendar-day">4</div>
+                  <div class="wf-calendar-day available">5</div>
+                  <div class="wf-calendar-day available">6</div>
+                  <div class="wf-calendar-day available">7</div>
+                  <div class="wf-calendar-day today">8</div>
+                  <div class="wf-calendar-day selected">9</div>
+                  <div class="wf-calendar-day limited">10</div>
+                  <div class="wf-calendar-day full">11</div>
+                  <div class="wf-calendar-day disabled">12</div>
+                  <div class="wf-calendar-day">13</div>
+                  <div class="wf-calendar-day">14</div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-sm"><span class="inline-block w-4 h-4 bg-green-100 border border-green-500 mr-1"></span>Available</span>
+              <span class="text-sm"><span class="inline-block w-4 h-4 bg-yellow-100 border border-yellow-500 mr-1"></span>Limited</span>
+              <span class="text-sm"><span class="inline-block w-4 h-4 bg-red-100 border border-red-500 mr-1"></span>Full</span>
+              <span class="text-sm"><span class="inline-block w-4 h-4 border-2 border-teal-500 mr-1"></span>Today</span>
+              <span class="text-sm"><span class="inline-block w-4 h-4 bg-teal-500 mr-1"></span>Selected</span>
+            </div>
+            <div class="code-block">&lt;div class="wf-calendar"&gt;
+  &lt;div class="wf-calendar-header"&gt;...&lt;/div&gt;
+  &lt;div class="wf-calendar-grid"&gt;
+    &lt;div class="wf-calendar-weekdays"&gt;...&lt;/div&gt;
+    &lt;div class="wf-calendar-days"&gt;
+      &lt;div class="wf-calendar-day"&gt;1&lt;/div&gt;
+      &lt;div class="wf-calendar-day today"&gt;2&lt;/div&gt;
+      &lt;div class="wf-calendar-day selected"&gt;3&lt;/div&gt;
+      &lt;div class="wf-calendar-day available"&gt;4&lt;/div&gt;
+      &lt;div class="wf-calendar-day limited"&gt;5&lt;/div&gt;
+      &lt;div class="wf-calendar-day full"&gt;6&lt;/div&gt;
+      &lt;div class="wf-calendar-day disabled"&gt;7&lt;/div&gt;
+      &lt;div class="wf-calendar-day other"&gt;8&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== NUMBER INPUT ==================== -->
+        <section id="number-input" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Number Input</h2>
+
+          <div class="wf-card">
+            <div class="wf-number-input mb-4">
+              <button class="wf-number-btn">-</button>
+              <div class="wf-number-value">2</div>
+              <button class="wf-number-btn">+</button>
+            </div>
+            <div class="code-block">&lt;div class="wf-number-input"&gt;
+  &lt;button class="wf-number-btn"&gt;-&lt;/button&gt;
+  &lt;div class="wf-number-value"&gt;2&lt;/div&gt;
+  &lt;button class="wf-number-btn"&gt;+&lt;/button&gt;
+&lt;/div&gt;</div>
+          </div>
+        </section>
+
+        <!-- ==================== FIELDSET ==================== -->
+        <section id="fieldset" class="component-section mb-12">
+          <h2 class="text-2xl mb-4 pb-2 border-b-2 border-gray-300">Fieldset</h2>
+
+          <div class="wf-card">
+            <fieldset class="wf-fieldset mb-4">
+              <legend class="wf-fieldset-legend">Kisisel Bilgiler</legend>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Ad *</label>
+                  <input type="text" class="wf-input" placeholder="Ad">
+                </div>
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Soyad *</label>
+                  <input type="text" class="wf-input" placeholder="Soyad">
+                </div>
+              </div>
+            </fieldset>
+            <div class="code-block">&lt;fieldset class="wf-fieldset"&gt;
+  &lt;legend class="wf-fieldset-legend"&gt;Section Title&lt;/legend&gt;
+  &lt;!-- Form content --&gt;
+&lt;/fieldset&gt;</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div x-show="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/50" @click="showModal = false"></div>
+    <div class="wf-card relative z-10 w-full max-w-md">
+      <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Modal Basligi</h2>
+      <p class="mb-4">Bu bir modal ornegi. Iceriginizi buraya ekleyin.</p>
+      <div class="wf-form-group mb-4">
+        <label class="block text-sm font-medium mb-1">Input Ornegi</label>
+        <input type="text" class="wf-input" placeholder="Bir seyler yazin...">
+      </div>
+      <div class="flex justify-end gap-3 pt-4 border-t-2 border-gray-300">
+        <button @click="showModal = false" class="wf-btn">Vazgec</button>
+        <button class="wf-btn wf-btn-primary" @click="showModal = false">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments System -->
+  <script src="../js/comments.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Kilitli</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page flex items-center justify-center p-4">
+
+  <div class="w-full max-w-sm">
+    <!-- Logo -->
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 border-2 border-gray-400 mx-auto mb-4 flex items-center justify-center text-2xl">
+        L
+      </div>
+      <h1 class="text-2xl">Legends DXP</h1>
+    </div>
+
+    <!-- Locked Message -->
+    <div class="wf-card border-red-300 bg-red-50">
+      <div class="text-center">
+        <div class="w-16 h-16 border-2 border-red-400 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl">
+          !
+        </div>
+        <h2 class="text-xl mb-2 text-red-700">Hesap Kilitlendi</h2>
+        <p class="text-sm text-red-600 mb-4">
+          Cok fazla basarisiz giris denemesi yapildi.
+          Guvenlik nedeniyle hesabiniz gecici olarak kilitlendi.
+        </p>
+
+        <div class="bg-white border-2 border-red-200 rounded p-4 mb-4">
+          <p class="text-sm text-gray-600 mb-1">Tekrar deneyebilmek icin bekleyin:</p>
+          <p class="text-3xl font-bold text-red-600">14:59</p>
+        </div>
+
+        <p class="text-xs text-gray-500">
+          Yardim icin: destek@legends.com
+        </p>
+      </div>
+    </div>
+
+    <!-- Annotation Note -->
+    <div class="wf-note mt-6 text-sm">
+      Brute-force korumasi. 5 basarisiz denemede 15 dk kilitleme.
+    </div>
+  </div>
+
+  <!-- Back Link -->
+  <a href="../../../index.html?sprint=sprint1" class="fixed bottom-4 right-4 wf-btn text-sm">Ana Sayfa</a>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

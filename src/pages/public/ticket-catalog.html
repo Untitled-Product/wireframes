@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilet Sec - Legends Theme Park</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  selectedDate: '2026-07-15',
+  selectedTicket: null,
+  adultCount: 2,
+  childCount: 1,
+  babyCount: 0,
+  selectedSlot: null,
+  showDatePicker: false
+}">
+
+  <!-- Public Header -->
+  <header class="wf-header sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center">🎢</div>
+      <span class="text-xl font-medium">Legends Theme Park</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+      <button class="wf-btn py-1 px-3">TR | EN</button>
+      <button class="wf-btn wf-btn-primary py-1 px-3">
+        🛒 Sepet (0)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-6">
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl mb-2">Bilet Sec</h1>
+      <p class="text-gray-500">Ziyaret tarihinizi ve bilet tipinizi secin</p>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="flex items-center justify-center gap-4 mb-8">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center bg-gray-700 text-white">1</div>
+        <span class="font-medium">Tarih & Bilet</span>
+      </div>
+      <div class="w-16 h-0.5 bg-gray-300"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-gray-300 flex items-center justify-center text-gray-400">2</div>
+        <span class="text-gray-400">Eklentiler</span>
+      </div>
+      <div class="w-16 h-0.5 bg-gray-300"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-gray-300 flex items-center justify-center text-gray-400">3</div>
+        <span class="text-gray-400">Odeme</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Sol: Tarih Secici -->
+      <div class="lg:col-span-1">
+        <div class="wf-card sticky top-24">
+          <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Tarih Secin</h2>
+
+          <div class="wf-calendar">
+            <div class="wf-calendar-header">
+              <button class="wf-btn py-1 px-2">←</button>
+              <span class="font-medium">Temmuz 2026</span>
+              <button class="wf-btn py-1 px-2">→</button>
+            </div>
+            <div class="wf-calendar-weekdays">
+              <div>Pzt</div>
+              <div>Sal</div>
+              <div>Car</div>
+              <div>Per</div>
+              <div>Cum</div>
+              <div>Cmt</div>
+              <div>Paz</div>
+            </div>
+            <div class="wf-calendar-days">
+              <div class="wf-calendar-day other">29</div>
+              <div class="wf-calendar-day other">30</div>
+              <div class="wf-calendar-day available">1</div>
+              <div class="wf-calendar-day available">2</div>
+              <div class="wf-calendar-day available">3</div>
+              <div class="wf-calendar-day limited">4</div>
+              <div class="wf-calendar-day full">5</div>
+              <div class="wf-calendar-day available">6</div>
+              <div class="wf-calendar-day available">7</div>
+              <div class="wf-calendar-day available">8</div>
+              <div class="wf-calendar-day available">9</div>
+              <div class="wf-calendar-day available">10</div>
+              <div class="wf-calendar-day limited">11</div>
+              <div class="wf-calendar-day limited">12</div>
+              <div class="wf-calendar-day available">13</div>
+              <div class="wf-calendar-day available">14</div>
+              <div class="wf-calendar-day selected">15</div>
+              <div class="wf-calendar-day available">16</div>
+              <div class="wf-calendar-day available">17</div>
+              <div class="wf-calendar-day limited">18</div>
+              <div class="wf-calendar-day limited">19</div>
+              <div class="wf-calendar-day available">20</div>
+              <div class="wf-calendar-day available">21</div>
+              <div class="wf-calendar-day available">22</div>
+              <div class="wf-calendar-day available">23</div>
+              <div class="wf-calendar-day available">24</div>
+              <div class="wf-calendar-day limited">25</div>
+              <div class="wf-calendar-day limited">26</div>
+              <div class="wf-calendar-day available">27</div>
+              <div class="wf-calendar-day available">28</div>
+              <div class="wf-calendar-day available">29</div>
+              <div class="wf-calendar-day available">30</div>
+              <div class="wf-calendar-day available">31</div>
+              <div class="wf-calendar-day other">1</div>
+              <div class="wf-calendar-day other">2</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 mt-4 text-xs">
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-green-100 border border-green-500 rounded"></div>
+              <span>Musait</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-yellow-100 border border-yellow-500 rounded"></div>
+              <span>Az Kaldi</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <div class="w-3 h-3 bg-red-100 border border-red-500 rounded"></div>
+              <span>Dolu</span>
+            </div>
+          </div>
+
+          <div class="wf-alert wf-alert-info mt-4 text-sm">
+            <strong>Secilen Tarih:</strong> 15 Temmuz 2026, Carsamba
+          </div>
+        </div>
+      </div>
+
+      <!-- Orta: Bilet Kartlari -->
+      <div class="lg:col-span-2 space-y-4">
+        <h2 class="text-xl mb-4">Bilet Tipinizi Secin</h2>
+
+        <!-- Gunluk Giris -->
+        <div class="wf-card cursor-pointer hover:border-gray-500 transition-all"
+          :class="{ 'border-2 border-green-500 bg-green-50': selectedTicket === 'daily' }"
+          @click="selectedTicket = 'daily'">
+          <div class="flex gap-4">
+            <div class="w-24 h-24 border-2 border-gray-300 flex items-center justify-center bg-gray-100 text-4xl flex-shrink-0">
+              🎢
+            </div>
+            <div class="flex-1">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-medium">Gunluk Giris Bileti</h3>
+                  <span class="wf-badge wf-badge-primary text-xs">En Populer</span>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold">750 TL</p>
+                  <p class="text-sm text-gray-500">Yetiskin</p>
+                </div>
+              </div>
+              <p class="text-gray-500 mt-2">Tum alanlara sinirsiz erisim. Tema park, gosteriler ve etkinlikler dahil.</p>
+              <div class="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                <span>Cocuk: 500 TL</span>
+                <span>Bebek: Ucretsiz</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kisi Sayisi Secici (Acilir) -->
+          <div x-show="selectedTicket === 'daily'" class="mt-4 pt-4 border-t-2 border-gray-300">
+            <p class="font-medium mb-3">Kisi Sayisi</p>
+            <div class="grid grid-cols-3 gap-4">
+              <div>
+                <label class="text-sm text-gray-500">Yetiskin (13+)</label>
+                <div class="wf-number-input mt-1">
+                  <button class="wf-number-btn" @click="adultCount > 1 && adultCount--">-</button>
+                  <input type="text" class="wf-number-value" x-model="adultCount" readonly>
+                  <button class="wf-number-btn" @click="adultCount++">+</button>
+                </div>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">Cocuk (3-12)</label>
+                <div class="wf-number-input mt-1">
+                  <button class="wf-number-btn" @click="childCount > 0 && childCount--">-</button>
+                  <input type="text" class="wf-number-value" x-model="childCount" readonly>
+                  <button class="wf-number-btn" @click="childCount++">+</button>
+                </div>
+              </div>
+              <div>
+                <label class="text-sm text-gray-500">Bebek (0-2)</label>
+                <div class="wf-number-input mt-1">
+                  <button class="wf-number-btn" @click="babyCount > 0 && babyCount--">-</button>
+                  <input type="text" class="wf-number-value" x-model="babyCount" readonly>
+                  <button class="wf-number-btn" @click="babyCount++">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIP Deneyim -->
+        <div class="wf-card cursor-pointer hover:border-gray-500 transition-all"
+          :class="{ 'border-2 border-green-500 bg-green-50': selectedTicket === 'vip' }"
+          @click="selectedTicket = 'vip'">
+          <div class="flex gap-4">
+            <div class="w-24 h-24 border-2 border-gray-300 flex items-center justify-center bg-yellow-50 text-4xl flex-shrink-0">
+              👑
+            </div>
+            <div class="flex-1">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-medium">VIP Deneyim Paketi</h3>
+                  <span class="wf-badge wf-badge-warning text-xs">Premium</span>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold">1,500 TL</p>
+                  <p class="text-sm text-gray-500">Yetiskin</p>
+                </div>
+              </div>
+              <p class="text-gray-500 mt-2">Oncelikli giris, VIP salon erisimi, ozel alanlar ve ekspres gecis hakki.</p>
+              <div class="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                <span>Cocuk: 1,000 TL</span>
+                <span>Bebek: Ucretsiz</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Su Parki (Slot) -->
+        <div class="wf-card cursor-pointer hover:border-gray-500 transition-all"
+          :class="{ 'border-2 border-green-500 bg-green-50': selectedTicket === 'waterpark' }"
+          @click="selectedTicket = 'waterpark'">
+          <div class="flex gap-4">
+            <div class="w-24 h-24 border-2 border-gray-300 flex items-center justify-center bg-blue-50 text-4xl flex-shrink-0">
+              🏊
+            </div>
+            <div class="flex-1">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-medium">Su Parki Girisi</h3>
+                  <span class="wf-badge wf-badge-slot text-xs">Slot Bazli</span>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold">450 TL</p>
+                  <p class="text-sm text-gray-500">2 saat</p>
+                </div>
+              </div>
+              <p class="text-gray-500 mt-2">Su parki alani icin 2 saatlik giris. Saat secimi gereklidir.</p>
+              <div class="flex items-center gap-4 mt-3 text-sm text-gray-500">
+                <span>Cocuk: 300 TL</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slot Secimi (Acilir) -->
+          <div x-show="selectedTicket === 'waterpark'" class="mt-4 pt-4 border-t-2 border-gray-300">
+            <p class="font-medium mb-3">Saat Secin</p>
+            <div class="grid grid-cols-4 sm:grid-cols-6 gap-2">
+              <button class="p-2 border-2 border-green-400 bg-green-50 text-center rounded text-sm"
+                :class="{ 'border-gray-700 bg-gray-700 text-white': selectedSlot === '10:00' }"
+                @click="selectedSlot = '10:00'">
+                10:00
+              </button>
+              <button class="p-2 border-2 border-green-400 bg-green-50 text-center rounded text-sm"
+                :class="{ 'border-gray-700 bg-gray-700 text-white': selectedSlot === '12:00' }"
+                @click="selectedSlot = '12:00'">
+                12:00
+              </button>
+              <button class="p-2 border-2 border-yellow-400 bg-yellow-50 text-center rounded text-sm"
+                :class="{ 'border-gray-700 bg-gray-700 text-white': selectedSlot === '14:00' }"
+                @click="selectedSlot = '14:00'">
+                14:00
+                <span class="block text-xs text-yellow-600">Az</span>
+              </button>
+              <button class="p-2 border-2 border-red-400 bg-red-50 text-center rounded text-sm text-red-400 cursor-not-allowed" disabled>
+                16:00
+                <span class="block text-xs">Dolu</span>
+              </button>
+              <button class="p-2 border-2 border-green-400 bg-green-50 text-center rounded text-sm"
+                :class="{ 'border-gray-700 bg-gray-700 text-white': selectedSlot === '18:00' }"
+                @click="selectedSlot = '18:00'">
+                18:00
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aile Paketi (Combo) -->
+        <div class="wf-card cursor-pointer hover:border-gray-500 transition-all"
+          :class="{ 'border-2 border-green-500 bg-green-50': selectedTicket === 'family' }"
+          @click="selectedTicket = 'family'">
+          <div class="flex gap-4">
+            <div class="w-24 h-24 border-2 border-gray-300 flex items-center justify-center bg-pink-50 text-4xl flex-shrink-0">
+              👨‍👩‍👧‍👦
+            </div>
+            <div class="flex-1">
+              <div class="flex items-start justify-between">
+                <div>
+                  <h3 class="text-xl font-medium">Aile Paketi</h3>
+                  <span class="wf-badge wf-badge-combo text-xs">Combo</span>
+                </div>
+                <div class="text-right">
+                  <p class="text-2xl font-bold">2,400 TL</p>
+                  <p class="text-sm text-green-600 line-through">3,000 TL</p>
+                </div>
+              </div>
+              <p class="text-gray-500 mt-2">2 Yetiskin + 2 Cocuk icin ozel paket fiyati. %20 tasarruf!</p>
+              <div class="flex items-center gap-2 mt-3">
+                <span class="wf-badge wf-badge-success text-xs">600 TL Tasarruf</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Sticky Footer Summary -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-300 p-4 lg:hidden" x-show="selectedTicket">
+      <div class="flex items-center justify-between max-w-7xl mx-auto">
+        <div>
+          <p class="text-sm text-gray-500">Toplam</p>
+          <p class="text-2xl font-bold">2,000 TL</p>
+        </div>
+        <a href="addon-selection.html" class="wf-btn wf-btn-primary px-6">
+          Devam Et →
+        </a>
+      </div>
+    </div>
+
+    <!-- Desktop Summary Sidebar (Visible when ticket selected) -->
+    <div class="hidden lg:block fixed right-6 top-32 w-80" x-show="selectedTicket">
+      <div class="wf-card">
+        <h3 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Ozet</h3>
+
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-500">Tarih</span>
+            <span>15 Temmuz 2026</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Bilet</span>
+            <span x-text="selectedTicket === 'daily' ? 'Gunluk Giris' : selectedTicket === 'vip' ? 'VIP Deneyim' : selectedTicket === 'waterpark' ? 'Su Parki' : 'Aile Paketi'"></span>
+          </div>
+          <div class="flex justify-between" x-show="selectedTicket !== 'family'">
+            <span class="text-gray-500">Kisi</span>
+            <span x-text="adultCount + ' Yetiskin, ' + childCount + ' Cocuk'"></span>
+          </div>
+          <div class="flex justify-between" x-show="selectedTicket === 'waterpark' && selectedSlot">
+            <span class="text-gray-500">Saat</span>
+            <span x-text="selectedSlot + ' - ' + (parseInt(selectedSlot) + 2) + ':00'"></span>
+          </div>
+        </div>
+
+        <div class="wf-divider my-4"></div>
+
+        <div class="space-y-2">
+          <div class="flex justify-between">
+            <span>Yetiskin x <span x-text="adultCount"></span></span>
+            <span x-text="(adultCount * 750) + ' TL'"></span>
+          </div>
+          <div class="flex justify-between" x-show="childCount > 0">
+            <span>Cocuk x <span x-text="childCount"></span></span>
+            <span x-text="(childCount * 500) + ' TL'"></span>
+          </div>
+        </div>
+
+        <div class="wf-divider my-4"></div>
+
+        <div class="flex justify-between text-xl font-bold">
+          <span>Toplam</span>
+          <span x-text="(adultCount * 750 + childCount * 500) + ' TL'"></span>
+        </div>
+
+        <a href="addon-selection.html" class="wf-btn wf-btn-primary w-full mt-4 justify-center">
+          Eklentilere Gec →
+        </a>
+      </div>
+    </div>
+
+    <!-- Annotation Note -->
+    <div class="wf-note mt-6 mb-20 lg:mb-6">
+      📝 Not: Public bilet secim sayfasi. Sol tarafta takvim, orta/sag tarafta bilet kartlari.
+      Mobilde sticky footer, desktop'ta sag sidebar ozet paneli.
+    </div>
+  </main>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eklentiler - Legends Theme Park</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  activeCategory: 'recommended',
+  addons: [
+    { id: 1, name: 'Otopark - Tam Gun', category: 'parking', price: 150, qty: 0, recommended: true },
+    { id: 2, name: 'Dolap - Buyuk (L)', category: 'locker', price: 75, qty: 0, recommended: true },
+    { id: 3, name: 'Simidi Kiralama', category: 'equipment', price: 50, qty: 0, recommended: false },
+    { id: 4, name: 'Ogle Yemegi Paketi', category: 'fnb', price: 200, qty: 0, recommended: true },
+    { id: 5, name: 'VR Deneyimi', category: 'experience', price: 250, qty: 0, recommended: false },
+    { id: 6, name: 'Dolap - Kucuk (S)', category: 'locker', price: 40, qty: 0, recommended: false },
+    { id: 7, name: 'Havlu Kiralama', category: 'equipment', price: 30, qty: 0, recommended: false },
+    { id: 8, name: 'Atistirmalik Paketi', category: 'fnb', price: 100, qty: 0, recommended: false }
+  ],
+  get selectedAddons() { return this.addons.filter(a => a.qty > 0) },
+  get addonsTotal() { return this.addons.reduce((sum, a) => sum + (a.price * a.qty), 0) },
+  get filteredAddons() {
+    if (this.activeCategory === 'recommended') return this.addons.filter(a => a.recommended);
+    return this.addons.filter(a => a.category === this.activeCategory);
+  }
+}">
+
+  <!-- Public Header -->
+  <header class="wf-header sticky top-0 z-40">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center">🎢</div>
+      <span class="text-xl font-medium">Legends Theme Park</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
+      <button class="wf-btn py-1 px-3">TR | EN</button>
+      <button class="wf-btn wf-btn-primary py-1 px-3">
+        🛒 Sepet (3)
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto p-6">
+    <!-- Page Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl mb-2">Eklentiler</h1>
+      <p class="text-gray-500">Deneyiminizi zenginlestirin</p>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="flex items-center justify-center gap-4 mb-8">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-green-500 flex items-center justify-center bg-green-100 text-green-700">✓</div>
+        <span class="text-gray-500">Tarih & Bilet</span>
+      </div>
+      <div class="w-16 h-0.5 bg-green-500"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-gray-500 flex items-center justify-center bg-gray-700 text-white">2</div>
+        <span class="font-medium">Eklentiler</span>
+      </div>
+      <div class="w-16 h-0.5 bg-gray-300"></div>
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 border-2 border-gray-300 flex items-center justify-center text-gray-400">3</div>
+        <span class="text-gray-400">Odeme</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Sol + Orta: Eklenti Listesi -->
+      <div class="lg:col-span-2">
+
+        <!-- Category Tabs -->
+        <div class="wf-tabs mb-0 flex-wrap">
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'recommended' }" @click="activeCategory = 'recommended'">
+            ⭐ Onerilen
+          </button>
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'parking' }" @click="activeCategory = 'parking'">
+            🚗 Otopark
+          </button>
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'locker' }" @click="activeCategory = 'locker'">
+            🔐 Dolap
+          </button>
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'equipment' }" @click="activeCategory = 'equipment'">
+            🏊 Ekipman
+          </button>
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'fnb' }" @click="activeCategory = 'fnb'">
+            🍔 Yiyecek
+          </button>
+          <button class="wf-tab" :class="{ 'active': activeCategory === 'experience' }" @click="activeCategory = 'experience'">
+            🎮 Deneyim
+          </button>
+        </div>
+
+        <!-- Addon Cards -->
+        <div class="wf-tab-content">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <template x-for="addon in filteredAddons" :key="addon.id">
+              <div class="border-2 border-gray-300 rounded p-4 bg-white"
+                :class="{ 'border-green-500 bg-green-50': addon.qty > 0 }">
+                <div class="flex gap-3">
+                  <div class="w-16 h-16 border-2 border-gray-300 flex items-center justify-center bg-gray-100 text-2xl flex-shrink-0">
+                    <span x-text="addon.category === 'parking' ? '🚗' : addon.category === 'locker' ? '🔐' : addon.category === 'equipment' ? '🏊' : addon.category === 'fnb' ? '🍔' : '🎮'"></span>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-medium" x-text="addon.name"></h3>
+                    <p class="text-xl font-bold mt-1">+<span x-text="addon.price"></span> TL</p>
+                  </div>
+                </div>
+
+                <div class="mt-3 flex items-center justify-between">
+                  <template x-if="addon.qty === 0">
+                    <button class="wf-btn wf-btn-primary text-sm py-1" @click="addon.qty = 1">
+                      + Ekle
+                    </button>
+                  </template>
+                  <template x-if="addon.qty > 0">
+                    <div class="flex items-center gap-2">
+                      <div class="wf-number-input">
+                        <button class="wf-number-btn" @click="addon.qty > 0 && addon.qty--">-</button>
+                        <input type="text" class="wf-number-value" x-model="addon.qty" readonly>
+                        <button class="wf-number-btn" @click="addon.qty++">+</button>
+                      </div>
+                      <button class="text-red-500 text-sm" @click="addon.qty = 0">Kaldir</button>
+                    </div>
+                  </template>
+                  <span class="wf-badge wf-badge-success text-xs" x-show="addon.recommended">Onerilen</span>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <div class="text-center py-8 text-gray-500" x-show="filteredAddons.length === 0">
+            Bu kategoride eklenti bulunamadi.
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex items-center justify-between mt-6">
+          <a href="ticket-catalog.html" class="wf-btn">
+            ← Bilet Secimi
+          </a>
+          <button class="wf-btn">
+            Eklentileri Atla →
+          </button>
+        </div>
+      </div>
+
+      <!-- Sag: Sepet Ozeti -->
+      <div class="lg:col-span-1">
+        <div class="wf-card sticky top-24">
+          <h3 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Sepet Ozeti</h3>
+
+          <!-- Bilet -->
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 mb-2">Bilet</p>
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="font-medium">Gunluk Giris Bileti</p>
+                <p class="text-sm text-gray-500">15 Temmuz 2026</p>
+              </div>
+              <span class="font-medium">2,000 TL</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">2 Yetiskin, 1 Cocuk</p>
+          </div>
+
+          <div class="wf-divider my-4"></div>
+
+          <!-- Eklentiler -->
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 mb-2">Eklentiler</p>
+            <div class="space-y-2">
+              <template x-for="addon in selectedAddons" :key="addon.id">
+                <div class="flex justify-between items-center text-sm">
+                  <span x-text="addon.name + ' x' + addon.qty"></span>
+                  <span x-text="(addon.price * addon.qty) + ' TL'"></span>
+                </div>
+              </template>
+              <p class="text-gray-400 text-sm" x-show="selectedAddons.length === 0">
+                Henuz eklenti secilmedi
+              </p>
+            </div>
+          </div>
+
+          <div class="wf-divider my-4"></div>
+
+          <!-- Toplam -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Bilet Toplami</span>
+              <span>2,000 TL</span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">Eklenti Toplami</span>
+              <span x-text="addonsTotal + ' TL'"></span>
+            </div>
+            <div class="flex justify-between text-sm">
+              <span class="text-gray-500">KDV (%10)</span>
+              <span x-text="Math.round((2000 + addonsTotal) * 0.1) + ' TL'"></span>
+            </div>
+          </div>
+
+          <div class="wf-divider my-4"></div>
+
+          <div class="flex justify-between text-xl font-bold">
+            <span>Toplam</span>
+            <span x-text="Math.round((2000 + addonsTotal) * 1.1) + ' TL'"></span>
+          </div>
+
+          <button class="wf-btn wf-btn-primary w-full mt-4 justify-center">
+            Odemeye Gec →
+          </button>
+
+          <p class="text-xs text-gray-500 text-center mt-3">
+            Guvenli odeme altyapisi
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annotation Note -->
+    <div class="wf-note mt-6">
+      📝 Not: Public eklenti secim sayfasi. Kategori tablari, eklenti kartlari ve sepet ozeti.
+      Eklenti eklenince sepet dinamik olarak guncellenir.
+    </div>
+  </main>
+
+  <!-- Mobile Sticky Footer -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-300 p-4 lg:hidden">
+    <div class="flex items-center justify-between max-w-7xl mx-auto">
+      <div>
+        <p class="text-sm text-gray-500">Toplam</p>
+        <p class="text-2xl font-bold" x-text="Math.round((2000 + addonsTotal) * 1.1) + ' TL'"></p>
+      </div>
+      <button class="wf-btn wf-btn-primary px-6">
+        Odemeye Gec →
+      </button>
+    </div>
+  </div>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

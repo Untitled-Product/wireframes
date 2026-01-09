@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Telefon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page">
+
+  <div class="flex min-h-screen">
+    <!-- Left Side - Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div class="w-full max-w-sm">
+        <!-- Logo -->
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 border-2 border-gray-400 mx-auto mb-4 flex items-center justify-center text-2xl">
+            L
+          </div>
+          <h1 class="text-2xl">Legends DXP</h1>
+          <p class="text-gray-500 mt-1">Admin Panel</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="wf-card">
+          <h2 class="text-xl mb-4 text-center">Giris Yap</h2>
+
+          <form action="login-otp.html" class="space-y-4">
+            <div class="wf-form-group">
+              <label class="block text-sm font-medium mb-1">Telefon Numarasi</label>
+              <div class="flex gap-2">
+                <select class="wf-select w-24">
+                  <option>+90</option>
+                  <option>+1</option>
+                  <option>+44</option>
+                </select>
+                <input type="tel" class="wf-input flex-1" placeholder="5XX XXX XX XX" required>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">OTP kodu bu numaraya gonderilecek</p>
+            </div>
+
+            <button type="submit" class="wf-btn wf-btn-primary w-full">
+              Kod Gonder
+            </button>
+          </form>
+        </div>
+
+        <!-- Annotation Note -->
+        <div class="wf-note mt-6 text-sm">
+          Telefon ile OTP giris. Sifre yok, her seferinde SMS kodu.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Image -->
+    <div class="hidden lg:block lg:w-1/2 relative">
+      <div class="absolute inset-0 bg-gray-200 flex items-center justify-center">
+        <!-- Placeholder for image -->
+        <div class="text-center text-gray-400">
+          <svg class="w-24 h-24 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <p class="text-lg">Hero Image</p>
+          <p class="text-sm">1920 x 1080</p>
+        </div>
+      </div>
+      <!-- Uncomment and add your image URL below -->
+      <!-- <img src="YOUR_IMAGE_URL" alt="Login Hero" class="absolute inset-0 w-full h-full object-cover"> -->
+    </div>
+  </div>
+
+  <!-- Back Link -->
+  <a href="../../../index.html?sprint=sprint1" class="fixed bottom-4 right-4 wf-btn text-sm">Ana Sayfa</a>
+
+  <!-- Comments System -->
+  <script src="../../js/comments.js"></script>
+
+</body>
+</html>

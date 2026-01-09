@@ -1,15 +1,15 @@
 /**
  * Wireframe PIN Authentication Worker
  *
- * Bu worker proje bazli subdomain'leri PIN ile korur.
- * Ornek: legends.wireframes.untitledproduct.com -> PIN: 1234
- *
- * KV Namespace'de saklanacak veriler:
- * - projects/{project}: { pin: "1234", name: "Legends DXP", pages_project: "legends-wireframes" }
+ * Path-based routing: wireframes.untitledproduct.com/{project}
+ * Ornek: wireframes.untitledproduct.com/legends -> PIN: 1234
  */
 
 const COOKIE_NAME = 'wireframe_auth';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 gun
+
+// Bilinen static asset uzantilari
+const STATIC_EXTENSIONS = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
 
 // Login sayfasi HTML
 function getLoginPage(project, error = null) {
@@ -145,18 +145,19 @@ function getLoginPage(project, error = null) {
 </html>`;
 }
 
-// Cookie olustur
+// Cookie olustur (proje bazli)
 function createAuthCookie(project, pin) {
   const token = btoa(JSON.stringify({ project, pin, ts: Date.now() }));
-  return `${COOKIE_NAME}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${COOKIE_MAX_AGE}`;
+  return `${COOKIE_NAME}_${project}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${COOKIE_MAX_AGE}`;
 }
 
 // Cookie'den auth bilgisi al
-function getAuthFromCookie(request) {
+function getAuthFromCookie(request, project) {
   const cookie = request.headers.get('Cookie');
   if (!cookie) return null;
 
-  const match = cookie.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
+  const cookieName = `${COOKIE_NAME}_${project}`;
+  const match = cookie.match(new RegExp(`${cookieName}=([^;]+)`));
   if (!match) return null;
 
   try {
@@ -166,26 +167,105 @@ function getAuthFromCookie(request) {
   }
 }
 
-// Subdomain'den proje adini cikar
-function getProjectFromHost(host) {
-  // legends.wireframes.untitledproduct.com -> legends
-  const parts = host.split('.');
-  if (parts.length >= 4 && parts[1] === 'wireframes') {
+// Herhangi bir proje icin auth cookie var mi?
+function getAnyAuthFromCookie(request) {
+  const cookie = request.headers.get('Cookie');
+  if (!cookie) return null;
+
+  const match = cookie.match(new RegExp(`${COOKIE_NAME}_([^=]+)=([^;]+)`));
+  if (!match) return null;
+
+  try {
+    return JSON.parse(atob(match[2]));
+  } catch {
+    return null;
+  }
+}
+
+// Path'den proje adini cikar
+function getProjectFromPath(pathname) {
+  // /legends/index.html -> legends
+  // /legends -> legends
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts.length > 0) {
     return parts[0].toLowerCase();
   }
   return null;
 }
 
+// Proje path'inden sonraki path'i al
+function getSubPath(pathname, project) {
+  // /legends/src/pages/admin/ticket-list.html -> /src/pages/admin/ticket-list.html
+  const prefix = `/${project}`;
+  if (pathname.startsWith(prefix)) {
+    const subPath = pathname.slice(prefix.length);
+    return subPath || '/';
+  }
+  return '/';
+}
+
+// Static asset mi?
+function isStaticAsset(pathname) {
+  return STATIC_EXTENSIONS.some(ext => pathname.toLowerCase().endsWith(ext));
+}
+
+// Referer'dan proje adini cikar
+function getProjectFromReferer(request) {
+  const referer = request.headers.get('Referer');
+  if (!referer) return null;
+
+  try {
+    const refUrl = new URL(referer);
+    return getProjectFromPath(refUrl.pathname);
+  } catch {
+    return null;
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    const host = url.hostname;
+    const pathname = url.pathname;
+
+    // Root path - proje listesi (opsiyonel)
+    if (pathname === '/' || pathname === '') {
+      return new Response('Wireframes - Proje secin: /legends', {
+        status: 200,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+    }
 
     // Proje adini al
-    const project = getProjectFromHost(host);
+    let project = getProjectFromPath(pathname);
+    let subPath = pathname;
+    let isOrphanAsset = false;
+
+    // Eger path bir proje degil ama static asset ise (ornegin /dist/output.css)
+    // Referer'dan veya cookie'den proje bulmaya calis
+    if (project) {
+      const projectData = await env.WIREFRAME_PROJECTS.get(`projects/${project}`, 'json');
+
+      if (!projectData && isStaticAsset(pathname)) {
+        // Bu bir proje degil, asset path - referer veya cookie'den proje bul
+        isOrphanAsset = true;
+        project = getProjectFromReferer(request);
+
+        if (!project) {
+          // Cookie'den dene
+          const auth = getAnyAuthFromCookie(request);
+          if (auth && auth.project) {
+            project = auth.project;
+          }
+        }
+
+        if (project) {
+          subPath = pathname; // /dist/output.css oldugu gibi kalsin
+        }
+      }
+    }
 
     if (!project) {
-      return new Response('Invalid subdomain', { status: 400 });
+      return new Response('Project not found', { status: 404 });
     }
 
     // KV'den proje bilgisini al
@@ -196,8 +276,21 @@ export default {
     }
 
     // Auth kontrolu
-    const auth = getAuthFromCookie(request);
+    const auth = getAuthFromCookie(request, project);
     const isAuthenticated = auth && auth.project === project && auth.pin === projectData.pin;
+
+    // Static asset ve authenticated ise direkt serve et
+    if (isOrphanAsset && isAuthenticated) {
+      const pagesUrl = `https://${projectData.pages_project}.pages.dev${subPath}${url.search}`;
+      const response = await fetch(pagesUrl, {
+        method: request.method,
+        headers: request.headers
+      });
+      return new Response(response.body, {
+        status: response.status,
+        headers: response.headers
+      });
+    }
 
     // POST - Login islemi
     if (request.method === 'POST' && !isAuthenticated) {
@@ -205,13 +298,11 @@ export default {
       const pin = formData.get('pin');
 
       if (pin === projectData.pin) {
-        // Basarili giris - Cloudflare Pages'e yonlendir
-        const pagesUrl = `https://${projectData.pages_project}.pages.dev${url.pathname}`;
-
+        // Basarili giris
         return new Response(null, {
           status: 302,
           headers: {
-            'Location': url.pathname,
+            'Location': pathname,
             'Set-Cookie': createAuthCookie(project, pin)
           }
         });
@@ -233,14 +324,17 @@ export default {
     }
 
     // Authenticated - Cloudflare Pages'e proxy yap
-    const pagesUrl = `https://${projectData.pages_project}.pages.dev${url.pathname}${url.search}`;
+    if (!isOrphanAsset) {
+      subPath = getSubPath(pathname, project);
+    }
+    const pagesUrl = `https://${projectData.pages_project}.pages.dev${subPath}${url.search}`;
 
     const response = await fetch(pagesUrl, {
       method: request.method,
       headers: request.headers
     });
 
-    // Response'u dondur (cache header'lari koruyarak)
+    // Response'u dondur
     return new Response(response.body, {
       status: response.status,
       headers: response.headers
