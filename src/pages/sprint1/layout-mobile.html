@@ -6,9 +6,31 @@
   <title>Layout - Mobile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    /* Font loading - hide content until font is ready */
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    // Font loading detection
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      // Fallback for older browsers
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
   <link rel="stylesheet" href="../../../dist/output.css">
-  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <script src="../../js/icons.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -51,28 +73,28 @@
 
       <nav class="flex-1 py-4 overflow-y-auto">
         <a href="layout-sidebar-open.html" class="wf-sidebar-item active">
-          <iconify-icon icon="streamline-freehand:dashboard-layout" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="dashboard-layout" data-size="20"></span>
           <span>Dashboard</span>
         </a>
         <a href="../admin/ticket-list.html" class="wf-sidebar-item">
-          <iconify-icon icon="streamline-freehand:coupon-cut" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
           <span>Biletler</span>
         </a>
         <a href="../admin/addon-list.html" class="wf-sidebar-item">
-          <iconify-icon icon="streamline-freehand:add-sign-bold" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
           <span>Eklentiler</span>
         </a>
         <a href="../admin/order-detail.html" class="wf-sidebar-item">
-          <iconify-icon icon="streamline-freehand:shop-cart" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
           <span>Siparisler</span>
         </a>
         <a href="../admin/slot-calendar.html" class="wf-sidebar-item">
-          <iconify-icon icon="streamline-freehand:calendar-grid" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
           <span>Slot Takvimi</span>
         </a>
         <div class="border-t border-gray-300 my-2 mx-3"></div>
         <a href="user-list.html" class="wf-sidebar-item">
-          <iconify-icon icon="streamline-freehand:app-window-user" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
           <span>Kullanicilar</span>
         </a>
       </nav>
@@ -157,10 +179,8 @@
     </nav>
   </div>
 
-  <!-- Back Link (outside mobile container) -->
-  <a href="../../../index.html?sprint=sprint1" class="fixed bottom-4 right-4 wf-btn text-sm">Ana Sayfa</a>
-
-  <!-- Comments System -->
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../js/floating-toolbar.js"></script>
   <script src="../../js/comments.js"></script>
 
 </body>

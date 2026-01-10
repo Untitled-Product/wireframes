@@ -6,9 +6,31 @@
   <title>Siparis Detay - Legends DXP Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    /* Font loading - hide content until font is ready */
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    // Font loading detection
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      // Fallback for older browsers
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
   <link rel="stylesheet" href="../../../dist/output.css">
-  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <script src="../../js/icons.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -44,28 +66,28 @@
       <!-- Navigation -->
       <nav class="flex-1 py-4 overflow-y-auto">
         <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:dashboard-layout" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="dashboard-layout" data-size="20"></span>
           <span x-show="sidebarOpen">Dashboard</span>
         </a>
         <a href="ticket-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:coupon-cut" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
           <span x-show="sidebarOpen">Biletler</span>
         </a>
         <a href="addon-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:add-sign-bold" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
           <span x-show="sidebarOpen">Eklentiler</span>
         </a>
         <a href="order-detail.html" class="wf-sidebar-item active" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:shop-cart" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
           <span x-show="sidebarOpen">Siparisler</span>
         </a>
         <a href="slot-calendar.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:calendar-grid" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
           <span x-show="sidebarOpen">Slot Takvimi</span>
         </a>
         <div class="border-t border-gray-300 my-2 mx-3"></div>
         <a href="../sprint1/user-list.html" class="wf-sidebar-item" :class="{ 'justify-center': !sidebarOpen }">
-          <iconify-icon icon="streamline-freehand:app-window-user" width="20" height="20"></iconify-icon>
+          <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
           <span x-show="sidebarOpen">Kullanicilar</span>
         </a>
       </nav>
@@ -90,7 +112,7 @@
     <!-- Header -->
     <header class="wf-header sticky top-0 z-30">
       <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 -ml-2 border-2 border-gray-400">
-        <span class="text-lg">=</span>
+        <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
       </button>
 
       <div class="hidden sm:flex items-center gap-2 text-base">
@@ -103,7 +125,7 @@
 
       <div class="flex items-center gap-4">
         <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
-        <button class="wf-btn text-sm py-1 px-2" title="Bildirimler">🔔</button>
+        <button class="wf-btn text-sm py-1 px-2" title="Bildirimler"><span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span></button>
         <span class="text-sm text-gray-500 hidden sm:inline">Admin User</span>
         <div class="w-8 h-8 border-2 border-gray-400 rounded-full flex items-center justify-center text-sm">AY</div>
       </div>
@@ -299,7 +321,7 @@
               </div>
               <div class="flex justify-between text-sm">
                 <span class="text-gray-500">Islem ID</span>
-                <span class="font-mono">TXN-2026-789456</span>
+                <span>TXN-2026-789456</span>
               </div>
             </div>
           </div>
@@ -313,21 +335,21 @@
             <h2 class="text-xl mb-4 pb-2 border-b-2 border-gray-300">Aksiyonlar</h2>
             <div class="space-y-3">
               <button @click="showRescheduleModal = true" class="wf-btn wf-btn-info w-full justify-center">
-                📅 Tarih/Saat Degistir
+                <span class="wf-icon mr-1" data-icon="calendar-grid" data-size="16"></span> Tarih/Saat Degistir
               </button>
               <button @click="showRefundModal = true" class="wf-btn wf-btn-warning w-full justify-center">
-                💰 Iade Baslat
+                <span class="wf-icon mr-1" data-icon="money-bag" data-size="16"></span> Iade Baslat
               </button>
               <button @click="showCancelModal = true" class="wf-btn wf-btn-danger w-full justify-center">
-                ❌ Iptal Et
+                <span class="wf-icon mr-1" data-icon="remove-delete-sign-bold" data-size="16"></span> Iptal Et
               </button>
             </div>
             <div class="mt-4 pt-4 border-t-2 border-gray-300">
               <button class="wf-btn w-full justify-center text-sm">
-                📧 E-posta Gonder
+                <span class="wf-icon mr-1" data-icon="send-email-fly" data-size="16"></span> E-posta Gonder
               </button>
               <button class="wf-btn w-full justify-center text-sm mt-2">
-                🖨️ Yazdir
+                <span class="wf-icon mr-1" data-icon="print-text" data-size="16"></span> Yazdir
               </button>
             </div>
           </div>
@@ -409,16 +431,16 @@
             <div x-show="mobileActionsOpen" x-collapse class="pt-4 border-t border-gray-200 mt-2">
               <div class="grid grid-cols-2 gap-2">
                 <button @click="showRescheduleModal = true" class="wf-btn wf-btn-info justify-center text-sm py-3">
-                  📅 Tarih Degistir
+                  <span class="wf-icon" data-icon="calendar-grid" data-size="16"></span> Tarih
                 </button>
                 <button @click="showRefundModal = true" class="wf-btn wf-btn-warning justify-center text-sm py-3">
-                  💰 Iade Baslat
+                  <span class="wf-icon mr-1" data-icon="money-bag" data-size="16"></span> Iade Baslat
                 </button>
                 <button @click="showCancelModal = true" class="wf-btn wf-btn-danger justify-center text-sm py-3">
-                  ❌ Iptal Et
+                  <span class="wf-icon mr-1" data-icon="remove-delete-sign-bold" data-size="16"></span> Iptal Et
                 </button>
                 <button class="wf-btn justify-center text-sm py-3">
-                  📧 E-posta
+                  <span class="wf-icon" data-icon="send-email-fly" data-size="16"></span> E-posta
                 </button>
               </div>
             </div>
@@ -481,7 +503,7 @@
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
         <h2 class="text-xl">Bilet Iptali</h2>
-        <button @click="showCancelModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+        <button @click="showCancelModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl"><span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span></button>
       </div>
 
       <!-- Modal Content -->
@@ -524,7 +546,7 @@
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
         <h2 class="text-xl">Iade Islemi</h2>
-        <button @click="showRefundModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+        <button @click="showRefundModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl"><span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span></button>
       </div>
 
       <!-- Modal Content -->
@@ -578,7 +600,7 @@
       <!-- Modal Header -->
       <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-gray-300">
         <h2 class="text-xl">Tarih/Saat Degisikligi</h2>
-        <button @click="showRescheduleModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl">✕</button>
+        <button @click="showRescheduleModal = false" class="lg:hidden p-2 -mr-2 text-gray-500 hover:text-gray-700 text-xl"><span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span></button>
       </div>
 
       <!-- Modal Content -->
@@ -635,32 +657,32 @@
         <div class="w-6 h-6 border-2 border-current"></div>
         <span class="text-lg">Legends DXP</span>
       </div>
-      <button @click="mobileMenu = false" class="p-2 text-gray-500 hover:text-gray-700">✕</button>
+      <button @click="mobileMenu = false" class="p-2 text-gray-500 hover:text-gray-700"><span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span></button>
     </div>
     <nav class="flex-1 py-4 overflow-y-auto">
       <a href="../sprint1/layout-sidebar-open.html" class="wf-sidebar-item">
-        <iconify-icon icon="streamline-freehand:dashboard-layout" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="dashboard-layout" data-size="20"></span>
         <span>Dashboard</span>
       </a>
       <a href="ticket-list.html" class="wf-sidebar-item">
-        <iconify-icon icon="streamline-freehand:coupon-cut" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
         <span>Biletler</span>
       </a>
       <a href="addon-list.html" class="wf-sidebar-item">
-        <iconify-icon icon="streamline-freehand:add-sign-bold" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
         <span>Eklentiler</span>
       </a>
       <a href="order-detail.html" class="wf-sidebar-item active">
-        <iconify-icon icon="streamline-freehand:shop-cart" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
         <span>Siparisler</span>
       </a>
       <a href="slot-calendar.html" class="wf-sidebar-item">
-        <iconify-icon icon="streamline-freehand:calendar-grid" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
         <span>Slot Takvimi</span>
       </a>
       <div class="border-t border-gray-300 my-2 mx-3"></div>
       <a href="../sprint1/user-list.html" class="wf-sidebar-item">
-        <iconify-icon icon="streamline-freehand:app-window-user" width="20" height="20"></iconify-icon>
+        <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
         <span>Kullanicilar</span>
       </a>
     </nav>
@@ -675,7 +697,8 @@
     </div>
   </aside>
 
-  <!-- Comments System -->
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../js/floating-toolbar.js"></script>
   <script src="../../js/comments.js"></script>
 
 </body>

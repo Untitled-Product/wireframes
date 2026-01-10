@@ -36,51 +36,6 @@ class WireframeComments {
   createStyles() {
     const style = document.createElement('style');
     style.textContent = `
-      /* ==================== COMMENT TOGGLE BUTTON ==================== */
-      .wfc-toggle {
-        position: fixed;
-        bottom: 24px;
-        left: 24px;
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
-        background: white;
-        border: 2px solid #e5e7eb;
-        cursor: pointer;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        z-index: 9998;
-        transition: all 0.2s;
-      }
-      .wfc-toggle:hover {
-        border-color: #6366f1;
-        box-shadow: 0 4px 16px rgba(99,102,241,0.2);
-      }
-      .wfc-toggle.active {
-        background: #6366f1;
-        border-color: #6366f1;
-        color: white;
-      }
-      .wfc-toggle .wfc-badge {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        background: #ef4444;
-        color: white;
-        font-size: 11px;
-        font-weight: 600;
-        min-width: 18px;
-        height: 18px;
-        border-radius: 9px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 5px;
-      }
-
       /* ==================== COMMENT MODE OVERLAY ==================== */
       .wfc-mode-active {
         cursor: crosshair !important;
@@ -93,7 +48,7 @@ class WireframeComments {
         top: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        background: #0d9488;
         color: white;
         padding: 12px 20px;
         display: flex;
@@ -101,20 +56,22 @@ class WireframeComments {
         justify-content: center;
         gap: 12px;
         z-index: 10001;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        font-size: 14px;
-        font-weight: 500;
-        box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+        font-family: 'Indie Flower', cursive;
+        font-size: 16px;
+        font-weight: 400;
+        box-shadow: none;
+        border-bottom: 2px dashed #0f766e;
       }
       .wfc-mode-banner button {
         background: rgba(255,255,255,0.2);
-        border: none;
+        border: 2px dashed rgba(255,255,255,0.5);
         color: white;
         padding: 6px 14px;
-        border-radius: 6px;
+        border-radius: 0;
         cursor: pointer;
-        font-size: 13px;
-        font-weight: 500;
+        font-size: 14px;
+        font-weight: 400;
+        font-family: 'Indie Flower', cursive;
         transition: background 0.2s;
       }
       .wfc-mode-banner button:hover {
@@ -127,31 +84,32 @@ class WireframeComments {
         width: 32px;
         height: 32px;
         border-radius: 50% 50% 50% 0;
-        background: #6366f1;
+        background: #0d9488;
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 400;
         cursor: pointer;
         z-index: 9990;
-        box-shadow: 0 2px 8px rgba(99,102,241,0.4);
+        box-shadow: none;
+        border: 2px solid #0f766e;
         transform: translate(-50%, -100%) rotate(-45deg);
         transition: all 0.2s;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-pin:hover {
         transform: translate(-50%, -100%) rotate(-45deg) scale(1.15);
-        box-shadow: 0 4px 12px rgba(99,102,241,0.5);
+        background: #0f766e;
       }
       .wfc-pin.resolved {
         background: #22c55e;
-        box-shadow: 0 2px 8px rgba(34,197,94,0.4);
+        border-color: #16a34a;
       }
       .wfc-pin.active {
         transform: translate(-50%, -100%) rotate(-45deg) scale(1.2);
-        box-shadow: 0 4px 16px rgba(99,102,241,0.6);
+        background: #0f766e;
       }
       .wfc-pin span {
         transform: rotate(45deg);
@@ -161,11 +119,12 @@ class WireframeComments {
       .wfc-popup {
         position: absolute;
         width: 320px;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        background: #F9FAFB;
+        border-radius: 0;
+        border: 2px solid #9CA3AF;
+        box-shadow: none;
         z-index: 9999;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Indie Flower', cursive;
         overflow: hidden;
         animation: wfc-popup-in 0.2s ease-out;
       }
@@ -176,23 +135,25 @@ class WireframeComments {
 
       .wfc-popup-header {
         padding: 14px 16px;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 2px dashed #D1D5DB;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: #F3F4F6;
       }
       .wfc-popup-header h4 {
         margin: 0;
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 16px;
+        font-weight: 400;
         color: #111827;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-popup-close {
         width: 28px;
         height: 28px;
-        border: none;
-        background: #f3f4f6;
-        border-radius: 6px;
+        border: 2px dashed #9CA3AF;
+        background: white;
+        border-radius: 0;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -200,10 +161,12 @@ class WireframeComments {
         color: #6b7280;
         font-size: 16px;
         transition: all 0.15s;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-popup-close:hover {
-        background: #e5e7eb;
+        background: #E5E7EB;
         color: #374151;
+        border-color: #6B7280;
       }
 
       .wfc-popup-body {
@@ -222,15 +185,16 @@ class WireframeComments {
       .wfc-input {
         flex: 1;
         padding: 10px 12px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
+        border: 2px solid #D1D5DB;
+        border-radius: 0;
+        font-size: 15px;
+        font-family: 'Indie Flower', cursive;
         transition: border-color 0.15s;
+        background: white;
       }
       .wfc-input:focus {
         outline: none;
-        border-color: #6366f1;
+        border-color: #0d9488;
       }
       .wfc-input::placeholder {
         color: #9ca3af;
@@ -238,17 +202,18 @@ class WireframeComments {
       .wfc-textarea {
         width: 100%;
         padding: 10px 12px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 8px;
-        font-size: 14px;
-        font-family: inherit;
+        border: 2px solid #D1D5DB;
+        border-radius: 0;
+        font-size: 15px;
+        font-family: 'Indie Flower', cursive;
         resize: none;
         min-height: 80px;
         transition: border-color 0.15s;
+        background: white;
       }
       .wfc-textarea:focus {
         outline: none;
-        border-color: #6366f1;
+        border-color: #0d9488;
       }
       .wfc-form-footer {
         display: flex;
@@ -258,28 +223,30 @@ class WireframeComments {
       }
       .wfc-btn {
         padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
+        border-radius: 0;
+        font-size: 14px;
+        font-weight: 400;
         cursor: pointer;
         transition: all 0.15s;
-        font-family: inherit;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-btn-secondary {
-        background: #f3f4f6;
-        border: none;
+        background: white;
+        border: 2px dashed #9CA3AF;
         color: #374151;
       }
       .wfc-btn-secondary:hover {
-        background: #e5e7eb;
+        background: #F3F4F6;
+        border-color: #6B7280;
       }
       .wfc-btn-primary {
-        background: #6366f1;
-        border: none;
+        background: #0d9488;
+        border: 2px solid #0d9488;
         color: white;
       }
       .wfc-btn-primary:hover {
-        background: #4f46e5;
+        background: #0f766e;
+        border-color: #0f766e;
       }
 
       /* ==================== COMMENT THREAD ==================== */
@@ -300,31 +267,36 @@ class WireframeComments {
         width: 28px;
         height: 28px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        background: #0d9488;
+        border: 2px solid #0f766e;
         color: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 11px;
-        font-weight: 600;
+        font-size: 12px;
+        font-weight: 400;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-comment-meta {
         flex: 1;
       }
       .wfc-comment-author {
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 400;
         color: #111827;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-comment-time {
-        font-size: 11px;
+        font-size: 12px;
         color: #9ca3af;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-comment-content {
-        font-size: 14px;
+        font-size: 15px;
         color: #374151;
         line-height: 1.5;
         padding-left: 38px;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-comment-actions {
         padding-left: 38px;
@@ -336,21 +308,21 @@ class WireframeComments {
         background: none;
         border: none;
         color: #6b7280;
-        font-size: 12px;
+        font-size: 13px;
         cursor: pointer;
         padding: 0;
-        font-family: inherit;
+        font-family: 'Indie Flower', cursive;
         transition: color 0.15s;
       }
       .wfc-comment-action:hover {
-        color: #6366f1;
+        color: #0d9488;
       }
 
       /* Replies */
       .wfc-replies {
         margin-top: 12px;
         padding-left: 38px;
-        border-left: 2px solid #e5e7eb;
+        border-left: 2px dashed #D1D5DB;
         margin-left: 14px;
       }
       .wfc-reply {
@@ -362,14 +334,15 @@ class WireframeComments {
       .wfc-reply-input {
         width: 100%;
         padding: 8px 10px;
-        border: 1.5px solid #e5e7eb;
-        border-radius: 6px;
-        font-size: 13px;
-        font-family: inherit;
+        border: 2px solid #D1D5DB;
+        border-radius: 0;
+        font-size: 14px;
+        font-family: 'Indie Flower', cursive;
+        background: white;
       }
       .wfc-reply-input:focus {
         outline: none;
-        border-color: #6366f1;
+        border-color: #0d9488;
       }
 
       /* Status badge */
@@ -378,17 +351,21 @@ class WireframeComments {
         align-items: center;
         gap: 4px;
         padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 500;
+        border-radius: 0;
+        font-size: 12px;
+        font-weight: 400;
+        font-family: 'Indie Flower', cursive;
+        border: 2px dashed;
       }
       .wfc-status-open {
         background: #fef3c7;
         color: #92400e;
+        border-color: #F59E0B;
       }
       .wfc-status-resolved {
         background: #dcfce7;
         color: #166534;
+        border-color: #22c55e;
       }
 
       /* Resolve button in popup */
@@ -397,16 +374,18 @@ class WireframeComments {
         padding: 10px;
         margin-top: 12px;
         background: #f0fdf4;
-        border: 1.5px solid #22c55e;
+        border: 2px dashed #22c55e;
         color: #166534;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
+        border-radius: 0;
+        font-size: 14px;
+        font-weight: 400;
+        font-family: 'Indie Flower', cursive;
         cursor: pointer;
         transition: all 0.15s;
       }
       .wfc-resolve-btn:hover {
         background: #dcfce7;
+        border-style: solid;
       }
 
       /* ==================== COMMENT LIST PANEL ==================== */
@@ -416,53 +395,59 @@ class WireframeComments {
         top: 0;
         bottom: 0;
         width: 360px;
-        background: white;
-        box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+        background: #F9FAFB;
+        border-left: 2px solid #9CA3AF;
+        box-shadow: none;
         z-index: 10000;
         display: none;
         flex-direction: column;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-panel.open {
         display: flex;
       }
       .wfc-panel-header {
         padding: 16px 20px;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 2px dashed #D1D5DB;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        background: #F3F4F6;
       }
       .wfc-panel-header h3 {
         margin: 0;
-        font-size: 16px;
-        font-weight: 600;
+        font-size: 18px;
+        font-weight: 400;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-panel-tabs {
         display: flex;
         gap: 4px;
         padding: 12px 20px;
-        background: #f9fafb;
-        border-bottom: 1px solid #e5e7eb;
+        background: #F3F4F6;
+        border-bottom: 2px dashed #D1D5DB;
       }
       .wfc-panel-tab {
         padding: 6px 12px;
-        border: none;
+        border: 2px dashed transparent;
         background: transparent;
-        border-radius: 6px;
-        font-size: 13px;
-        font-weight: 500;
+        border-radius: 0;
+        font-size: 14px;
+        font-weight: 400;
         color: #6b7280;
         cursor: pointer;
         transition: all 0.15s;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-panel-tab:hover {
-        background: #e5e7eb;
+        background: #E5E7EB;
+        border-color: #9CA3AF;
       }
       .wfc-panel-tab.active {
         background: white;
         color: #111827;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-color: #9CA3AF;
+        border-style: solid;
       }
       .wfc-panel-list {
         flex: 1;
@@ -471,15 +456,16 @@ class WireframeComments {
       }
       .wfc-panel-item {
         padding: 14px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
+        border: 2px solid #D1D5DB;
+        border-radius: 0;
         margin-bottom: 10px;
         cursor: pointer;
         transition: all 0.15s;
+        background: white;
       }
       .wfc-panel-item:hover {
-        border-color: #6366f1;
-        background: #faf5ff;
+        border-color: #0d9488;
+        background: #f0fdfa;
       }
       .wfc-panel-item.resolved {
         opacity: 0.6;
@@ -488,6 +474,7 @@ class WireframeComments {
         text-align: center;
         padding: 48px 24px;
         color: #9ca3af;
+        font-family: 'Indie Flower', cursive;
       }
       .wfc-panel-empty-icon {
         font-size: 48px;
@@ -495,18 +482,16 @@ class WireframeComments {
         opacity: 0.5;
       }
     `;
+    // Add Google Fonts for Indie Flower
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap';
+    document.head.appendChild(link);
     document.head.appendChild(style);
   }
 
   createUI() {
-    // Toggle button
-    this.toggleBtn = document.createElement('button');
-    this.toggleBtn.className = 'wfc-toggle';
-    this.toggleBtn.innerHTML = '💬';
-    this.toggleBtn.title = 'Yorum modu';
-    document.body.appendChild(this.toggleBtn);
-
-    // Comment mode banner
+    // Comment mode banner (toggle button moved to floating-toolbar.js)
     this.modeBanner = document.createElement('div');
     this.modeBanner.className = 'wfc-mode-banner';
     this.modeBanner.style.display = 'none';
@@ -541,15 +526,6 @@ class WireframeComments {
   }
 
   bindEvents() {
-    // Toggle comment mode
-    this.toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (this.panel.classList.contains('open')) {
-        this.closePanel();
-      }
-      this.toggleCommentMode();
-    });
-
     // Cancel mode
     this.modeBanner.querySelector('.wfc-mode-cancel').addEventListener('click', () => {
       this.toggleCommentMode(false);
@@ -587,7 +563,7 @@ class WireframeComments {
     // Click on page to add comment
     document.addEventListener('click', (e) => {
       if (!this.commentMode) return;
-      if (e.target.closest('.wfc-toggle, .wfc-mode-banner, .wfc-popup, .wfc-pin, .wfc-panel')) return;
+      if (e.target.closest('.wf-toolbar, .wfc-mode-banner, .wfc-popup, .wfc-pin, .wfc-panel')) return;
 
       e.preventDefault();
       e.stopPropagation();
@@ -623,7 +599,11 @@ class WireframeComments {
   toggleCommentMode(force) {
     this.commentMode = force !== undefined ? force : !this.commentMode;
 
-    this.toggleBtn.classList.toggle('active', this.commentMode);
+    // Update toolbar button state if available
+    if (window.wireframeToolbar) {
+      window.wireframeToolbar.updateCommentButtonState();
+    }
+
     this.modeBanner.style.display = this.commentMode ? 'flex' : 'none';
     document.body.classList.toggle('wfc-mode-active', this.commentMode);
 
@@ -631,6 +611,11 @@ class WireframeComments {
       this.closePopup();
       this.pendingPosition = null;
     }
+  }
+
+  // Public method for toolbar to show panel
+  showPanel() {
+    this.openPanel();
   }
 
   openPanel() {
@@ -679,17 +664,10 @@ class WireframeComments {
 
   updateBadge() {
     const openCount = this.comments.filter(c => c.status === 'open').length;
-    let badge = this.toggleBtn.querySelector('.wfc-badge');
 
-    if (openCount > 0) {
-      if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'wfc-badge';
-        this.toggleBtn.appendChild(badge);
-      }
-      badge.textContent = openCount > 9 ? '9+' : openCount;
-    } else if (badge) {
-      badge.remove();
+    // Update toolbar badge if available
+    if (window.wireframeToolbar) {
+      window.wireframeToolbar.updateCommentBadge(openCount);
     }
   }
 

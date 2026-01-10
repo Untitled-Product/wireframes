@@ -1,125 +1,241 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Legends DXP - Wireframe Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
   <link rel="stylesheet" href="dist/output.css">
+  <script src="src/js/icons.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
     [x-cloak] { display: none !important; }
-    body { font-family: 'Inter', -apple-system, sans-serif; }
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
   </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
 </head>
-<body class="min-h-screen bg-white" x-data="{
+<body class="min-h-screen wireframe-page" x-data="{
   selectedTheme: 'teal',
   selectedSprint: new URLSearchParams(window.location.search).get('sprint') || 'sprint2'
 }">
 
   <div class="flex min-h-screen">
 
-    <!-- Slim Sidebar -->
-    <aside class="w-14 bg-slate-900 flex flex-col items-center py-4 gap-2">
+    <!-- Wireframe Sidebar -->
+    <aside class="w-20 border-r-2 border-gray-400 bg-gray-50 flex flex-col items-center py-6 gap-3">
       <!-- Logo -->
-      <div class="w-9 h-9 rounded-lg bg-teal-500 flex items-center justify-center text-white text-sm font-bold mb-4">
-        L
+      <div class="w-12 h-12 border-2 border-gray-700 flex items-center justify-center text-2xl mb-4" title="Legends DXP">
+        <span class="wf-icon" data-icon="home" data-size="28"></span>
       </div>
 
       <!-- Sprint Buttons -->
       <button
         @click="selectedSprint = 'sprint1'"
-        :class="selectedSprint === 'sprint1' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'"
-        class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-medium transition-all"
-        title="Sprint 1"
+        :class="selectedSprint === 'sprint1' ? 'bg-gray-200 border-gray-700' : 'border-gray-400 hover:border-gray-600 hover:bg-gray-100'"
+        class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all"
+        title="Sprint 1 - Auth & Users"
       >S1</button>
 
       <button
         @click="selectedSprint = 'sprint2'"
-        :class="selectedSprint === 'sprint2' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'"
-        class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-medium transition-all"
-        title="Sprint 2"
+        :class="selectedSprint === 'sprint2' ? 'bg-gray-200 border-gray-700' : 'border-gray-400 hover:border-gray-600 hover:bg-gray-100'"
+        class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all"
+        title="Sprint 2 - Ticketing"
       >S2</button>
 
       <button
         disabled
-        class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-medium text-slate-600 cursor-not-allowed"
+        class="w-12 h-12 border-2 border-dashed border-gray-300 flex items-center justify-center text-lg text-gray-400 cursor-not-allowed"
         title="Sprint 3 (Yakinda)"
       >S3</button>
 
       <div class="flex-1"></div>
 
-      <!-- Theme Dots -->
-      <div class="flex flex-col gap-1.5">
-        <button @click="selectedTheme = 'teal'" :class="selectedTheme === 'teal' ? 'ring-2 ring-white ring-offset-1 ring-offset-slate-900' : ''" class="w-4 h-4 rounded-full bg-teal-500"></button>
-        <button @click="selectedTheme = 'blue'" :class="selectedTheme === 'blue' ? 'ring-2 ring-white ring-offset-1 ring-offset-slate-900' : ''" class="w-4 h-4 rounded-full bg-blue-500"></button>
-        <button @click="selectedTheme = 'purple'" :class="selectedTheme === 'purple' ? 'ring-2 ring-white ring-offset-1 ring-offset-slate-900' : ''" class="w-4 h-4 rounded-full bg-violet-500"></button>
+      <!-- Theme Colors -->
+      <div class="flex flex-col gap-2 p-2 border-2 border-gray-300">
+        <button @click="selectedTheme = 'teal'" :class="selectedTheme === 'teal' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-teal-500 border border-gray-400" title="Teal"></button>
+        <button @click="selectedTheme = 'blue'" :class="selectedTheme === 'blue' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-blue-500 border border-gray-400" title="Blue"></button>
+        <button @click="selectedTheme = 'purple'" :class="selectedTheme === 'purple' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-violet-500 border border-gray-400" title="Purple"></button>
+        <button @click="selectedTheme = 'orange'" :class="selectedTheme === 'orange' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-orange-500 border border-gray-400" title="Orange"></button>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 bg-slate-50">
+    <main class="flex-1">
 
       <!-- Header -->
-      <header class="h-12 bg-white border-b border-slate-200 px-6 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <h1 class="text-sm font-semibold text-slate-900" x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : 'Sprint 2'"></h1>
-          <span class="text-xs text-slate-400" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : 'Ticketing & Add-ons'"></span>
+      <header class="h-16 border-b-2 border-gray-400 px-8 flex items-center justify-between bg-white">
+        <div class="flex items-center gap-4">
+          <h1 class="text-2xl" x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : 'Sprint 2'"></h1>
+          <span class="text-gray-500 text-lg" x-text="selectedSprint === 'sprint1' ? '- Auth & Users' : '- Ticketing & Add-ons'"></span>
         </div>
         <div class="flex items-center gap-4">
-          <span class="text-xs px-2 py-1 rounded bg-emerald-50 text-emerald-700 font-medium" x-text="selectedSprint === 'sprint1' ? '8/8' : '12/12'"></span>
-          <a href="src/components/form-elements.html" class="text-xs text-slate-500 hover:text-slate-900">Components</a>
+          <span class="wf-badge wf-badge-success text-base px-3 py-1" x-text="selectedSprint === 'sprint1' ? '8/8 Tamamlandi' : '11/11 Tamamlandi'">
+          </span>
+          <a href="src/components/form-elements.html" class="wf-btn text-base">
+            <span class="wf-icon" data-icon="settings-cog" data-size="18"></span>
+            Components
+          </a>
         </div>
       </header>
 
-      <div class="p-6">
+      <div class="p-8">
 
         <!-- ==================== SPRINT 1 ==================== -->
         <div x-show="selectedSprint === 'sprint1'" x-cloak>
 
-          <div class="mb-6">
-            <h2 class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Admin</h2>
-            <div class="grid grid-cols-4 gap-3">
-              <a :href="'src/pages/sprint1/login-phone.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Login - Telefon</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+          <!-- Admin Section -->
+          <div class="mb-8">
+            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
+              <span class="wf-icon" data-icon="app-window-user" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
+              Admin Sayfalari
+              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <a :href="'src/pages/sprint1/login-phone.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Login - Telefon</div>
+                    <div class="text-gray-500 text-sm">D-001 | SMS ile giris</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/login-otp.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Login - OTP</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+
+              <a :href="'src/pages/sprint1/login-otp.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="lock-key-1" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Login - OTP</div>
+                    <div class="text-gray-500 text-sm">D-001 | 6 haneli kod</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/login-locked.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Login - Kilitli</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/sprint1/login-locked.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Login - Kilitli</div>
+                    <div class="text-gray-500 text-sm">D-001 | Rate limit</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/user-list.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Kullanici Listesi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+
+              <a :href="'src/pages/sprint1/user-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Kullanici Listesi</div>
+                    <div class="text-gray-500 text-sm">D-003 | RBAC yonetimi</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/user-form.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Kullanici Formu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/sprint1/user-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Kullanici Formu</div>
+                    <div class="text-gray-500 text-sm">D-003 | Rol atama</div>
+                  </div>
+                </div>
               </a>
+
             </div>
           </div>
 
+          <!-- Layout Section -->
           <div>
-            <h2 class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Layout</h2>
-            <div class="grid grid-cols-4 gap-3">
-              <a :href="'src/pages/sprint1/layout-sidebar-open.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Sidebar - Acik</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
+              <span class="wf-icon" data-icon="dashboard-layout" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
+              Layout Sayfalari
+              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <a :href="'src/pages/sprint1/layout-sidebar-open.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Sidebar - Acik</div>
+                    <div class="text-gray-500 text-sm">D-002 | Ana navigasyon</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/layout-sidebar-collapsed.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Sidebar - Kapali</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/sprint1/layout-sidebar-collapsed.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Sidebar - Kapali</div>
+                    <div class="text-gray-500 text-sm">D-002 | Ikon modu</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/sprint1/layout-mobile.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Mobile Layout</div>
-                <div class="text-xs text-slate-400 mt-0.5">Mobile</div>
+
+              <a :href="'src/pages/sprint1/layout-mobile.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Mobile Layout</div>
+                    <div class="text-gray-500 text-sm">D-002 | Hamburger menu</div>
+                  </div>
+                </div>
               </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint Info Banner - ALTA TAŞINDI -->
+          <div class="wf-card bg-teal-50 border-teal-400 mt-6">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 border-2 border-teal-500 flex items-center justify-center bg-white text-teal-600 flex-shrink-0">
+                <span class="wf-icon" data-icon="form-validation-check-square-1" data-size="24"></span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-medium text-teal-800">Sprint 1: Authentication & User Management</h3>
+                <p class="text-teal-700 mt-1">EPIC 01: Identity & Access Management | Login, OTP, RBAC, Kullanici Yonetimi</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="wf-badge wf-badge-success text-xs">D-001 Login</span>
+                  <span class="wf-badge wf-badge-success text-xs">D-002 Layout</span>
+                  <span class="wf-badge wf-badge-success text-xs">D-003 Users</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -128,59 +244,190 @@
         <!-- ==================== SPRINT 2 ==================== -->
         <div x-show="selectedSprint === 'sprint2'" x-cloak>
 
-          <div class="mb-6">
-            <h2 class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Admin</h2>
-            <div class="grid grid-cols-4 gap-3">
-              <a :href="'src/pages/admin/ticket-list.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Bilet Listesi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+          <!-- Admin Section -->
+          <div class="mb-8">
+            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
+              <span class="wf-icon" data-icon="dashboard-layout" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
+              Admin Sayfalari
+              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <a :href="'src/pages/admin/ticket-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Bilet Listesi</div>
+                    <div class="text-gray-500 text-sm">D-004 | 6 bilet tipi</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/admin/ticket-form.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Bilet Formu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+
+              <a :href="'src/pages/admin/ticket-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Bilet Formu</div>
+                    <div class="text-gray-500 text-sm">D-004 | Dinamik alanlar</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/admin/addon-list.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Add-on Listesi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+
+              <a :href="'src/pages/admin/addon-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Add-on Listesi</div>
+                    <div class="text-gray-500 text-sm">D-005 | 5 kategori</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/admin/addon-form.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Add-on Formu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/admin/addon-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Add-on Formu</div>
+                    <div class="text-gray-500 text-sm">D-005 | Bilet uyumluluk</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/admin/order-detail.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Siparis Detay</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop + Modals</div>
+
+              <a :href="'src/pages/admin/order-detail.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Siparis Detay</div>
+                    <div class="text-gray-500 text-sm">D-004 | Iptal/iade modal</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/admin/slot-calendar.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Slot Takvimi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/admin/slot-calendar.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
+                    <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-teal-600">Slot Takvimi</div>
+                    <div class="text-gray-500 text-sm">D-004 | Kapasite yonetimi</div>
+                  </div>
+                </div>
               </a>
+
             </div>
           </div>
 
+          <!-- Sprint Info Banner - Admin ile Public arasi -->
+          <div class="wf-card bg-teal-50 border-teal-400 my-6">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 border-2 border-teal-500 flex items-center justify-center bg-white text-teal-600 flex-shrink-0">
+                <span class="wf-icon" data-icon="form-validation-check-square-1" data-size="24"></span>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-lg font-medium text-teal-800">Sprint 2: Ticketing & Add-ons</h3>
+                <p class="text-teal-700 mt-1">EPIC 03: E-commerce / Ticketing | Bilet tipleri, add-on'lar, Park Yazilim entegrasyonu</p>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="wf-badge wf-badge-success text-xs">D-004 Bilet Admin</span>
+                  <span class="wf-badge wf-badge-success text-xs">D-005 Add-on Admin</span>
+                  <span class="wf-badge bg-amber-100 text-amber-700 border-amber-400 text-xs">D-006 Public (Ref)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Public Section - Reference Only -->
           <div>
-            <h2 class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3">Public</h2>
-            <div class="grid grid-cols-4 gap-3">
-              <a :href="'src/pages/public/ticket-catalog.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Bilet Katalogu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop, Mobile</div>
+            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
+              <span class="wf-icon" data-icon="app-window-user" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
+              Public Sayfalari (Reference)
+              <span class="wf-badge bg-amber-100 text-amber-700 border-amber-400 text-xs ml-2">Reference Only</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <a :href="'src/pages/public/ticket-catalog.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
+                    <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-amber-700">Bilet Katalogu</div>
+                    <div class="text-gray-500 text-sm">D-006 | Grid gorunum</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/public/addon-selection.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Add-on Secimi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/public/addon-selection.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
+                    <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-amber-700">Add-on Secimi</div>
+                    <div class="text-gray-500 text-sm">D-006 | Kategori tabs</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/public/forms/school-form.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Okul Formu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/public/forms/school-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
+                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-amber-700">Okul Formu</div>
+                    <div class="text-gray-500 text-sm">F1-170 | Grup basvuru</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/public/forms/agency-form.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Acente Formu</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/public/forms/agency-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
+                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-amber-700">Acente Formu</div>
+                    <div class="text-gray-500 text-sm">F1-171 | B2B basvuru</div>
+                  </div>
+                </div>
               </a>
-              <a :href="'src/pages/public/forms/ticket-request.html?theme=' + selectedTheme" class="group bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-sm transition-all">
-                <div class="text-sm font-medium text-slate-900 group-hover:text-teal-600">Iptal/Iade Talebi</div>
-                <div class="text-xs text-slate-400 mt-0.5">Desktop</div>
+
+              <a :href="'src/pages/public/forms/ticket-request.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
+                <div class="flex items-start gap-3">
+                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
+                    <span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span>
+                  </div>
+                  <div>
+                    <div class="text-lg group-hover:text-amber-700">Iptal/Iade Talebi</div>
+                    <div class="text-gray-500 text-sm">F1-172 | PNR ile talep</div>
+                  </div>
+                </div>
               </a>
+
+            </div>
+
+            <!-- Warning Banner -->
+            <div class="wf-card bg-amber-50 border-amber-400 border-dashed mt-6">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 border-2 border-amber-500 flex items-center justify-center bg-white text-amber-600 flex-shrink-0">
+                  <span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-medium text-amber-800">Reference Only - Ayri Projede Gelistirilecek</h4>
+                  <p class="text-amber-700 text-sm mt-1">Bu sayfalar musteri tarafinin nasil gorunecegini gostermek icindir. Production admin paneline dahil <strong>OLMAYACAK</strong>. Ayri bir frontend projesinde gelistirilecek.</p>
+                </div>
+              </div>
             </div>
           </div>
 

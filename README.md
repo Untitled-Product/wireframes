@@ -1,8 +1,9 @@
 # Legends DXP - HTML Wireframe Kit
 
-**Amac:** Frame0'a bagimli olmadan, kod tabanli wireframe sistemi
+**Amac:** Kod tabanli wireframe sistemi
 **Stack:** HTML + Tailwind CSS + Alpine.js (minimal interaktivite)
 **Yaklasim:** Low-fidelity wireframe -> High-fidelity toggle
+**Live:** https://wireframes.untitledproduct.com/legends
 
 ---
 
@@ -141,34 +142,39 @@ Tarayicida: http://localhost:3000
 
 ---
 
-## Frame0'dan Migrasyon
+## Tamamlanan Sayfalar
 
-| Frame0 Sayfa | HTML Sayfa | Durum |
-|--------------|------------|-------|
-| S2-001-Ticket-List-Desktop | admin/ticket-list.html | Pending |
-| S2-001-Ticket-List-Mobile | admin/ticket-list.html (responsive) | Pending |
-| S2-002-Ticket-Form-Desktop | admin/ticket-form.html | Pending |
-| S2-004-Addon-List-Desktop | admin/addon-list.html | Pending |
-| S2-005-Addon-Form-Desktop | admin/addon-form.html | Pending |
-| S2-007-Order-Detail | admin/order-detail.html | Pending |
-| S2-011-Ticket-Catalog-Desktop | public/ticket-catalog.html | Pending |
+### Sprint 1 - Auth & Users
+| Sayfa | Dosya | Durum |
+|-------|-------|-------|
+| Login Phone | sprint1/login-phone.html | Tamamlandi |
+| Login OTP | sprint1/login-otp.html | Tamamlandi |
+| Login Locked | sprint1/login-locked.html | Tamamlandi |
+| User List | sprint1/user-list.html | Tamamlandi |
+| User Form | sprint1/user-form.html | Tamamlandi |
+| Layout Sidebar Open | sprint1/layout-sidebar-open.html | Tamamlandi |
+| Layout Sidebar Collapsed | sprint1/layout-sidebar-collapsed.html | Tamamlandi |
+| Layout Mobile | sprint1/layout-mobile.html | Tamamlandi |
 
----
-
-## Sonraki Adimlar
-
-1. [x] Proje yapisi olustur
-2. [ ] Tailwind + Alpine.js kurulumu
-3. [ ] Base styles ve tokens
-4. [ ] Core components (sidebar, header, table, card)
-5. [ ] Ilk sayfa: ticket-list.html
-6. [ ] Wireframe toggle sistemi
-7. [ ] Diger sayfalari migrate et
+### Sprint 2 - Ticketing & Add-ons
+| Sayfa | Dosya | Durum |
+|-------|-------|-------|
+| Ticket List | admin/ticket-list.html | Tamamlandi |
+| Ticket Form | admin/ticket-form.html | Tamamlandi |
+| Addon List | admin/addon-list.html | Tamamlandi |
+| Addon Form | admin/addon-form.html | Tamamlandi |
+| Order Detail | admin/order-detail.html | Tamamlandi |
+| Slot Calendar | admin/slot-calendar.html | Tamamlandi |
+| Ticket Catalog (Public) | public/ticket-catalog.html | Tamamlandi |
+| Addon Selection (Public) | public/addon-selection.html | Tamamlandi |
+| School Form | public/forms/school-form.html | Tamamlandi |
+| Agency Form | public/forms/agency-form.html | Tamamlandi |
+| Ticket Request | public/forms/ticket-request.html | Tamamlandi |
 
 ---
 
 ## Notlar
 
-- shadcn/ui kullanmiyoruz (dependency overhead)
-- Pure Tailwind + custom components
-- Amac: Hizli iteration, kod ciktisi, responsive test
+- Pure Tailwind + custom components (shadcn/ui kullanmiyoruz)
+- Wireframe mode toggle: Low-fi / High-fi gecisi
+- Responsive test: Desktop, Tablet, Mobile

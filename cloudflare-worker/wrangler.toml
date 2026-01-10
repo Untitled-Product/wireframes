@@ -2,12 +2,12 @@ name = "wireframe-auth"
 main = "worker.js"
 compatibility_date = "2024-01-01"
 
-# KV Namespace - Cloudflare Dashboard'dan olusturup ID'yi buraya ekle
+# KV Namespace
 [[kv_namespaces]]
 binding = "WIREFRAME_PROJECTS"
 id = "3fd5297b3ad147dcac4a32eb0e2ef6e7"
 
-# Routes - wildcard subdomain
-routes = [
-  { pattern = "*.wireframes.untitledproduct.com/*", zone_name = "untitledproduct.com" }
-]
+# Routes - path based (wireframes.untitledproduct.com/legends)
+[[routes]]
+pattern = "wireframes.untitledproduct.com/*"
+zone_name = "untitledproduct.com"

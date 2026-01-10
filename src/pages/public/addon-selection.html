@@ -6,9 +6,31 @@
   <title>Eklentiler - Legends Theme Park</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    /* Font loading - hide content until font is ready */
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    // Font loading detection
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      // Fallback for older browsers
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
   <link rel="stylesheet" href="../../../dist/output.css">
-  <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+  <script src="../../js/icons.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script>
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,7 +68,7 @@
       <a href="../../../index.html" class="wf-btn text-sm py-1">← Ana Sayfa</a>
       <button class="wf-btn py-1 px-3">TR | EN</button>
       <button class="wf-btn wf-btn-primary py-1 px-3">
-        🛒 Sepet (3)
+        <span class="wf-icon" data-icon="shop-cart" data-size="18"></span> Sepet (3)
       </button>
     </div>
   </header>
@@ -85,22 +107,22 @@
         <!-- Category Tabs -->
         <div class="wf-tabs mb-0 flex-wrap">
           <button class="wf-tab" :class="{ 'active': activeCategory === 'recommended' }" @click="activeCategory = 'recommended'">
-            ⭐ Onerilen
+            <span class="wf-icon" data-icon="loading-star-1" data-size="16"></span> Onerilen
           </button>
           <button class="wf-tab" :class="{ 'active': activeCategory === 'parking' }" @click="activeCategory = 'parking'">
-            🚗 Otopark
+            <span class="wf-icon" data-icon="worldwide-web-location-pin" data-size="16"></span> Otopark
           </button>
           <button class="wf-tab" :class="{ 'active': activeCategory === 'locker' }" @click="activeCategory = 'locker'">
-            🔐 Dolap
+            <span class="wf-icon" data-icon="lock-key-1" data-size="16"></span> Dolap
           </button>
           <button class="wf-tab" :class="{ 'active': activeCategory === 'equipment' }" @click="activeCategory = 'equipment'">
-            🏊 Ekipman
+            <span class="wf-icon" data-icon="swimming-pool-person" data-size="16"></span> Ekipman
           </button>
           <button class="wf-tab" :class="{ 'active': activeCategory === 'fnb' }" @click="activeCategory = 'fnb'">
-            🍔 Yiyecek
+            <span class="wf-icon" data-icon="party-alchoholic-drink" data-size="16"></span> Yiyecek
           </button>
           <button class="wf-tab" :class="{ 'active': activeCategory === 'experience' }" @click="activeCategory = 'experience'">
-            🎮 Deneyim
+            <span class="wf-icon" data-icon="video-game-controller" data-size="16"></span> Deneyim
           </button>
         </div>
 
@@ -111,8 +133,12 @@
               <div class="border-2 border-gray-300 rounded p-4 bg-white"
                 :class="{ 'border-green-500 bg-green-50': addon.qty > 0 }">
                 <div class="flex gap-3">
-                  <div class="w-16 h-16 border-2 border-gray-300 flex items-center justify-center bg-gray-100 text-2xl flex-shrink-0">
-                    <span x-text="addon.category === 'parking' ? '🚗' : addon.category === 'locker' ? '🔐' : addon.category === 'equipment' ? '🏊' : addon.category === 'fnb' ? '🍔' : '🎮'"></span>
+                  <div class="w-16 h-16 border-2 border-gray-300 flex items-center justify-center bg-gray-100 flex-shrink-0">
+                    <span x-show="addon.category === 'parking'" class="wf-icon" data-icon="worldwide-web-location-pin" data-size="28"></span>
+                    <span x-show="addon.category === 'locker'" class="wf-icon" data-icon="lock-key-1" data-size="28"></span>
+                    <span x-show="addon.category === 'equipment'" class="wf-icon" data-icon="swimming-pool-person" data-size="28"></span>
+                    <span x-show="addon.category === 'fnb'" class="wf-icon" data-icon="party-alchoholic-drink" data-size="28"></span>
+                    <span x-show="addon.category === 'experience'" class="wf-icon" data-icon="video-game-controller" data-size="28"></span>
                   </div>
                   <div class="flex-1">
                     <h3 class="font-medium" x-text="addon.name"></h3>
@@ -250,7 +276,8 @@
     </div>
   </div>
 
-  <!-- Comments System -->
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../js/floating-toolbar.js"></script>
   <script src="../../js/comments.js"></script>
 
 </body>
