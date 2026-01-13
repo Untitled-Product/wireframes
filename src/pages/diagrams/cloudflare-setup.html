@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloudflare Setup - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .diagram-section__header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .diagram-section__title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 10px;
+      background: #f97316;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .diagram-section__content {
+      padding: 24px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .mermaid {
+      background: #252525;
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* Info Table */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .info-table th,
+    .info-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .info-table th {
+      background: #252525;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .info-table td {
+      color: #ccc;
+    }
+
+    .info-table code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+    }
+
+    /* Record Type Badge */
+    .record-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .record-ns { background: #8b5cf620; color: #8b5cf6; }
+    .record-cname { background: #3b82f620; color: #3b82f6; }
+    .record-a { background: #22c55e20; color: #22c55e; }
+    .record-txt { background: #f59e0b20; color: #f59e0b; }
+
+    /* Environment Badge */
+    .env-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .env-prod { background: #ef444420; color: #ef4444; }
+    .env-staging { background: #f59e0b20; color: #f59e0b; }
+
+    /* Info Cards */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: #252525;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .info-card__label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .info-card__value {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Subsection */
+    .subsection {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #2d2d2d;
+    }
+
+    .subsection__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+
+    /* Proxy Status */
+    .proxy-on { color: #f97316; }
+    .proxy-off { color: #888; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Diagrams</h1>
+      <p>Legends DXP Visual Schematics</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Overview</div>
+      <a href="index.html" class="nav-link" data-tooltip="All Diagrams">
+        <span class="nav-link-icon">📊</span>
+        <span>All Diagrams</span>
+      </a>
+
+      <div class="nav-group-title">Flow Diagrams</div>
+      <a href="user-flows.html" class="nav-link" data-tooltip="User Flows">
+        <span class="nav-link-icon">👤</span>
+        <span>User Flows</span>
+      </a>
+
+      <div class="nav-group-title">Data Diagrams</div>
+      <a href="entity-relationships.html" class="nav-link" data-tooltip="Entity Relationships">
+        <span class="nav-link-icon">🗃️</span>
+        <span>Entity Relationships</span>
+      </a>
+
+      <div class="nav-group-title">State Diagrams</div>
+      <a href="state-machines.html" class="nav-link" data-tooltip="State Machines">
+        <span class="nav-link-icon">⚙️</span>
+        <span>State Machines</span>
+      </a>
+
+      <div class="nav-group-title">Infrastructure</div>
+      <a href="infrastructure.html" class="nav-link" data-tooltip="CI/CD & GitHub">
+        <span class="nav-link-icon">🚀</span>
+        <span>CI/CD & GitHub</span>
+      </a>
+      <a href="aws-architecture.html" class="nav-link" data-tooltip="AWS Architecture">
+        <span class="nav-link-icon">☁️</span>
+        <span>AWS Architecture</span>
+      </a>
+      <a href="#overview" class="nav-link active" data-tooltip="Cloudflare Setup">
+        <span class="nav-link-icon">🌐</span>
+        <span>Cloudflare Setup</span>
+      </a>
+
+      <div class="nav-group-title">Business Flows</div>
+      <a href="business-flows.html" class="nav-link" data-tooltip="Permission & Onboarding">
+        <span class="nav-link-icon">✅</span>
+        <span>Permission & Onboarding</span>
+      </a>
+
+      <div class="nav-group-title">API Sequences</div>
+      <a href="api-sequences.html" class="nav-link" data-tooltip="Auth & Checkout">
+        <span class="nav-link-icon">🔗</span>
+        <span>Auth & Checkout</span>
+      </a>
+
+      <div class="nav-group-title">Project Planning</div>
+      <a href="project-planning.html" class="nav-link" data-tooltip="Sprint Roadmap">
+        <span class="nav-link-icon">📅</span>
+        <span>Sprint Roadmap</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Diagrams</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>Cloudflare Setup</h1>
+      <p>DNS yonetimi, Argo Tunnels, ve AWS ACM entegrasyonu - legendsdxp.com domain yapisi.</p>
+    </header>
+
+    <!-- Overview Section -->
+    <section id="overview" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Traffic Flow Overview</h2>
+        <span class="diagram-section__badge">Cloudflare</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Cloudflare, DNS yonetimi ve Argo Tunnel ile AWS ortamlarina guvenli erisim saglar.
+          Production ve Staging ortamlari farkli Argo Tunnel'lar uzerinden yonlendirilir.
+        </p>
+
+        <div class="mermaid">
+flowchart TB
+    subgraph INTERNET["Internet"]
+        USER["Users"]
+    end
+
+    subgraph CF["Cloudflare (legendsdxp.com)"]
+        DNS["DNS<br/><small>alexis.ns.cloudflare.com<br/>gwen.ns.cloudflare.com</small>"]
+        WAF["WAF / DDoS<br/>Protection"]
+
+        subgraph TUNNELS["Argo Tunnels"]
+            T_PROD["Production Tunnel<br/><small>12dc2b72-e2fa-4528...</small>"]
+            T_STG["Staging Tunnel<br/><small>5ea41e92-6b72-4db9...</small>"]
+        end
+    end
+
+    subgraph AWS_PROD["AWS Production (957976799355)"]
+        PROD_BE["backend-nickelodeon-production-access"]
+        PROD_PG["pgadmin4-nickelodeon-production-access"]
+    end
+
+    subgraph AWS_STG["AWS Staging (123644281811)"]
+        STG_FE["frontend-nickelodeon-staging-access"]
+        STG_BE["backend-nickelodeon-staging-access"]
+        STG_ADMIN["admin-nickelodeon-staging-access"]
+        STG_PG["pgadmin4-nickelodeon-staging-access"]
+    end
+
+    USER --> DNS
+    DNS --> WAF
+    WAF --> T_PROD
+    WAF --> T_STG
+
+    T_PROD --> PROD_BE
+    T_PROD --> PROD_PG
+
+    T_STG --> STG_FE
+    T_STG --> STG_BE
+    T_STG --> STG_ADMIN
+    T_STG --> STG_PG
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">Domain</div>
+            <div class="info-card__value">legendsdxp.com</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">NS Servers</div>
+            <div class="info-card__value">alexis, gwen</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Argo Tunnels</div>
+            <div class="info-card__value">2 (Prod + Staging)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Proxied Records</div>
+            <div class="info-card__value">6 CNAME</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">ACM Validations</div>
+            <div class="info-card__value">4 CNAME</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Argo Tunnels -->
+    <section id="tunnels" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Argo Tunnels</h2>
+        <span class="diagram-section__badge">Cloudflare</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Argo Tunnel, Cloudflare'den AWS private network'e guvenli, outbound-only baglanti saglar.
+          Public IP veya firewall acmaya gerek kalmadan internal servislere erisim.
+        </p>
+
+        <div class="mermaid">
+flowchart LR
+    subgraph CF["Cloudflare Edge"]
+        EDGE["Edge Network"]
+    end
+
+    subgraph TUNNEL_PROD["Production Tunnel"]
+        CONN_P["cloudflared<br/><small>Connector</small>"]
+    end
+
+    subgraph TUNNEL_STG["Staging Tunnel"]
+        CONN_S["cloudflared<br/><small>Connector</small>"]
+    end
+
+    subgraph AWS_P["AWS Prod VPC"]
+        ALB_P["Private ALB"]
+        ECS_P["ECS Services"]
+    end
+
+    subgraph AWS_S["AWS Staging VPC"]
+        ALB_S["Private ALB"]
+        ECS_S["ECS Services"]
+    end
+
+    EDGE <-->|"Encrypted"| CONN_P
+    EDGE <-->|"Encrypted"| CONN_S
+
+    CONN_P --> ALB_P --> ECS_P
+    CONN_S --> ALB_S --> ECS_S
+        </div>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>Tunnel</th>
+              <th>ID</th>
+              <th>Environment</th>
+              <th>Services</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Production Tunnel</strong></td>
+              <td><code>12dc2b72-e2fa-4528-9cf7-85315af26f5c</code></td>
+              <td><span class="env-badge env-prod">PROD</span></td>
+              <td>backend, pgadmin4</td>
+            </tr>
+            <tr>
+              <td><strong>Staging Tunnel</strong></td>
+              <td><code>5ea41e92-6b72-4db9-9de7-632d8d7fe589</code></td>
+              <td><span class="env-badge env-staging">STG</span></td>
+              <td>frontend, backend, admin, pgadmin4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- DNS Records -->
+    <section id="dns" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">DNS Records</h2>
+        <span class="diagram-section__badge">DNS</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Cloudflare DNS kayitlari - Argo Tunnel CNAME'leri (proxied) ve AWS ACM validation CNAME'leri.
+        </p>
+
+        <div class="subsection">
+          <h3 class="subsection__title">Application Access Records (Proxied)</h3>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Subdomain</th>
+                <th>Type</th>
+                <th>Target</th>
+                <th>Env</th>
+                <th>Proxy</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>backend-nickelodeon-production-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>12dc2b72-...cfargotunnel.com</td>
+                <td><span class="env-badge env-prod">PROD</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+              <tr>
+                <td><code>pgadmin4-nickelodeon-production-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>12dc2b72-...cfargotunnel.com</td>
+                <td><span class="env-badge env-prod">PROD</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+              <tr>
+                <td><code>frontend-nickelodeon-staging-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>5ea41e92-...cfargotunnel.com</td>
+                <td><span class="env-badge env-staging">STG</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+              <tr>
+                <td><code>backend-nickelodeon-staging-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>5ea41e92-...cfargotunnel.com</td>
+                <td><span class="env-badge env-staging">STG</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+              <tr>
+                <td><code>admin-nickelodeon-staging-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>5ea41e92-...cfargotunnel.com</td>
+                <td><span class="env-badge env-staging">STG</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+              <tr>
+                <td><code>pgadmin4-nickelodeon-staging-access</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>5ea41e92-...cfargotunnel.com</td>
+                <td><span class="env-badge env-staging">STG</span></td>
+                <td><span class="proxy-on">Proxied</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection__title">AWS ACM Validation Records</h3>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Record Name</th>
+                <th>Type</th>
+                <th>Target</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>_6b1e03eb7cc805ddba22eaf3b4b98b45.legendsdxp.com</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>_ee1beb330509f41...acm-validations.aws</td>
+                <td>Production ACM</td>
+              </tr>
+              <tr>
+                <td><code>_d1de668b7a51c8f6c9bbbcab61f0a039.legendsdxp.com</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>_84320ecb1e354815...acm-validations.aws</td>
+                <td>Staging ACM</td>
+              </tr>
+              <tr>
+                <td><code>_efa4fddba63a82e471c72710d375c56d.nickelodeon.production.public</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>_9751a56fb3c870b8...acm-validations.aws</td>
+                <td>Production Public ACM</td>
+              </tr>
+              <tr>
+                <td><code>_1460c86a4c80b525e9991d2cd575f2a3.nickelodeon.production.private</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>_c56177d57552868...acm-validations.aws</td>
+                <td>Production Private ACM</td>
+              </tr>
+              <tr>
+                <td><code>_4e81b09be46ae45cbe8e93cebd2627b8.nickelodeon.staging.private</code></td>
+                <td><span class="record-badge record-cname">CNAME</span></td>
+                <td>_70a2e4249e4bdb33...acm-validations.aws</td>
+                <td>Staging Private ACM</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection__title">AWS Route53 Delegation (NS Records)</h3>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Subdomain</th>
+                <th>Type</th>
+                <th>NS Servers</th>
+                <th>Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>nickelodeon-production.legendsdxp.com</code></td>
+                <td><span class="record-badge record-ns">NS</span></td>
+                <td>ns-1503.awsdns-59.org, ns-240.awsdns-30.com, ns-1856.awsdns-40.co.uk, ns-666.awsdns-19.net</td>
+                <td>AWS Route53 delegation</td>
+              </tr>
+              <tr>
+                <td><code>nickelodeon.production.public.legendsdxp.com</code></td>
+                <td><span class="record-badge record-ns">NS</span></td>
+                <td>ns-1097.awsdns-09.org, ns-258.awsdns-32.com, ns-586.awsdns-09.net, ns-1896.awsdns-45.co.uk</td>
+                <td>AWS Route53 public zone</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Access URLs -->
+    <section id="urls" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Application Access URLs</h2>
+        <span class="diagram-section__badge">URLs</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Cloudflare Argo Tunnel uzerinden erisilebilen application URL'leri.
+        </p>
+
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>URL</th>
+              <th>Environment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Backend API</strong></td>
+              <td><code>https://backend-nickelodeon-production-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-prod">PROD</span></td>
+            </tr>
+            <tr>
+              <td><strong>pgAdmin4</strong></td>
+              <td><code>https://pgadmin4-nickelodeon-production-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-prod">PROD</span></td>
+            </tr>
+            <tr>
+              <td><strong>Frontend</strong></td>
+              <td><code>https://frontend-nickelodeon-staging-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-staging">STG</span></td>
+            </tr>
+            <tr>
+              <td><strong>Backend API</strong></td>
+              <td><code>https://backend-nickelodeon-staging-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-staging">STG</span></td>
+            </tr>
+            <tr>
+              <td><strong>Admin Panel</strong></td>
+              <td><code>https://admin-nickelodeon-staging-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-staging">STG</span></td>
+            </tr>
+            <tr>
+              <td><strong>pgAdmin4</strong></td>
+              <td><code>https://pgadmin4-nickelodeon-staging-access.legendsdxp.com</code></td>
+              <td><span class="env-badge env-staging">STG</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#0d9488',
+        primaryTextColor: '#fff',
+        primaryBorderColor: '#0d9488',
+        lineColor: '#666',
+        secondaryColor: '#1a1a1a',
+        tertiaryColor: '#252525',
+        background: '#252525',
+        mainBkg: '#252525',
+        secondBkg: '#1a1a1a',
+        textColor: '#fff',
+        clusterBkg: '#1a1a1a',
+        clusterBorder: '#444',
+        edgeLabelBackground: '#252525',
+        nodeTextColor: '#fff'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagrams - Legends DXP</title>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Gallery Grid */
+    .diagram-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .diagram-card {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .diagram-card:hover {
+      border-color: #0d9488;
+      transform: translateY(-2px);
+    }
+
+    .diagram-card__preview {
+      height: 180px;
+      background: #252525;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .diagram-card__preview-icon {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+
+    .diagram-card__preview-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      background: #0d9488;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .diagram-card__content {
+      padding: 20px;
+    }
+
+    .diagram-card__title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .diagram-card__description {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .diagram-card__meta {
+      display: flex;
+      gap: 16px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .diagram-card__meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .diagram-card__link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 16px;
+      padding: 8px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .diagram-card__link:hover {
+      background: #0d9488;
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 48px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Stats */
+    .stats-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-card__value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #0d9488;
+    }
+
+    .stat-card__label {
+      font-size: 13px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* Badge Colors */
+    .badge-flow { background: #0d9488; }
+    .badge-er { background: #3b82f6; }
+    .badge-state { background: #8b5cf6; }
+    .badge-swimlane { background: #f59e0b; }
+    .badge-sequence { background: #ec4899; }
+    .badge-architecture { background: #ef4444; }
+  </style>
+</head>
+<body x-data="{ activeSection: 'all' }">
+  <script src="shared/diagram-layout.js"></script>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Diagrams</h1>
+      <p>Legends DXP Visual Schematics</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Overview</div>
+      <a href="#all" class="nav-link" :class="{ active: activeSection === 'all' }" @click="activeSection = 'all'">All Diagrams</a>
+
+      <div class="nav-group-title">Flow Diagrams</div>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+      <a href="admin-hierarchy.html" class="nav-link">Admin Hierarchy</a>
+
+      <div class="nav-group-title">Data Diagrams</div>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+
+      <div class="nav-group-title">State Diagrams</div>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+
+      <div class="nav-group-title">Infrastructure</div>
+      <a href="infrastructure.html" class="nav-link">CI/CD & GitHub</a>
+      <a href="aws-architecture.html" class="nav-link">AWS Architecture</a>
+
+      <div class="nav-group-title">Business Flows</div>
+      <a href="business-flows.html" class="nav-link">Permission & Onboarding</a>
+
+      <div class="nav-group-title">API Sequences</div>
+      <a href="api-sequences.html" class="nav-link">Auth & Checkout</a>
+
+      <div class="nav-group-title">Cloudflare</div>
+      <a href="cloudflare-setup.html" class="nav-link">DNS & Tunnels</a>
+
+      <div class="nav-group-title">Project Planning</div>
+      <a href="project-planning.html" class="nav-link">Sprint Roadmap</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="../../index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Wireframes</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>Visual Diagrams</h1>
+      <p>Legends DXP platform visual documentation - flows, entities, states, and more.</p>
+    </header>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-card__value">27</div>
+        <div class="stat-card__label">Total Diagrams</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">2</div>
+        <div class="stat-card__label">User Flows</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">1</div>
+        <div class="stat-card__label">ER Diagrams</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">2</div>
+        <div class="stat-card__label">State Machines</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">6</div>
+        <div class="stat-card__label">Infrastructure</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">4</div>
+        <div class="stat-card__label">Business Flows</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">4</div>
+        <div class="stat-card__label">API Sequences</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">4</div>
+        <div class="stat-card__label">Cloudflare</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__value">4</div>
+        <div class="stat-card__label">Planning</div>
+      </div>
+    </div>
+
+    <!-- User Flows -->
+    <h2 class="section-title">User Flows</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔐</span>
+          <span class="diagram-card__preview-badge badge-flow">Flow</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Authentication Flow (K-001)</h3>
+          <p class="diagram-card__description">Kimlik dogrulama akisi - Sadece cep telefonu + OTP ile giris. E-posta ve sifre sistemi yok.</p>
+          <div class="diagram-card__meta">
+            <span>14 nodes</span>
+            <span>14 edges</span>
+            <span>v1.0</span>
+          </div>
+          <a href="user-flows.html#auth-flow" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">👥</span>
+          <span class="diagram-card__preview-badge badge-swimlane">Swimlane</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Admin Hierarchy (K-003)</h3>
+          <p class="diagram-card__description">3 katmanli yonetici hiyerarsisi - Super Admin, Tenant Admin, Editor akislari.</p>
+          <div class="diagram-card__meta">
+            <span>17 nodes</span>
+            <span>16 edges</span>
+            <span>v1.0</span>
+          </div>
+          <a href="user-flows.html#admin-hierarchy" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entity Relationships -->
+    <h2 class="section-title">Entity Relationships</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🗃️</span>
+          <span class="diagram-card__preview-badge badge-er">ER</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Domain Model</h3>
+          <p class="diagram-card__description">Multi-tenant platform entity iliskileri - Tenant, User, Product, Order, Payment entities.</p>
+          <div class="diagram-card__meta">
+            <span>11 entities</span>
+            <span>14 relations</span>
+            <span>v1.0</span>
+          </div>
+          <a href="entity-relationships.html" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- State Machines -->
+    <h2 class="section-title">State Machines</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">📦</span>
+          <span class="diagram-card__preview-badge badge-state">State</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Order States</h3>
+          <p class="diagram-card__description">Siparis durumu gecisleri - Created, Pending, Paid, Confirmed, Completed lifecycle.</p>
+          <div class="diagram-card__meta">
+            <span>10 states</span>
+            <span>12 transitions</span>
+            <span>v1.0</span>
+          </div>
+          <a href="state-machines.html#order-states" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">💳</span>
+          <span class="diagram-card__preview-badge badge-state">State</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Payment States</h3>
+          <p class="diagram-card__description">Odeme durumu gecisleri - Initiated, Pending, Processing, Captured, Refunded lifecycle.</p>
+          <div class="diagram-card__meta">
+            <span>11 states</span>
+            <span>13 transitions</span>
+            <span>v1.0</span>
+          </div>
+          <a href="state-machines.html#payment-states" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Infrastructure -->
+    <h2 class="section-title">Infrastructure</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🚀</span>
+          <span class="diagram-card__preview-badge badge-architecture">DevOps</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">CI/CD Pipeline</h3>
+          <p class="diagram-card__description">GitHub Actions ile AWS ECS deployment. 3 app, 2 account, 2 region.</p>
+          <div class="diagram-card__meta">
+            <span>4 workflows</span>
+            <span>2 accounts</span>
+            <span>v1.0</span>
+          </div>
+          <a href="infrastructure.html#cicd-pipeline" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">⚙️</span>
+          <span class="diagram-card__preview-badge badge-architecture">DevOps</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Pipeline Detail</h3>
+          <p class="diagram-card__description">Step-by-step deployment akisi: OIDC Auth → Docker Build → ECR → ECS.</p>
+          <div class="diagram-card__meta">
+            <span>5 stages</span>
+            <span>10 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="infrastructure.html#pipeline-detail" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">☁️</span>
+          <span class="diagram-card__preview-badge badge-architecture">AWS</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">AWS Overview</h3>
+          <p class="diagram-card__description">Multi-account architecture - Production & Staging VPCs, ECS, RDS, ALB.</p>
+          <div class="diagram-card__meta">
+            <span>2 accounts</span>
+            <span>2 VPCs</span>
+            <span>v1.0</span>
+          </div>
+          <a href="aws-architecture.html#overview" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🗄️</span>
+          <span class="diagram-card__preview-badge badge-architecture">AWS</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">ECR & ECS Services</h3>
+          <p class="diagram-card__description">Container registry ve ECS services - frontend, backend, admin.</p>
+          <div class="diagram-card__meta">
+            <span>5 repos</span>
+            <span>5 services</span>
+            <span>v1.0</span>
+          </div>
+          <a href="aws-architecture.html#ecr" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🌐</span>
+          <span class="diagram-card__preview-badge badge-architecture">AWS</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Network Architecture</h3>
+          <p class="diagram-card__description">VPC, Subnets, ALB yapisi - 2 AZ, private/public subnets.</p>
+          <div class="diagram-card__meta">
+            <span>2 VPCs</span>
+            <span>8 subnets</span>
+            <span>v1.0</span>
+          </div>
+          <a href="aws-architecture.html#network" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">➡️</span>
+          <span class="diagram-card__preview-badge badge-sequence">Flow</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Request Flow</h3>
+          <p class="diagram-card__description">User → Cloudflare → ALB → ECS → RDS request akisi.</p>
+          <div class="diagram-card__meta">
+            <span>6 hops</span>
+            <span>sequence</span>
+            <span>v1.0</span>
+          </div>
+          <a href="aws-architecture.html#dataflow" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Business Flows -->
+    <h2 class="section-title">Business Flows</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">✅</span>
+          <span class="diagram-card__preview-badge badge-flow">Flow</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Permission Matrix (K-002)</h3>
+          <p class="diagram-card__description">Granuler yetki sistemi - Checkbox tabanli, sabit roller yok. Store, CMS, Kampanya kategorileri.</p>
+          <div class="diagram-card__meta">
+            <span>3 levels</span>
+            <span>4 categories</span>
+            <span>v1.0</span>
+          </div>
+          <a href="business-flows.html#permission-matrix" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🏢</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Tenant Onboarding</h3>
+          <p class="diagram-card__description">Super Admin tenant olusturma akisi - DB, config, Tenant Admin atama.</p>
+          <div class="diagram-card__meta">
+            <span>4 actors</span>
+            <span>8 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="business-flows.html#tenant-onboarding" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">📧</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">User Invitation</h3>
+          <p class="diagram-card__description">Tenant Admin editor davet akisi - Telefon, yetki atama, SMS aktivasyon.</p>
+          <div class="diagram-card__meta">
+            <span>4 actors</span>
+            <span>10 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="business-flows.html#user-invitation" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔀</span>
+          <span class="diagram-card__preview-badge badge-er">Data</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Multi-Tenant Data Flow</h3>
+          <p class="diagram-card__description">Database izolasyonu - system_db + tenant_xxx_db yapisi, context middleware.</p>
+          <div class="diagram-card__meta">
+            <span>3 DBs</span>
+            <span>4 components</span>
+            <span>v1.0</span>
+          </div>
+          <a href="business-flows.html#multi-tenant-data" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- API Sequences -->
+    <h2 class="section-title">API Sequences</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">📱</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Client Login (K-001)</h3>
+          <p class="diagram-card__description">Email OTP ile musteri girisi - request-otp, verify-otp, guest-session.</p>
+          <div class="diagram-card__meta">
+            <span>5 actors</span>
+            <span>12 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="api-sequences.html#client-login" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔑</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Admin Login</h3>
+          <p class="diagram-card__description">System Admin & Project Admin - Email/SMS OTP, domain whitelist, permissions.</p>
+          <div class="diagram-card__meta">
+            <span>5 actors</span>
+            <span>14 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="api-sequences.html#admin-login" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🛒</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Checkout Flow</h3>
+          <p class="diagram-card__description">Cart validation, order creation, 3DS payment, session reservation.</p>
+          <div class="diagram-card__meta">
+            <span>6 actors</span>
+            <span>18 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="api-sequences.html#checkout-flow" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔄</span>
+          <span class="diagram-card__preview-badge badge-sequence">Sequence</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Token Lifecycle</h3>
+          <p class="diagram-card__description">JWT refresh, logout, force-logout akislari. Access/refresh token yonetimi.</p>
+          <div class="diagram-card__meta">
+            <span>4 actors</span>
+            <span>10 steps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="api-sequences.html#token-lifecycle" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cloudflare -->
+    <h2 class="section-title">Cloudflare</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🌐</span>
+          <span class="diagram-card__preview-badge" style="background: #f97316;">CF</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Traffic Flow</h3>
+          <p class="diagram-card__description">Cloudflare DNS, WAF, Argo Tunnel ile AWS ortamlarina trafik akisi.</p>
+          <div class="diagram-card__meta">
+            <span>2 tunnels</span>
+            <span>6 services</span>
+            <span>v1.0</span>
+          </div>
+          <a href="cloudflare-setup.html#overview" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔒</span>
+          <span class="diagram-card__preview-badge" style="background: #f97316;">CF</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Argo Tunnels</h3>
+          <p class="diagram-card__description">Production ve Staging icin guvenli outbound-only tunnel yapisi.</p>
+          <div class="diagram-card__meta">
+            <span>2 tunnels</span>
+            <span>encrypted</span>
+            <span>v1.0</span>
+          </div>
+          <a href="cloudflare-setup.html#tunnels" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">📋</span>
+          <span class="diagram-card__preview-badge" style="background: #f97316;">CF</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">DNS Records</h3>
+          <p class="diagram-card__description">CNAME, NS kayitlari - Argo Tunnel ve AWS ACM validation.</p>
+          <div class="diagram-card__meta">
+            <span>6 CNAME</span>
+            <span>5 ACM</span>
+            <span>v1.0</span>
+          </div>
+          <a href="cloudflare-setup.html#dns" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔗</span>
+          <span class="diagram-card__preview-badge" style="background: #f97316;">CF</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Access URLs</h3>
+          <p class="diagram-card__description">Argo Tunnel uzerinden erisilebilen application URL listesi.</p>
+          <div class="diagram-card__meta">
+            <span>6 URLs</span>
+            <span>2 envs</span>
+            <span>v1.0</span>
+          </div>
+          <a href="cloudflare-setup.html#urls" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Planning -->
+    <h2 class="section-title">Project Planning</h2>
+    <div class="diagram-gallery">
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">📅</span>
+          <span class="diagram-card__preview-badge" style="background: #8b5cf6;">Plan</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Sprint Roadmap</h3>
+          <p class="diagram-card__description">Faz-1 sprint timeline - 7 sprint, 16 epic, 8 milestone. 22 Ara 2025 - 1 Nis 2026.</p>
+          <div class="diagram-card__meta">
+            <span>7 sprints</span>
+            <span>16 epics</span>
+            <span>v1.0</span>
+          </div>
+          <a href="project-planning.html#roadmap" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🔀</span>
+          <span class="diagram-card__preview-badge" style="background: #8b5cf6;">Plan</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Epic Dependencies</h3>
+          <p class="diagram-card__description">16 Epic arasindaki bagimliliklar ve akis iliskileri - Foundation'dan Launch'a.</p>
+          <div class="diagram-card__meta">
+            <span>16 epics</span>
+            <span>25 deps</span>
+            <span>v1.0</span>
+          </div>
+          <a href="project-planning.html#dependencies" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">🎯</span>
+          <span class="diagram-card__preview-badge" style="background: #8b5cf6;">Plan</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Milestones</h3>
+          <p class="diagram-card__description">8 Major Milestone - M1 IAM'den M8 Production Launch'a timeline.</p>
+          <div class="diagram-card__meta">
+            <span>8 milestones</span>
+            <span>4 months</span>
+            <span>v1.0</span>
+          </div>
+          <a href="project-planning.html#milestones" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="diagram-card">
+        <div class="diagram-card__preview">
+          <span class="diagram-card__preview-icon">👥</span>
+          <span class="diagram-card__preview-badge" style="background: #8b5cf6;">Plan</span>
+        </div>
+        <div class="diagram-card__content">
+          <h3 class="diagram-card__title">Team Allocation</h3>
+          <p class="diagram-card__description">Sprint bazli takim dagilimi - Backend, Frontend, Mobile, DevOps, QA workload.</p>
+          <div class="diagram-card__meta">
+            <span>7 teams</span>
+            <span>7 sprints</span>
+            <span>v1.0</span>
+          </div>
+          <a href="project-planning.html#team-allocation" class="diagram-card__link">
+            View Diagram &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

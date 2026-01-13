@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Planning Diagrams - Legends DXP</title>
+    <link rel="stylesheet" href="../../../dist/output.css">
+    <link rel="stylesheet" href="shared/diagram-layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #94a3b8;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #60a5fa;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            color: #93c5fd;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .nav-tab:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .nav-tab.active {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .diagram-section {
+            display: none;
+            background: #1e293b;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .diagram-section.active {
+            display: block;
+        }
+
+        .diagram-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #f8fafc;
+            margin-bottom: 0.5rem;
+        }
+
+        .diagram-section .description {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .mermaid {
+            background: #0f172a;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            overflow-x: auto;
+        }
+
+        .diagram-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .info-card .label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-card .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        .info-card .value.green { color: #22c55e; }
+        .info-card .value.blue { color: #3b82f6; }
+        .info-card .value.yellow { color: #eab308; }
+        .info-card .value.purple { color: #a855f7; }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #0f172a;
+            border-radius: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+        }
+
+        .sprint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .sprint-table th,
+        .sprint-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+
+        .sprint-table th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .sprint-table td {
+            color: #e2e8f0;
+        }
+
+        .sprint-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .sprint-badge.s1 { background: #166534; color: #86efac; }
+        .sprint-badge.s2 { background: #1e40af; color: #93c5fd; }
+        .sprint-badge.s3 { background: #7c2d12; color: #fdba74; }
+        .sprint-badge.s4 { background: #6b21a8; color: #d8b4fe; }
+        .sprint-badge.s5 { background: #0e7490; color: #67e8f9; }
+        .sprint-badge.s6 { background: #a21caf; color: #f0abfc; }
+        .sprint-badge.s7 { background: #b91c1c; color: #fca5a5; }
+
+        .milestone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: #fbbf24;
+            color: #1e293b;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .epic-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .epic-card h4 {
+            color: #f8fafc;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .epic-card .meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .gantt-scroll {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Diagram Index
+        </a>
+
+        <div class="header">
+            <h1>Project Planning Diagrams</h1>
+            <p>Faz-1 Sprint Roadmap ve Epic Dependency Graph - Legends DXP Platform</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('roadmap')">Sprint Roadmap</button>
+            <button class="nav-tab" onclick="showSection('dependencies')">Epic Dependencies</button>
+            <button class="nav-tab" onclick="showSection('milestones')">Milestones</button>
+            <button class="nav-tab" onclick="showSection('team-allocation')">Team Allocation</button>
+        </div>
+
+        <!-- Sprint Roadmap Section -->
+        <div id="roadmap" class="diagram-section active">
+            <h2>Sprint Roadmap - Faz 1</h2>
+            <p class="description">22 Aralık 2025 - 1 Nisan 2026 | 7 Sprint + Buffer Week</p>
+
+            <div class="diagram-info">
+                <div class="info-card">
+                    <div class="label">Toplam Sprint</div>
+                    <div class="value blue">7</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Toplam Epic</div>
+                    <div class="value purple">16</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Toplam Story</div>
+                    <div class="value green">58</div>
+                </div>
+                <div class="info-card">
+                    <div class="label">Toplam Task</div>
+                    <div class="value yellow">~290</div>
+                </div>
+            </div>
+
+            <div class="gantt-scroll">
+                <div class="mermaid">
+gantt
+    title Faz-1 Sprint Roadmap (22 Ara 2025 - 1 Nis 2026)
+    dateFormat  YYYY-MM-DD
+    axisFormat  %d %b
+
+    section Sprint 1
+    IAM & Auth Core           :s1-iam, 2025-12-22, 14d
+
+    section Sprint 2
+    Security & Audit          :s2-sec, 2026-01-06, 13d
+    Ticketing MVP             :s2-tkt, 2026-01-06, 13d
+    i18n Setup                :s2-i18n, 2026-01-06, 13d
+    Form Builder              :s2-form, 2026-01-06, 13d
+
+    section Sprint 3
+    Campaign Engine           :s3-camp, 2026-01-20, 13d
+    Coupon System             :s3-coup, 2026-01-20, 13d
+
+    section Sprint 4
+    Store Foundation          :s4-store, 2026-02-03, 13d
+    Monitoring & Analytics    :s4-mon, 2026-02-03, 13d
+    External Integrations     :s4-int, 2026-02-03, 13d
+    Performance               :s4-perf, 2026-02-03, 13d
+    DevOps Infra              :s4-dev, 2026-02-03, 13d
+
+    section Sprint 5
+    Cart & Checkout           :s5-cart, 2026-02-17, 13d
+    CMS & Content             :s5-cms, 2026-02-17, 13d
+    Mobile Foundation         :s5-mob, 2026-02-17, 13d
+
+    section Sprint 6
+    Mobile Apps               :s6-app, 2026-03-03, 13d
+    Store Reviews             :s6-rev, 2026-03-03, 13d
+    Payment Integrations      :s6-pay, 2026-03-03, 13d
+
+    section Sprint 7
+    Order Management          :s7-ord, 2026-03-17, 13d
+    Kargo & Shipping          :s7-kar, 2026-03-17, 13d
+    Launch Prep               :s7-launch, 2026-03-17, 13d
+
+    section Buffer
+    Buffer Week               :buff, 2026-03-30, 7d
+
+    section Milestones
+    M1 - IAM Production Ready :milestone, m1, 2026-01-04, 0d
+    M2 - Admin Panel MVP      :milestone, m2, 2026-01-18, 0d
+    M3 - Ticketing Live       :milestone, m3, 2026-01-18, 0d
+    M4 - Campaign Engine Ready:milestone, m4, 2026-02-01, 0d
+    M5 - Store Foundation     :milestone, m5, 2026-02-15, 0d
+    M6 - Mobile Beta          :milestone, m6, 2026-03-01, 0d
+    M7 - Full Integration     :milestone, m7, 2026-03-15, 0d
+    M8 - Production Launch    :milestone, m8, 2026-04-01, 0d
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #22c55e;"></div>
+                    <span>Sprint 1 - IAM</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6;"></div>
+                    <span>Sprint 2 - Security & Ticketing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f97316;"></div>
+                    <span>Sprint 3 - Campaign</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #a855f7;"></div>
+                    <span>Sprint 4 - Store & Infra</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #06b6d4;"></div>
+                    <span>Sprint 5 - Checkout & Mobile</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ec4899;"></div>
+                    <span>Sprint 6 - Mobile Apps</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ef4444;"></div>
+                    <span>Sprint 7 - Orders & Launch</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #fbbf24;"></div>
+                    <span>Milestone</span>
+                </div>
+            </div>
+
+            <table class="sprint-table">
+                <thead>
+                    <tr>
+                        <th>Sprint</th>
+                        <th>Tarih</th>
+                        <th>Epic'ler</th>
+                        <th>SP</th>
+                        <th>Milestone</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="sprint-badge s1">S1</span></td>
+                        <td>22 Ara - 4 Oca</td>
+                        <td>IAM & Auth</td>
+                        <td>~47</td>
+                        <td><span class="milestone-badge">M1</span> IAM Production Ready</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s2">S2</span></td>
+                        <td>6 Oca - 18 Oca</td>
+                        <td>Security, Ticketing, i18n, Forms</td>
+                        <td>~81</td>
+                        <td><span class="milestone-badge">M2</span> Admin Panel MVP <span class="milestone-badge">M3</span> Ticketing Live</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s3">S3</span></td>
+                        <td>20 Oca - 1 Şub</td>
+                        <td>Campaign Engine, Coupon</td>
+                        <td>~85</td>
+                        <td><span class="milestone-badge">M4</span> Campaign Engine Ready</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s4">S4</span></td>
+                        <td>3 Şub - 15 Şub</td>
+                        <td>Store, Monitoring, Integrations, Performance, DevOps</td>
+                        <td>~185</td>
+                        <td><span class="milestone-badge">M5</span> Store Foundation</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s5">S5</span></td>
+                        <td>17 Şub - 1 Mar</td>
+                        <td>Cart/Checkout, CMS, Mobile Foundation</td>
+                        <td>~167</td>
+                        <td><span class="milestone-badge">M6</span> Mobile Beta</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s6">S6</span></td>
+                        <td>3 Mar - 15 Mar</td>
+                        <td>Mobile Apps, Store Reviews, Payment</td>
+                        <td>~156</td>
+                        <td><span class="milestone-badge">M7</span> Full Integration</td>
+                    </tr>
+                    <tr>
+                        <td><span class="sprint-badge s7">S7</span></td>
+                        <td>17 Mar - 29 Mar</td>
+                        <td>Order Management, Kargo, Launch</td>
+                        <td>~131</td>
+                        <td><span class="milestone-badge">M8</span> Production Launch</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Epic Dependencies Section -->
+        <div id="dependencies" class="diagram-section">
+            <h2>Epic Dependency Graph</h2>
+            <p class="description">16 Epic arasındaki bağımlılıklar ve akış ilişkileri</p>
+
+            <div class="mermaid">
+flowchart TB
+    subgraph S1[Sprint 1 - Foundation]
+        IAM[IAM & Auth ~47 SP]
+    end
+
+    subgraph S2[Sprint 2 - Core Features]
+        SEC[Security & Audit ~21 SP]
+        TKT[Ticketing ~34 SP]
+        I18N[i18n ~13 SP]
+        FORM[Form Builder ~13 SP]
+    end
+
+    subgraph S3[Sprint 3 - Marketing]
+        CAMP[Campaign ~55 SP]
+        COUP[Coupon ~30 SP]
+    end
+
+    subgraph S4[Sprint 4 - Infrastructure]
+        STORE[Store Foundation ~55 SP]
+        MON[Monitoring ~34 SP]
+        INT[Integrations ~34 SP]
+        PERF[Performance ~21 SP]
+        DEV[DevOps ~41 SP]
+    end
+
+    subgraph S5[Sprint 5 - Commerce]
+        CART[Cart/Checkout ~89 SP]
+        CMS[CMS ~34 SP]
+        MOBF[Mobile Foundation ~44 SP]
+    end
+
+    subgraph S6[Sprint 6 - Mobile & Reviews]
+        MOBA[Mobile Apps ~89 SP]
+        REV[Reviews ~34 SP]
+        PAY[Payments ~33 SP]
+    end
+
+    subgraph S7[Sprint 7 - Launch]
+        ORD[Orders ~55 SP]
+        KARGO[Kargo ~34 SP]
+        LAUNCH[Launch ~42 SP]
+    end
+
+    IAM --> SEC
+    IAM --> TKT
+    IAM --> I18N
+    IAM --> FORM
+
+    SEC --> CAMP
+    TKT --> STORE
+
+    CAMP --> COUP
+    COUP --> CART
+
+    STORE --> CART
+    STORE --> CMS
+    STORE --> REV
+
+    INT --> PAY
+    DEV --> MON
+    PERF --> MOBF
+
+    CART --> ORD
+    CART --> PAY
+
+    MOBF --> MOBA
+    CMS --> MOBA
+
+    ORD --> KARGO
+    PAY --> ORD
+
+    KARGO --> LAUNCH
+    MOBA --> LAUNCH
+    REV --> LAUNCH
+
+    classDef s1 fill:#166534,stroke:#22c55e,color:#fff
+    classDef s2 fill:#1e40af,stroke:#3b82f6,color:#fff
+    classDef s3 fill:#7c2d12,stroke:#f97316,color:#fff
+    classDef s4 fill:#6b21a8,stroke:#a855f7,color:#fff
+    classDef s5 fill:#0e7490,stroke:#06b6d4,color:#fff
+    classDef s6 fill:#a21caf,stroke:#ec4899,color:#fff
+    classDef s7 fill:#b91c1c,stroke:#ef4444,color:#fff
+
+    class IAM s1
+    class SEC,TKT,I18N,FORM s2
+    class CAMP,COUP s3
+    class STORE,MON,INT,PERF,DEV s4
+    class CART,CMS,MOBF s5
+    class MOBA,REV,PAY s6
+    class ORD,KARGO,LAUNCH s7
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #22c55e;"></div>
+                    <span>Sprint 1 - Foundation</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #3b82f6;"></div>
+                    <span>Sprint 2 - Core</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #f97316;"></div>
+                    <span>Sprint 3 - Marketing</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #a855f7;"></div>
+                    <span>Sprint 4 - Infra</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #06b6d4;"></div>
+                    <span>Sprint 5 - Commerce</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ec4899;"></div>
+                    <span>Sprint 6 - Mobile</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #ef4444;"></div>
+                    <span>Sprint 7 - Launch</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestones Section -->
+        <div id="milestones" class="diagram-section">
+            <h2>Milestone Timeline</h2>
+            <p class="description">8 Major Milestone - Faz 1 Teslim Noktaları</p>
+
+            <div class="mermaid">
+timeline
+    title Faz-1 Milestones
+    section Ocak 2026
+        M1 (4 Oca) : IAM Production Ready
+                   : Auth, RBAC, Tenant Setup
+        M2 (18 Oca) : Admin Panel MVP
+                    : CRUD, Forms, i18n
+        M3 (18 Oca) : Ticketing Live
+                    : Ticket Types, Pools, Rules
+    section Şubat 2026
+        M4 (1 Şub) : Campaign Engine Ready
+                   : Campaigns, Coupons, Rules
+        M5 (15 Şub) : Store Foundation
+                    : Products, Categories, Search
+    section Mart 2026
+        M6 (1 Mar) : Mobile Beta
+                   : iOS/Android Foundation
+        M7 (15 Mar) : Full Integration
+                    : Payments, Shipping, 3rd Party
+    section Nisan 2026
+        M8 (1 Nis) : Production Launch
+                   : Go-Live, Monitoring, Support
+            </div>
+
+            <table class="sprint-table">
+                <thead>
+                    <tr>
+                        <th>Milestone</th>
+                        <th>Tarih</th>
+                        <th>Deliverables</th>
+                        <th>Success Criteria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="milestone-badge">M1</span></td>
+                        <td>4 Ocak 2026</td>
+                        <td>IAM Production Ready</td>
+                        <td>Login, OTP, RBAC, Multi-tenant Auth çalışıyor</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M2</span></td>
+                        <td>18 Ocak 2026</td>
+                        <td>Admin Panel MVP</td>
+                        <td>CRUD, Form Builder, i18n, Audit Log aktif</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M3</span></td>
+                        <td>18 Ocak 2026</td>
+                        <td>Ticketing Live</td>
+                        <td>Bilet türleri, satış, havuz yönetimi çalışıyor</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M4</span></td>
+                        <td>1 Şubat 2026</td>
+                        <td>Campaign Engine Ready</td>
+                        <td>Kampanya oluşturma, kupon sistemi, kurallar çalışıyor</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M5</span></td>
+                        <td>15 Şubat 2026</td>
+                        <td>Store Foundation</td>
+                        <td>Ürün yönetimi, kategori, arama, filtreleme çalışıyor</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M6</span></td>
+                        <td>1 Mart 2026</td>
+                        <td>Mobile Beta</td>
+                        <td>iOS/Android app'ler test edilebilir durumda</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M7</span></td>
+                        <td>15 Mart 2026</td>
+                        <td>Full Integration</td>
+                        <td>Ödeme, kargo, 3rd party entegrasyonlar tamamlanmış</td>
+                    </tr>
+                    <tr>
+                        <td><span class="milestone-badge">M8</span></td>
+                        <td>1 Nisan 2026</td>
+                        <td>Production Launch</td>
+                        <td>Canlıya çıkış, monitoring aktif, destek hazır</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Team Allocation Section -->
+        <div id="team-allocation" class="diagram-section">
+            <h2>Team Allocation per Sprint</h2>
+            <p class="description">Takım bazlı sprint dağılımı ve sorumluluklar</p>
+
+            <div class="mermaid">
+pie showData
+    title Sprint 4 Team Allocation (Highest Load)
+    "Backend" : 45
+    "Frontend" : 30
+    "DevOps" : 35
+    "Mobile" : 15
+    "QA" : 25
+    "Design" : 15
+    "Product" : 20
+            </div>
+
+            <table class="sprint-table">
+                <thead>
+                    <tr>
+                        <th>Team</th>
+                        <th>S1</th>
+                        <th>S2</th>
+                        <th>S3</th>
+                        <th>S4</th>
+                        <th>S5</th>
+                        <th>S6</th>
+                        <th>S7</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Backend</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟡 Med</td>
+                        <td>🔴 Critical</td>
+                        <td>🟢 High</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                    </tr>
+                    <tr>
+                        <td>Frontend</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                    </tr>
+                    <tr>
+                        <td>Mobile</td>
+                        <td>⚪ Low</td>
+                        <td>⚪ Low</td>
+                        <td>⚪ Low</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                        <td>🔴 Critical</td>
+                        <td>🟢 High</td>
+                    </tr>
+                    <tr>
+                        <td>DevOps</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>⚪ Low</td>
+                        <td>🔴 Critical</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                    </tr>
+                    <tr>
+                        <td>QA</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🟢 High</td>
+                        <td>🔴 Critical</td>
+                        <td>🔴 Critical</td>
+                    </tr>
+                    <tr>
+                        <td>Design</td>
+                        <td>🟢 High</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>⚪ Low</td>
+                    </tr>
+                    <tr>
+                        <td>Product</td>
+                        <td>🟢 High</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟡 Med</td>
+                        <td>🟢 High</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <span>🔴 Critical</span> - Peak workload, blockers possible
+                </div>
+                <div class="legend-item">
+                    <span>🟢 High</span> - Full capacity
+                </div>
+                <div class="legend-item">
+                    <span>🟡 Medium</span> - Normal load
+                </div>
+                <div class="legend-item">
+                    <span>⚪ Low</span> - Support/review focus
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#3b82f6',
+                primaryTextColor: '#f8fafc',
+                primaryBorderColor: '#60a5fa',
+                lineColor: '#64748b',
+                secondaryColor: '#1e293b',
+                tertiaryColor: '#0f172a',
+                background: '#0f172a',
+                mainBkg: '#1e293b',
+                secondBkg: '#334155',
+                border1: '#475569',
+                border2: '#64748b',
+                fontFamily: 'Inter, sans-serif'
+            },
+            gantt: {
+                titleTopMargin: 25,
+                barHeight: 20,
+                barGap: 4,
+                topPadding: 50,
+                sidePadding: 75
+            },
+            flowchart: {
+                curve: 'basis',
+                padding: 15
+            }
+        });
+
+        // Render mermaid diagrams in a section
+        async function renderMermaid(sectionId) {
+            const section = document.getElementById(sectionId);
+            const mermaidDivs = section.querySelectorAll('.mermaid:not([data-processed])');
+
+            for (const div of mermaidDivs) {
+                const graphDefinition = div.textContent;
+                const id = 'mermaid-' + Math.random().toString(36).substr(2, 9);
+                try {
+                    const { svg } = await mermaid.render(id, graphDefinition);
+                    div.innerHTML = svg;
+                    div.setAttribute('data-processed', 'true');
+                } catch (e) {
+                    console.error('Mermaid render error:', e);
+                    div.innerHTML = '<pre style="color: #ef4444;">Diagram render error: ' + e.message + '</pre>';
+                }
+            }
+        }
+
+        // Tab switching
+        async function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.diagram-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Remove active from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Activate clicked tab
+            event.target.classList.add('active');
+
+            // Render mermaid diagrams in this section
+            await renderMermaid(sectionId);
+        }
+
+        // Initial render for the active section
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMermaid('roadmap');
+        });
+    </script>
+    <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,313 @@
+/* Diagram Layout - Collapsible Sidebar */
+
+:root {
+  --sidebar-width: 280px;
+  --sidebar-collapsed-width: 60px;
+  --sidebar-transition: 0.25s ease;
+}
+
+/* Custom Scrollbar - Dark Theme */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #404040 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #404040;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #525252;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+  position: fixed;
+  left: var(--sidebar-width);
+  top: 16px;
+  width: 28px;
+  height: 28px;
+  background: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: left var(--sidebar-transition), background 0.15s;
+  transform: translateX(-50%);
+}
+
+.sidebar-toggle:hover {
+  background: #404040;
+}
+
+.sidebar-toggle svg {
+  width: 16px;
+  height: 16px;
+  stroke: #fff;
+  transition: transform 0.25s;
+}
+
+/* Collapsed state */
+body.sidebar-collapsed .sidebar-toggle {
+  left: var(--sidebar-collapsed-width);
+}
+
+body.sidebar-collapsed .sidebar-toggle svg {
+  transform: rotate(180deg);
+}
+
+/* Sidebar */
+.diagram-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  background: #1a1a1a;
+  border-right: 1px solid #2d2d2d;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 40;
+  transition: width var(--sidebar-transition);
+}
+
+body.sidebar-collapsed .diagram-sidebar {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* Sidebar content fade */
+.sidebar-header,
+.sidebar-nav,
+.sidebar-footer {
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+body.sidebar-collapsed .sidebar-header h1,
+body.sidebar-collapsed .sidebar-header p,
+body.sidebar-collapsed .nav-group-title,
+body.sidebar-collapsed .nav-link span,
+body.sidebar-collapsed .back-link span:last-child {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body.sidebar-collapsed .sidebar-header {
+  padding: 16px 12px;
+}
+
+body.sidebar-collapsed .sidebar-nav {
+  padding: 8px;
+}
+
+body.sidebar-collapsed .nav-link {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+body.sidebar-collapsed .sidebar-footer {
+  padding: 8px;
+}
+
+body.sidebar-collapsed .back-link {
+  padding: 10px;
+  justify-content: center;
+}
+
+/* Nav link icons for collapsed state */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-link-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* Main content */
+.diagram-main {
+  margin-left: var(--sidebar-width);
+  padding: 32px;
+  min-height: 100vh;
+  transition: margin-left var(--sidebar-transition);
+}
+
+body.sidebar-collapsed .diagram-main {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+/* Tooltip for collapsed state */
+body.sidebar-collapsed .nav-link {
+  position: relative;
+}
+
+body.sidebar-collapsed .nav-link::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s;
+  pointer-events: none;
+  z-index: 100;
+}
+
+body.sidebar-collapsed .nav-link:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Fullscreen diagram modal */
+.diagram-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+}
+
+.diagram-fullscreen-overlay.active {
+  display: flex;
+}
+
+.diagram-fullscreen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #2d2d2d;
+}
+
+.diagram-fullscreen-header h3 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.diagram-fullscreen-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.diagram-fullscreen-btn {
+  padding: 8px 12px;
+  background: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.diagram-fullscreen-btn:hover {
+  background: #404040;
+}
+
+.diagram-fullscreen-btn.close-btn {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.diagram-fullscreen-btn.close-btn:hover {
+  background: #dc2626;
+}
+
+.diagram-fullscreen-content {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagram-fullscreen-content .mermaid-container {
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+}
+
+/* Zoom indicator */
+.zoom-indicator {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1a1a1a;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+  padding: 8px 16px;
+  color: #888;
+  font-size: 13px;
+  z-index: 1001;
+  display: none;
+}
+
+.diagram-fullscreen-overlay.active .zoom-indicator {
+  display: block;
+}
+
+/* Expand button on diagram sections */
+.diagram-expand-btn {
+  padding: 6px 12px;
+  background: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.15s;
+}
+
+.diagram-expand-btn:hover {
+  background: #0d9488;
+  border-color: #0d9488;
+}
+
+.diagram-expand-btn svg {
+  width: 14px;
+  height: 14px;
+}

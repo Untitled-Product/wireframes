@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Machines - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #8b5cf6;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .diagram-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .diagram-section__title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 12px;
+      background: #8b5cf6;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .diagram-section__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .diagram-section__meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diagram-section__meta strong {
+      color: #999;
+    }
+
+    /* Mermaid Container */
+    .mermaid-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      overflow: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* State List */
+    .state-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .state-chip {
+      padding: 8px 16px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .state-chip__dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .state-chip--initial .state-chip__dot { background: #22c55e; }
+    .state-chip--active .state-chip__dot { background: #0d9488; }
+    .state-chip--final .state-chip__dot { background: #ef4444; }
+    .state-chip--error .state-chip__dot { background: #f59e0b; }
+    .state-chip--normal .state-chip__dot { background: #6b7280; }
+
+    /* Notes */
+    .diagram-notes {
+      margin-top: 24px;
+      padding: 20px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+    }
+
+    .diagram-notes h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #8b5cf6;
+    }
+
+    .diagram-notes ul {
+      list-style: none;
+    }
+
+    .diagram-notes li {
+      font-size: 13px;
+      color: #888;
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .diagram-notes li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #8b5cf6;
+    }
+
+    /* Transition Table */
+    .transition-table {
+      width: 100%;
+      margin-top: 24px;
+      border-collapse: collapse;
+    }
+
+    .transition-table th,
+    .transition-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .transition-table th {
+      background: #1a1a1a;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .transition-table td {
+      font-size: 14px;
+    }
+
+    .transition-table tr:hover td {
+      background: #1a1a1a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>State Machines</h1>
+      <p>Durum gecis diyagramlari</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">This Page</div>
+      <a href="#order-states" class="nav-link active">Order States</a>
+      <a href="#payment-states" class="nav-link">Payment States</a>
+
+      <div class="nav-group-title">Other Diagrams</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Gallery</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>State Machine Diagrams</h1>
+      <p>Siparis ve odeme durum gecisleri - lifecycle yonetimi</p>
+    </header>
+
+    <!-- Order States -->
+    <section id="order-states" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Order State Machine</h2>
+        <span class="diagram-section__badge">State Machine</span>
+      </div>
+      <p class="diagram-section__description">
+        Siparis yasam dongusu. Created &rarr; Pending Payment &rarr; Paid &rarr; Confirmed &rarr; Ready &rarr; Completed.
+        Iptal ve iade durumlari dahil.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>States:</strong> 10</span>
+        <span><strong>Transitions:</strong> 12</span>
+        <span><strong>Version:</strong> 1.0</span>
+      </div>
+
+      <div class="state-list">
+        <div class="state-chip state-chip--initial"><span class="state-chip__dot"></span> Created</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Pending Payment</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Processing</div>
+        <div class="state-chip state-chip--active"><span class="state-chip__dot"></span> Paid</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Confirmed</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Ready</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Completed</div>
+        <div class="state-chip state-chip--error"><span class="state-chip__dot"></span> Payment Failed</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Cancelled</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Refunded</div>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Created: Sepet olusturuldu
+
+    Created --> PendingPayment: checkout
+
+    PendingPayment --> Processing: pay
+    PendingPayment --> Cancelled: timeout/cancel
+
+    Processing --> Paid: success
+    Processing --> PaymentFailed: fail
+
+    PaymentFailed --> PendingPayment: retry
+    PaymentFailed --> Cancelled: abandon
+
+    Paid --> Confirmed: confirm
+    Paid --> Refunded: refund
+
+    Confirmed --> Ready: prepare
+    Confirmed --> Refunded: refund
+
+    Ready --> Completed: deliver
+
+    Completed --> [*]
+    Cancelled --> [*]
+    Refunded --> [*]
+
+    note right of Created
+        Kullanici sepete urun ekledi
+    end note
+
+    note right of PendingPayment
+        Odeme zaman asimi: 15 dakika
+    end note
+
+    note right of Refunded
+        Iade: sadece odeme sonrasi,
+        teslimden once
+    end note
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>State Aciklamalari</h4>
+        <ul>
+          <li><strong>Created:</strong> Sepet olusturuldu</li>
+          <li><strong>PendingPayment:</strong> Odeme bekleniyor (15 dk timeout)</li>
+          <li><strong>Processing:</strong> Odeme isleniyor</li>
+          <li><strong>Paid:</strong> Odeme tamamlandi</li>
+          <li><strong>Confirmed:</strong> Siparis onaylandi</li>
+          <li><strong>Ready:</strong> Hazirlandi</li>
+          <li><strong>Completed:</strong> Teslim edildi (Final)</li>
+          <li><strong>PaymentFailed:</strong> Odeme basarisiz</li>
+          <li><strong>Cancelled:</strong> Iptal edildi (Final)</li>
+          <li><strong>Refunded:</strong> Iade edildi (Final)</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Transitions</h3>
+      <table class="transition-table">
+        <thead>
+          <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Trigger</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Created</td><td>Pending Payment</td><td>checkout</td><td>Normal</td></tr>
+          <tr><td>Pending Payment</td><td>Processing</td><td>pay</td><td>Normal</td></tr>
+          <tr><td>Processing</td><td>Paid</td><td>success</td><td>Normal</td></tr>
+          <tr><td>Processing</td><td>Payment Failed</td><td>fail</td><td>Error</td></tr>
+          <tr><td>Payment Failed</td><td>Pending Payment</td><td>retry</td><td>Conditional</td></tr>
+          <tr><td>Paid</td><td>Confirmed</td><td>confirm</td><td>Normal</td></tr>
+          <tr><td>Confirmed</td><td>Ready</td><td>prepare</td><td>Normal</td></tr>
+          <tr><td>Ready</td><td>Completed</td><td>deliver</td><td>Normal</td></tr>
+          <tr><td>Pending Payment</td><td>Cancelled</td><td>timeout/cancel</td><td>Error</td></tr>
+          <tr><td>Paid</td><td>Refunded</td><td>refund</td><td>Conditional</td></tr>
+          <tr><td>Confirmed</td><td>Refunded</td><td>refund</td><td>Conditional</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Payment States -->
+    <section id="payment-states" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Payment State Machine</h2>
+        <span class="diagram-section__badge">State Machine</span>
+      </div>
+      <p class="diagram-section__description">
+        Odeme yasam dongusu. Initiated &rarr; Pending &rarr; Processing (3D Secure) &rarr; Authorized &rarr; Captured &rarr; Settled.
+        Iptal, hata ve iade durumlari dahil.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>States:</strong> 11</span>
+        <span><strong>Transitions:</strong> 13</span>
+        <span><strong>Version:</strong> 1.0</span>
+      </div>
+
+      <div class="state-list">
+        <div class="state-chip state-chip--initial"><span class="state-chip__dot"></span> Initiated</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Pending</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Processing</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Authorized</div>
+        <div class="state-chip state-chip--active"><span class="state-chip__dot"></span> Captured</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Settled</div>
+        <div class="state-chip state-chip--error"><span class="state-chip__dot"></span> Failed</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Cancelled</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Refund Pending</div>
+        <div class="state-chip state-chip--final"><span class="state-chip__dot"></span> Refunded</div>
+        <div class="state-chip state-chip--normal"><span class="state-chip__dot"></span> Partial Refund</div>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+stateDiagram-v2
+    [*] --> Initiated: Odeme baslatildi
+
+    Initiated --> Pending: submit
+
+    Pending --> Processing: 3D Secure
+    Pending --> Failed: reject
+
+    Processing --> Authorized: authorize
+    Processing --> Failed: error
+
+    Authorized --> Captured: capture
+    Authorized --> Cancelled: void
+
+    Captured --> Settled: settle
+    Captured --> RefundPending: refund request
+
+    RefundPending --> Refunded: full refund
+    RefundPending --> PartialRefund: partial
+
+    PartialRefund --> RefundPending: more refund
+    PartialRefund --> Refunded: complete
+
+    Settled --> [*]
+    Failed --> [*]
+    Cancelled --> [*]
+    Refunded --> [*]
+
+    note right of Processing
+        3D Secure: Tum kartlar icin zorunlu
+    end note
+
+    note right of Settled
+        Settlement: T+1 banka gunu
+    end note
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>State Aciklamalari</h4>
+        <ul>
+          <li><strong>Initiated:</strong> Odeme baslatildi</li>
+          <li><strong>Pending:</strong> Onay bekleniyor</li>
+          <li><strong>Processing:</strong> Banka islemi (3D Secure)</li>
+          <li><strong>Authorized:</strong> Yetkilendirildi</li>
+          <li><strong>Captured:</strong> Tahsil edildi</li>
+          <li><strong>Settled:</strong> Hesaba aktarildi (Final)</li>
+          <li><strong>Failed:</strong> Basarisiz (Final)</li>
+          <li><strong>Cancelled:</strong> Iptal edildi (Final)</li>
+          <li><strong>RefundPending:</strong> Iade bekleniyor</li>
+          <li><strong>Refunded:</strong> Iade edildi (Final)</li>
+          <li><strong>PartialRefund:</strong> Kismi iade</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Transitions</h3>
+      <table class="transition-table">
+        <thead>
+          <tr>
+            <th>From</th>
+            <th>To</th>
+            <th>Trigger</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Initiated</td><td>Pending</td><td>submit</td><td>Normal</td></tr>
+          <tr><td>Pending</td><td>Processing</td><td>3D Secure</td><td>Normal</td></tr>
+          <tr><td>Processing</td><td>Authorized</td><td>authorize</td><td>Normal</td></tr>
+          <tr><td>Authorized</td><td>Captured</td><td>capture</td><td>Normal</td></tr>
+          <tr><td>Captured</td><td>Settled</td><td>settle</td><td>Normal</td></tr>
+          <tr><td>Pending</td><td>Failed</td><td>reject</td><td>Error</td></tr>
+          <tr><td>Processing</td><td>Failed</td><td>error</td><td>Error</td></tr>
+          <tr><td>Authorized</td><td>Cancelled</td><td>void</td><td>Error</td></tr>
+          <tr><td>Captured</td><td>Refund Pending</td><td>refund request</td><td>Conditional</td></tr>
+          <tr><td>Refund Pending</td><td>Refunded</td><td>full refund</td><td>Normal</td></tr>
+          <tr><td>Refund Pending</td><td>Partial Refund</td><td>partial</td><td>Conditional</td></tr>
+          <tr><td>Partial Refund</td><td>Refunded</td><td>complete</td><td>Normal</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      stateDiagram: {
+        useMaxWidth: true
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

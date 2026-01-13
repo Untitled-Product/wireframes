@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Flows - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #f59e0b;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .diagram-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .diagram-section__title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 12px;
+      background: #f59e0b;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .diagram-section__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .diagram-section__meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diagram-section__meta strong {
+      color: #999;
+    }
+
+    /* Mermaid Container */
+    .mermaid-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      overflow: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Notes */
+    .diagram-notes {
+      margin-top: 24px;
+      padding: 20px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+    }
+
+    .diagram-notes h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #f59e0b;
+    }
+
+    .diagram-notes ul {
+      list-style: none;
+    }
+
+    .diagram-notes li {
+      font-size: 13px;
+      color: #888;
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .diagram-notes li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #f59e0b;
+    }
+
+    /* Info Table */
+    .info-table {
+      width: 100%;
+      margin-top: 24px;
+      border-collapse: collapse;
+    }
+
+    .info-table th,
+    .info-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .info-table th {
+      background: #1a1a1a;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .info-table td {
+      font-size: 14px;
+    }
+
+    .info-table tr:hover td {
+      background: #1a1a1a;
+    }
+
+    .info-table code {
+      background: #2d2d2d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #f59e0b;
+    }
+
+    /* Permission Grid */
+    .permission-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .permission-card {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .permission-card h5 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .permission-card h5 span {
+      font-size: 16px;
+    }
+
+    .permission-card ul {
+      list-style: none;
+    }
+
+    .permission-card li {
+      font-size: 13px;
+      color: #888;
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .permission-card li::before {
+      content: "☐";
+      color: #f59e0b;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Business Flows</h1>
+      <p>Is surecleri ve yetkiler</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">This Page</div>
+      <a href="#permission-matrix" class="nav-link active">Permission Matrix (K-002)</a>
+      <a href="#tenant-onboarding" class="nav-link">Tenant Onboarding</a>
+      <a href="#user-invitation" class="nav-link">User Invitation</a>
+      <a href="#multi-tenant-data" class="nav-link">Multi-Tenant Data Flow</a>
+
+      <div class="nav-group-title">Other Diagrams</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+      <a href="infrastructure.html" class="nav-link">Infrastructure</a>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Gallery</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>Business Flow Diagrams</h1>
+      <p>Yetki matrisi, tenant onboarding, kullanici davet akislari</p>
+    </header>
+
+    <!-- Permission Matrix K-002 -->
+    <section id="permission-matrix" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Permission Matrix (K-002)</h2>
+        <span class="diagram-section__badge">K-002</span>
+      </div>
+      <p class="diagram-section__description">
+        Granuler yetki sistemi - Checkbox tabanli. Sabit roller (Admin/Editor/Viewer) YOK. Her kullanici icin ozel yetki politikasi.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Decision:</strong> K-002</span>
+        <span><strong>Type:</strong> Granular Checkbox</span>
+        <span><strong>Scope:</strong> Tenant-based</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph HIERARCHY["Yetki Atama Hiyerarsisi"]
+        SA["Super Admin<br/><small>Platform Level</small>"]
+        TA["Tenant Admin<br/><small>Project Level</small>"]
+        ED["Editor<br/><small>User Level</small>"]
+    end
+
+    subgraph ASSIGN["Yetki Atama"]
+        SA -->|"Tenant Admin olustur"| TA
+        TA -->|"Checkbox ile yetki ata"| ED
+    end
+
+    subgraph CATEGORIES["Yetki Kategorileri"]
+        STORE["Store<br/><small>E-commerce</small>"]
+        CMS["CMS<br/><small>Icerik</small>"]
+        CAMPAIGN["Kampanyalar"]
+        ADMIN["Yonetici"]
+    end
+
+    subgraph PERMS_STORE["Store Yetkileri"]
+        S1["Siparisleri goruntule"]
+        S2["Siparisleri duzenle"]
+        S3["Kargo yonetimi"]
+        S4["Urun fiyat duzenleme"]
+    end
+
+    subgraph PERMS_CMS["CMS Yetkileri"]
+        C1["Icerik goruntule"]
+        C2["Icerik duzenle"]
+        C3["Icerik olustur"]
+        C4["Icerik sil"]
+    end
+
+    subgraph PERMS_CAMP["Kampanya Yetkileri"]
+        K1["Kampanya goruntule"]
+        K2["Kampanya olustur"]
+        K3["Kampanya duzenle"]
+    end
+
+    subgraph PERMS_ADMIN["Yonetici Yetkileri"]
+        A1["Kullanici goruntule"]
+        A2["Kullanici olustur"]
+        A3["Kullanici duzenle"]
+    end
+
+    ED --> STORE & CMS & CAMPAIGN & ADMIN
+    STORE --> S1 & S2 & S3 & S4
+    CMS --> C1 & C2 & C3 & C4
+    CAMPAIGN --> K1 & K2 & K3
+    ADMIN --> A1 & A2 & A3
+
+    style SA fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style TA fill:#3b82f6,stroke:#2563eb,color:#fff
+    style ED fill:#0d9488,stroke:#0f766e,color:#fff
+    style CATEGORIES fill:#fef3c7,stroke:#f59e0b
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Onemli Kurallar</h4>
+        <ul>
+          <li><strong>Sabit Rol YOK:</strong> Yonetici/Editor/Goruntuleyici gibi preset roller kullanilmayacak</li>
+          <li><strong>Checkbox Tabanli:</strong> Her yetki ayri checkbox ile atanir</li>
+          <li><strong>Tenant Bazli:</strong> Yetkiler tenant icinde gecerli</li>
+          <li><strong>Editor Kisitlamasi:</strong> Baska kullanici olusturma yetkisi YOK</li>
+          <li><strong>Tenant Admin:</strong> Sadece kendi tenant'indaki editor'lere yetki atayabilir</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Yetki Kategorileri</h3>
+      <div class="permission-grid">
+        <div class="permission-card">
+          <h5><span>🛒</span> Store (E-commerce)</h5>
+          <ul>
+            <li>Siparisleri goruntule</li>
+            <li>Siparisleri duzenle</li>
+            <li>Kargo yonetimi</li>
+            <li>Urun fiyat duzenleme</li>
+            <li>Stok yonetimi</li>
+            <li>Iade islemleri</li>
+          </ul>
+        </div>
+        <div class="permission-card">
+          <h5><span>📝</span> CMS (Icerik)</h5>
+          <ul>
+            <li>Icerik goruntule</li>
+            <li>Icerik duzenle</li>
+            <li>Icerik olustur</li>
+            <li>Icerik sil</li>
+            <li>Medya yukle</li>
+            <li>Yayin yonetimi</li>
+          </ul>
+        </div>
+        <div class="permission-card">
+          <h5><span>🎯</span> Kampanyalar</h5>
+          <ul>
+            <li>Kampanya goruntule</li>
+            <li>Kampanya olustur</li>
+            <li>Kampanya duzenle</li>
+            <li>Kampanya sonlandir</li>
+            <li>Kupon yonetimi</li>
+          </ul>
+        </div>
+        <div class="permission-card">
+          <h5><span>👥</span> Yonetici</h5>
+          <ul>
+            <li>Kullanici goruntule</li>
+            <li>Kullanici olustur</li>
+            <li>Kullanici duzenle</li>
+            <li>Yetki atama</li>
+            <li>Ayarlar yonetimi</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tenant Onboarding -->
+    <section id="tenant-onboarding" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Tenant Onboarding Flow</h2>
+        <span class="diagram-section__badge">K-003</span>
+      </div>
+      <p class="diagram-section__description">
+        Super Admin tarafindan yeni tenant olusturma ve Tenant Admin atama sureci.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Actor:</strong> Super Admin</span>
+        <span><strong>Output:</strong> New Tenant + Tenant Admin</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor SA as Super Admin
+    participant PD as Platform Dashboard
+    participant API as System API
+    participant SDB as system_db
+    participant TDB as tenant_xxx_db
+    participant SMS as SMS Service
+    actor TA as Tenant Admin
+
+    SA->>PD: Login (Phone + OTP)
+    PD->>SA: Platform Dashboard
+
+    rect rgb(240, 253, 244)
+        Note over SA,TDB: Tenant Olusturma
+        SA->>PD: "Yeni Tenant" butonuna tikla
+        PD->>SA: Tenant form goster
+        SA->>PD: Tenant bilgileri gir<br/>(isim, domain, slug)
+        PD->>API: POST /tenants
+        API->>SDB: INSERT tenant record
+        API->>TDB: CREATE DATABASE tenant_xxx_db
+        API->>TDB: Run migrations
+        API-->>PD: Tenant created
+    end
+
+    rect rgb(254, 243, 199)
+        Note over SA,TA: Tenant Admin Atama
+        SA->>PD: "Tenant Admin Ekle" tikla
+        PD->>SA: Admin form goster
+        SA->>PD: Admin bilgileri gir<br/>(telefon, ad soyad, email)
+        PD->>API: POST /tenants/{id}/admins
+        API->>SDB: INSERT user (role: tenant_admin)
+        API->>SMS: Send invitation SMS
+        SMS-->>TA: Davet SMS'i
+    end
+
+    rect rgb(219, 234, 254)
+        Note over TA,TDB: Tenant Admin Aktivasyon
+        TA->>PD: SMS linkine tikla
+        PD->>TA: OTP dogrulama
+        TA->>PD: OTP gir
+        PD->>API: POST /auth/otp/verify
+        API->>SDB: Activate user
+        API-->>PD: Session token
+        PD->>TA: Tenant Dashboard
+    end
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Onboarding Adimlari</h4>
+        <ul>
+          <li><strong>1-2:</strong> Super Admin platform'a giris yapar</li>
+          <li><strong>3-8:</strong> Yeni tenant olusturulur, ayri database yaratilir</li>
+          <li><strong>9-14:</strong> Tenant Admin atanir, SMS daveti gonderilir</li>
+          <li><strong>15-20:</strong> Tenant Admin daveti kabul eder, OTP ile aktive olur</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">Database Isolation</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Database</th>
+            <th>Icerik</th>
+            <th>Erisim</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>system_db</code></td>
+            <td>Tenant kayitlari, Super Admin, platform config</td>
+            <td>Super Admin only</td>
+          </tr>
+          <tr>
+            <td><code>tenant_xxx_db</code></td>
+            <td>Tenant Admin, Editor, tenant verileri</td>
+            <td>Tenant Admin + Editor</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- User Invitation -->
+    <section id="user-invitation" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">User Invitation Flow</h2>
+        <span class="diagram-section__badge">K-003</span>
+      </div>
+      <p class="diagram-section__description">
+        Tenant Admin tarafindan Editor davet etme ve yetki atama sureci.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Actor:</strong> Tenant Admin</span>
+        <span><strong>Output:</strong> New Editor with Permissions</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor TA as Tenant Admin
+    participant TD as Tenant Dashboard
+    participant API as Tenant API
+    participant TDB as tenant_xxx_db
+    participant SMS as SMS Service
+    actor ED as Editor
+
+    TA->>TD: Login (Phone + OTP)
+    TD->>TA: Tenant Dashboard
+
+    rect rgb(240, 253, 244)
+        Note over TA,TDB: Editor Olusturma
+        TA->>TD: "Editor Ekle" butonuna tikla
+        TD->>TA: Editor form goster
+        TA->>TD: Editor bilgileri gir<br/>(telefon, ad soyad, email)
+    end
+
+    rect rgb(254, 243, 199)
+        Note over TA,TDB: Yetki Atama (K-002)
+        TD->>TA: Yetki checkbox'lari goster
+        TA->>TD: Yetkileri sec<br/>(Store, CMS, Kampanya...)
+        TD->>API: POST /editors
+        API->>TDB: INSERT user (role: editor)
+        API->>TDB: INSERT permissions
+    end
+
+    rect rgb(219, 234, 254)
+        Note over TA,ED: SMS Davet
+        API->>SMS: Send invitation SMS
+        SMS-->>ED: Davet SMS'i<br/>"Legends DXP'ye davet edildiniz"
+    end
+
+    rect rgb(243, 232, 255)
+        Note over ED,TDB: Editor Aktivasyon
+        ED->>TD: SMS linkine tikla
+        TD->>ED: OTP dogrulama
+        ED->>TD: OTP gir
+        TD->>API: POST /auth/otp/verify
+        API->>TDB: Activate user
+        API-->>TD: Session token
+        TD->>ED: Editor Dashboard<br/>(yetkilere gore menu)
+    end
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Onemli Noktalar</h4>
+        <ul>
+          <li><strong>Checkbox Yetkileri:</strong> Her editor icin farkli yetki kombinasyonu</li>
+          <li><strong>SMS Davet:</strong> E-posta degil, telefon ile davet (K-001)</li>
+          <li><strong>Rol Bazli Menu:</strong> Editor sadece yetkili oldugu modulleri gorur</li>
+          <li><strong>Editor Kisitlamasi:</strong> Editor baska kullanici olusturamaz</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Multi-Tenant Data Flow -->
+    <section id="multi-tenant-data" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Multi-Tenant Data Flow</h2>
+        <span class="diagram-section__badge">K-003</span>
+      </div>
+      <p class="diagram-section__description">
+        Multi-database izolasyonu ile tenant verileri arasindaki ayrim.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Pattern:</strong> Database-per-tenant</span>
+        <span><strong>Isolation:</strong> Complete</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph USERS["Kullanicilar"]
+        SA["Super Admin"]
+        TA1["Tenant Admin A"]
+        TA2["Tenant Admin B"]
+        ED1["Editor A1"]
+        ED2["Editor A2"]
+        ED3["Editor B1"]
+    end
+
+    subgraph API["API Layer"]
+        AUTH["Auth Middleware<br/><small>JWT decode</small>"]
+        TENANT_CTX["Tenant Context<br/><small>tenant_id from token</small>"]
+        ROUTER["DB Router<br/><small>select connection</small>"]
+    end
+
+    subgraph DATABASES["Databases"]
+        SDB[("system_db<br/><small>Platform data</small>")]
+        TDB_A[("tenant_a_db<br/><small>Tenant A data</small>")]
+        TDB_B[("tenant_b_db<br/><small>Tenant B data</small>")]
+    end
+
+    SA --> AUTH
+    TA1 & ED1 & ED2 --> AUTH
+    TA2 & ED3 --> AUTH
+
+    AUTH --> TENANT_CTX
+    TENANT_CTX --> ROUTER
+
+    ROUTER -->|"Super Admin"| SDB
+    ROUTER -->|"Tenant A users"| TDB_A
+    ROUTER -->|"Tenant B users"| TDB_B
+
+    SDB -.->|"tenant list"| ROUTER
+
+    style SA fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style TA1 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style TA2 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style ED1 fill:#0d9488,stroke:#0f766e,color:#fff
+    style ED2 fill:#0d9488,stroke:#0f766e,color:#fff
+    style ED3 fill:#0d9488,stroke:#0f766e,color:#fff
+    style SDB fill:#fef3c7,stroke:#f59e0b
+    style TDB_A fill:#dbeafe,stroke:#3b82f6
+    style TDB_B fill:#dcfce7,stroke:#22c55e
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Izolasyon Kurallari</h4>
+        <ul>
+          <li><strong>Super Admin:</strong> system_db'ye erisir, tum tenant'lari gorur</li>
+          <li><strong>Tenant Admin:</strong> Sadece kendi tenant_xxx_db'sine erisir</li>
+          <li><strong>Editor:</strong> Sadece kendi tenant_xxx_db'sine erisir</li>
+          <li><strong>Cross-tenant:</strong> Kesinlikle yasak, API layer'da engellenir</li>
+          <li><strong>JWT Token:</strong> tenant_id claim icinde saklanir</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">System DB vs Tenant DB</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>system_db</th>
+            <th>tenant_xxx_db</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tenant kayitlari</td>
+            <td>Users (Tenant Admin + Editor)</td>
+          </tr>
+          <tr>
+            <td>Super Admin users</td>
+            <td>Permissions</td>
+          </tr>
+          <tr>
+            <td>Platform config</td>
+            <td>Products, Orders, Payments</td>
+          </tr>
+          <tr>
+            <td>Billing info</td>
+            <td>Customers, Campaigns</td>
+          </tr>
+          <tr>
+            <td>Audit logs (platform)</td>
+            <td>CMS content</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        useMaxWidth: true,
+        showSequenceNumbers: true
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

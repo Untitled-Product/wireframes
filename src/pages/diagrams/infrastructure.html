@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infrastructure - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .diagram-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .diagram-section__title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 12px;
+      background: #ef4444;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .diagram-section__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .diagram-section__meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diagram-section__meta strong {
+      color: #999;
+    }
+
+    /* Mermaid Container */
+    .mermaid-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      overflow: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Notes */
+    .diagram-notes {
+      margin-top: 24px;
+      padding: 20px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+    }
+
+    .diagram-notes h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #ef4444;
+    }
+
+    .diagram-notes ul {
+      list-style: none;
+    }
+
+    .diagram-notes li {
+      font-size: 13px;
+      color: #888;
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .diagram-notes li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #ef4444;
+    }
+
+    /* Info Table */
+    .info-table {
+      width: 100%;
+      margin-top: 24px;
+      border-collapse: collapse;
+    }
+
+    .info-table th,
+    .info-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .info-table th {
+      background: #1a1a1a;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .info-table td {
+      font-size: 14px;
+    }
+
+    .info-table tr:hover td {
+      background: #1a1a1a;
+    }
+
+    .info-table code {
+      background: #2d2d2d;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #ef4444;
+    }
+
+    /* Coming Soon */
+    .coming-soon {
+      padding: 40px;
+      background: #1a1a1a;
+      border: 2px dashed #2d2d2d;
+      border-radius: 12px;
+      text-align: center;
+      color: #666;
+    }
+
+    .coming-soon h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Infrastructure</h1>
+      <p>Altyapi diyagramlari</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">This Page</div>
+      <a href="#cicd-pipeline" class="nav-link active">CI/CD Pipeline</a>
+      <a href="#mobile-pipeline" class="nav-link">Mobile Build</a>
+      <a href="#pipeline-detail" class="nav-link">Pipeline Detail</a>
+      <a href="#aws-architecture" class="nav-link">AWS Architecture</a>
+      <a href="#cloudflare-setup" class="nav-link">Cloudflare Setup</a>
+
+      <div class="nav-group-title">Other Diagrams</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Gallery</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>Infrastructure Diagrams</h1>
+      <p>CI/CD pipeline, AWS architecture, Cloudflare setup</p>
+    </header>
+
+    <!-- CI/CD Overview -->
+    <section id="cicd-pipeline" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">CI/CD Pipeline Overview</h2>
+        <span class="diagram-section__badge">DevOps</span>
+      </div>
+      <p class="diagram-section__description">
+        GitHub Actions ile AWS ECS ve Mobile artifact deployment. 7 workflow, 2 AWS account, 2 region + mobile builds.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Workflows:</strong> 7</span>
+        <span><strong>Apps:</strong> Frontend, Backend, Admin, Mobile</span>
+        <span><strong>Auth:</strong> OIDC</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph GH["GitHub Repository"]
+        MAIN["main branch"]
+        STAGING["staging branch"]
+    end
+
+    subgraph PATHS["Path Filters"]
+        FE_PATH["apps/tersane-nick-web/**"]
+        BE_PATH["apps/backend/**"]
+        ADMIN_PATH["apps/dxp-admin-web/**"]
+        MOBILE_PATH["apps/mobile/**"]
+    end
+
+    subgraph PROD_WF["Production Workflows"]
+        FE_PROD_WF["prod/frontend/deploy"]
+        BE_PROD_WF["prod/backend/deploy"]
+    end
+
+    subgraph STG_WF["Staging Workflows"]
+        FE_STG_WF["staging/frontend/deploy"]
+        BE_STG_WF["staging/backend/deploy"]
+        ADMIN_WF["staging/admin/deploy"]
+    end
+
+    subgraph MOBILE_WF["Mobile Workflows"]
+        ANDROID_WF["staging/mobile/android"]
+        IOS_WF["staging/mobile/ios"]
+    end
+
+    subgraph AWS_PROD["AWS Production - 957976799355"]
+        subgraph CA["ca-central-1"]
+            ECS_FE_PROD["Frontend ECS"]
+        end
+        subgraph EU_PROD["eu-central-1"]
+            ECS_BE_PROD["Backend ECS"]
+        end
+    end
+
+    subgraph AWS_STG["AWS Staging - 123644281811"]
+        subgraph EU_STG["eu-central-1"]
+            ECS_FE_STG["Frontend ECS"]
+            ECS_BE_STG["Backend ECS"]
+            ECS_ADMIN["Admin ECS"]
+        end
+    end
+
+    subgraph ARTIFACTS["GitHub Artifacts"]
+        APK["Android APK"]
+        IOS_SIM["iOS Simulator ZIP"]
+    end
+
+    MAIN --> FE_PATH & BE_PATH
+    STAGING --> FE_PATH & BE_PATH & ADMIN_PATH & MOBILE_PATH
+
+    FE_PATH --> FE_PROD_WF & FE_STG_WF
+    BE_PATH --> BE_PROD_WF & BE_STG_WF
+    ADMIN_PATH --> ADMIN_WF
+    MOBILE_PATH --> ANDROID_WF & IOS_WF
+
+    FE_PROD_WF --> ECS_FE_PROD
+    BE_PROD_WF --> ECS_BE_PROD
+    FE_STG_WF --> ECS_FE_STG
+    BE_STG_WF --> ECS_BE_STG
+    ADMIN_WF --> ECS_ADMIN
+    ANDROID_WF --> APK
+    IOS_WF --> IOS_SIM
+
+    style MAIN fill:#22c55e,stroke:#16a34a,color:#fff
+    style STAGING fill:#f59e0b,stroke:#d97706,color:#fff
+    style AWS_PROD fill:#dbeafe,stroke:#3b82f6
+    style AWS_STG fill:#fef3c7,stroke:#f59e0b
+    style ARTIFACTS fill:#f3e8ff,stroke:#8b5cf6
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Multi-Account ve Multi-Platform Yapi</h4>
+        <ul>
+          <li><strong>Production (957976799355):</strong> Frontend (Canada) + Backend (Frankfurt)</li>
+          <li><strong>Staging (123644281811):</strong> Frontend + Backend + Admin (Frankfurt)</li>
+          <li><strong>Mobile:</strong> GitHub Artifacts'a APK ve iOS Simulator build</li>
+          <li><strong>OIDC Authentication:</strong> Secret key yerine role-based access</li>
+        </ul>
+      </div>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">All Workflows (7)</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Workflow</th>
+            <th>Branch</th>
+            <th>Path Filter</th>
+            <th>Target</th>
+            <th>Region/Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>prod/frontend/deploy</strong></td>
+            <td><code>main</code></td>
+            <td><code>apps/tersane-nick-web/**</code></td>
+            <td>AWS ECS</td>
+            <td>ca-central-1</td>
+          </tr>
+          <tr>
+            <td><strong>prod/backend/deploy</strong></td>
+            <td><code>main</code></td>
+            <td><code>apps/backend/**</code>, <code>packages/**</code></td>
+            <td>AWS ECS</td>
+            <td>eu-central-1</td>
+          </tr>
+          <tr>
+            <td><strong>staging/frontend/deploy</strong></td>
+            <td><code>staging</code></td>
+            <td><code>apps/tersane-nick-web/**</code>, <code>packages/**</code></td>
+            <td>AWS ECS</td>
+            <td>eu-central-1</td>
+          </tr>
+          <tr>
+            <td><strong>staging/backend/deploy</strong></td>
+            <td><code>staging</code></td>
+            <td><code>apps/backend/**</code>, <code>packages/**</code></td>
+            <td>AWS ECS</td>
+            <td>eu-central-1</td>
+          </tr>
+          <tr>
+            <td><strong>staging/admin/deploy</strong></td>
+            <td><code>staging</code></td>
+            <td><code>apps/dxp-admin-web/**</code>, <code>packages/**</code></td>
+            <td>AWS ECS</td>
+            <td>eu-central-1</td>
+          </tr>
+          <tr>
+            <td><strong>staging/mobile/android</strong></td>
+            <td><code>staging</code></td>
+            <td><code>apps/mobile/**</code></td>
+            <td>GitHub Artifact</td>
+            <td>APK (arm64-v8a)</td>
+          </tr>
+          <tr>
+            <td><strong>staging/mobile/ios</strong></td>
+            <td><code>staging</code></td>
+            <td><code>apps/mobile/**</code></td>
+            <td>GitHub Artifact</td>
+            <td>Simulator ZIP</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">AWS Accounts</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Account ID</th>
+            <th>Environment</th>
+            <th>Region</th>
+            <th>Services</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>957976799355</code></td>
+            <td>Production</td>
+            <td>ca-central-1, eu-central-1</td>
+            <td>Frontend, Backend</td>
+          </tr>
+          <tr>
+            <td><code>123644281811</code></td>
+            <td>Staging</td>
+            <td>eu-central-1</td>
+            <td>Frontend, Backend, Admin</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 32px; margin-bottom: 16px; font-size: 18px;">ECR Repositories</h3>
+      <table class="info-table">
+        <thead>
+          <tr>
+            <th>Repository</th>
+            <th>Account</th>
+            <th>Apps</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>nickelodeon/frontend</code></td>
+            <td>Both</td>
+            <td>tersane-nick-web</td>
+          </tr>
+          <tr>
+            <td><code>nickelodeon/backend</code></td>
+            <td>Both</td>
+            <td>backend</td>
+          </tr>
+          <tr>
+            <td><code>legendsdxp/admin</code></td>
+            <td>Staging only</td>
+            <td>dxp-admin-web</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Mobile Build Pipeline -->
+    <section id="mobile-pipeline" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Mobile Build Pipeline</h2>
+        <span class="diagram-section__badge">Mobile</span>
+      </div>
+      <p class="diagram-section__description">
+        React Native (Expo) ile Android ve iOS build. Staging branch'e push ile tetiklenir.
+      </p>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart LR
+    subgraph TRIGGER["Trigger"]
+        PUSH["Push to staging<br/><small>apps/mobile/**</small>"]
+    end
+
+    subgraph ANDROID["Android Build (ubuntu-latest)"]
+        A_SETUP["pnpm install<br/>Java 20<br/>Gradle"]
+        A_PREBUILD["expo prebuild<br/><small>-p android</small>"]
+        A_BUILD["gradlew assembleDebug<br/><small>arm64-v8a</small>"]
+        A_UPLOAD["Upload Artifact<br/><small>app-debug.apk</small>"]
+    end
+
+    subgraph IOS["iOS Build (macos-latest)"]
+        I_SETUP["pnpm install<br/>Node 24"]
+        I_PREBUILD["expo prebuild<br/><small>-p ios</small>"]
+        I_PODS["pod install<br/><small>cached</small>"]
+        I_BUILD["xcodebuild<br/><small>iphonesimulator</small>"]
+        I_ZIP["ZIP .app"]
+        I_UPLOAD["Upload Artifact<br/><small>simulator.zip</small>"]
+    end
+
+    PUSH --> A_SETUP & I_SETUP
+    A_SETUP --> A_PREBUILD --> A_BUILD --> A_UPLOAD
+    I_SETUP --> I_PREBUILD --> I_PODS --> I_BUILD --> I_ZIP --> I_UPLOAD
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Mobile Build Detaylari</h4>
+        <ul>
+          <li><strong>Framework:</strong> React Native with Expo</li>
+          <li><strong>Android:</strong> Debug APK, arm64-v8a architecture</li>
+          <li><strong>iOS:</strong> Simulator build (x86_64 + arm64), CODE_SIGNING_ALLOWED=NO</li>
+          <li><strong>Package Manager:</strong> pnpm</li>
+          <li><strong>Node Version:</strong> 24</li>
+          <li><strong>Java Version:</strong> Temurin 20 (Android)</li>
+          <li><strong>Artifacts:</strong> GitHub Actions artifacts olarak saklanir</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Single Pipeline Detail -->
+    <section id="pipeline-detail" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Pipeline Detail - Step by Step</h2>
+        <span class="diagram-section__badge">Flow</span>
+      </div>
+      <p class="diagram-section__description">
+        Her deployment ayni adimlari takip eder: Checkout → OIDC Auth → Docker Build → ECR Push → ECS Deploy
+      </p>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart LR
+    subgraph TRIGGER["1. Trigger"]
+        PUSH["Git Push"]
+        MANUAL["Manual Dispatch"]
+    end
+
+    subgraph AUTH["2. AWS Auth"]
+        OIDC["OIDC Token"]
+        ASSUME["Assume Role"]
+    end
+
+    subgraph BUILD["3. Build"]
+        TAG["Generate Tag<br/><small>timestamp</small>"]
+        DOCKER["Docker Build"]
+    end
+
+    subgraph REGISTRY["4. Registry"]
+        ECR_LOGIN["ECR Login"]
+        ECR_PUSH["Push Image"]
+    end
+
+    subgraph DEPLOY["5. Deploy"]
+        TASK["Get Task Def"]
+        RENDER["Render Task"]
+        ECS["Deploy ECS"]
+    end
+
+    PUSH --> OIDC
+    MANUAL --> OIDC
+    OIDC --> ASSUME
+    ASSUME --> ECR_LOGIN
+    ECR_LOGIN --> TAG
+    TAG --> DOCKER
+    DOCKER --> ECR_PUSH
+    ECR_PUSH --> TASK
+    TASK --> RENDER
+    RENDER --> ECS
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Pipeline Adimlari</h4>
+        <ul>
+          <li><strong>1. Trigger:</strong> Push veya manual dispatch ile baslar</li>
+          <li><strong>2. Auth:</strong> OIDC token ile AWS role assume edilir (no secrets)</li>
+          <li><strong>3. Build:</strong> Dockerfile ile image olusturulur, timestamp tag</li>
+          <li><strong>4. Registry:</strong> ECR'a login ve image push</li>
+          <li><strong>5. Deploy:</strong> Task definition guncellenir, ECS service yenilenir</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- AWS Architecture - Coming Soon -->
+    <section id="aws-architecture" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">AWS Architecture</h2>
+        <span class="diagram-section__badge">Pending</span>
+      </div>
+      <div class="coming-soon">
+        <h3>Data Bekleniyor</h3>
+        <p>AWS Console'dan servis listesi veya architecture export gerekli.<br/>
+        ECS, RDS, S3, CloudFront, ALB vs. servislerin tam listesi.</p>
+      </div>
+    </section>
+
+    <!-- Cloudflare Setup - Coming Soon -->
+    <section id="cloudflare-setup" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Cloudflare Setup</h2>
+        <span class="diagram-section__badge">Pending</span>
+      </div>
+      <div class="coming-soon">
+        <h3>Data Bekleniyor</h3>
+        <p>Cloudflare Dashboard'dan: DNS records, Workers, Pages, D1, KV, R2 vs.<br/>
+        Hangi servisler aktif kullaniliyor?</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

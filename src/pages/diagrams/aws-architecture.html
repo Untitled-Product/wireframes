@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Architecture - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .diagram-section__header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .diagram-section__title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 10px;
+      background: #ef4444;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .diagram-section__content {
+      padding: 24px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .mermaid {
+      background: #252525;
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* Info Table */
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .info-table th,
+    .info-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .info-table th {
+      background: #252525;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .info-table td {
+      color: #ccc;
+    }
+
+    .info-table code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+    }
+
+    /* Environment Badge */
+    .env-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .env-prod { background: #ef444420; color: #ef4444; }
+    .env-staging { background: #f59e0b20; color: #f59e0b; }
+
+    /* Info Cards */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: #252525;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .info-card__label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .info-card__value {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Subsection */
+    .subsection {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #2d2d2d;
+    }
+
+    .subsection__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+
+    /* Two Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1200px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Diagrams</h1>
+      <p>Legends DXP Visual Schematics</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Overview</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+
+      <div class="nav-group-title">Flow Diagrams</div>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+
+      <div class="nav-group-title">Data Diagrams</div>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+
+      <div class="nav-group-title">State Diagrams</div>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+
+      <div class="nav-group-title">Infrastructure</div>
+      <a href="infrastructure.html" class="nav-link">CI/CD & GitHub</a>
+      <a href="#overview" class="nav-link active">AWS Architecture</a>
+
+      <div class="nav-group-title">Business Flows</div>
+      <a href="business-flows.html" class="nav-link">Permission & Onboarding</a>
+
+      <div class="nav-group-title">API Sequences</div>
+      <a href="api-sequences.html" class="nav-link">Auth & Checkout</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Diagrams</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>AWS Architecture</h1>
+      <p>Production ve Staging ortamlarinin AWS altyapi mimarisi - ECS, RDS, ALB, VPC.</p>
+    </header>
+
+    <!-- Overview Section -->
+    <section id="overview" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Multi-Account Architecture Overview</h2>
+        <span class="diagram-section__badge">Architecture</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          2 AWS Account (Production + Staging), ayni region'da (eu-central-1) izole VPC'ler.
+          Her ortamda ECS Fargate cluster, PostgreSQL RDS, ve ALB.
+        </p>
+
+        <div class="mermaid">
+flowchart TB
+    subgraph INTERNET["Internet"]
+        CF["Cloudflare<br/><small>DNS + CDN + WAF</small>"]
+        USERS["Users"]
+    end
+
+    subgraph PROD["Production Account (957976799355)"]
+        subgraph PROD_VPC["VPC 10.55.0.0/20"]
+            subgraph PROD_PUBLIC["Public Subnets"]
+                PROD_ALB_PUB["Public ALB<br/><small>internet-facing</small>"]
+            end
+            subgraph PROD_PRIVATE["Private Subnets"]
+                PROD_ALB_PRIV["Private ALB<br/><small>internal</small>"]
+                subgraph PROD_ECS["ECS Cluster: nickelodeon"]
+                    PROD_FE["Frontend Service<br/><small>Next.js</small>"]
+                    PROD_BE["Backend Service<br/><small>NestJS</small>"]
+                end
+                PROD_RDS[("RDS PostgreSQL<br/><small>nickelodeon</small>")]
+            end
+        end
+        PROD_ECR["ECR<br/><small>nickelodeon/frontend<br/>nickelodeon/backend</small>"]
+        PROD_S3["S3<br/><small>terraform-957...</small>"]
+    end
+
+    subgraph STAGING["Staging Account (123644281811)"]
+        subgraph STG_VPC["VPC 10.99.0.0/20"]
+            subgraph STG_PRIVATE["Private Subnets"]
+                STG_ALB["Private ALB<br/><small>internal</small>"]
+                subgraph STG_ECS["ECS Cluster: nickelodeon"]
+                    STG_FE["Frontend Service<br/><small>Next.js</small>"]
+                    STG_BE["Backend Service<br/><small>NestJS</small>"]
+                    STG_ADMIN["Admin Service<br/><small>React</small>"]
+                end
+                STG_RDS[("RDS PostgreSQL<br/><small>nickelodeon</small>")]
+            end
+        end
+        STG_ECR["ECR<br/><small>nickelodeon/frontend<br/>nickelodeon/backend<br/>legendsdxp/admin</small>"]
+        STG_S3["S3<br/><small>terraform-123...</small>"]
+    end
+
+    USERS --> CF
+    CF --> PROD_ALB_PUB
+    CF --> STG_ALB
+
+    PROD_ALB_PUB --> PROD_FE
+    PROD_ALB_PRIV --> PROD_BE
+    PROD_FE --> PROD_ALB_PRIV
+    PROD_BE --> PROD_RDS
+    PROD_ECR -.-> PROD_ECS
+
+    STG_ALB --> STG_FE
+    STG_ALB --> STG_BE
+    STG_ALB --> STG_ADMIN
+    STG_BE --> STG_RDS
+    STG_ECR -.-> STG_ECS
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">AWS Accounts</div>
+            <div class="info-card__value">2 (Prod + Staging)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Region</div>
+            <div class="info-card__value">eu-central-1 (Frankfurt)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Compute</div>
+            <div class="info-card__value">ECS Fargate</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Database</div>
+            <div class="info-card__value">RDS PostgreSQL</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Load Balancer</div>
+            <div class="info-card__value">ALB (Public + Private)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Container Registry</div>
+            <div class="info-card__value">ECR</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Account Details -->
+    <section id="accounts" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">AWS Account Details</h2>
+        <span class="diagram-section__badge">Config</span>
+      </div>
+      <div class="diagram-section__content">
+        <div class="two-col">
+          <!-- Production -->
+          <div>
+            <h3 class="subsection__title"><span class="env-badge env-prod">Production</span> Account</h3>
+            <table class="info-table">
+              <tbody>
+                <tr>
+                  <td><strong>Account ID</strong></td>
+                  <td><code>957976799355</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Region</strong></td>
+                  <td>eu-central-1 (Frankfurt)</td>
+                </tr>
+                <tr>
+                  <td><strong>VPC CIDR</strong></td>
+                  <td><code>10.55.0.0/20</code></td>
+                </tr>
+                <tr>
+                  <td><strong>ECS Cluster</strong></td>
+                  <td>nickelodeon</td>
+                </tr>
+                <tr>
+                  <td><strong>Services</strong></td>
+                  <td>frontend, backend</td>
+                </tr>
+                <tr>
+                  <td><strong>RDS Endpoint</strong></td>
+                  <td><code>nickelodeon.c9i6s6wokosh.eu-central-1.rds.amazonaws.com</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Public ALB</strong></td>
+                  <td><code>public-53526620.eu-central-1.elb.amazonaws.com</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Private ALB</strong></td>
+                  <td><code>internal-private-197488464.eu-central-1.elb.amazonaws.com</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Staging -->
+          <div>
+            <h3 class="subsection__title"><span class="env-badge env-staging">Staging</span> Account</h3>
+            <table class="info-table">
+              <tbody>
+                <tr>
+                  <td><strong>Account ID</strong></td>
+                  <td><code>123644281811</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Region</strong></td>
+                  <td>eu-central-1 (Frankfurt)</td>
+                </tr>
+                <tr>
+                  <td><strong>VPC CIDR</strong></td>
+                  <td><code>10.99.0.0/20</code></td>
+                </tr>
+                <tr>
+                  <td><strong>ECS Cluster</strong></td>
+                  <td>nickelodeon</td>
+                </tr>
+                <tr>
+                  <td><strong>Services</strong></td>
+                  <td>frontend, backend, admin</td>
+                </tr>
+                <tr>
+                  <td><strong>RDS Endpoint</strong></td>
+                  <td><code>nickelodeon.cti4a2u0yl0w.eu-central-1.rds.amazonaws.com</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Private ALB</strong></td>
+                  <td><code>internal-private-1565865697.eu-central-1.elb.amazonaws.com</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Note</strong></td>
+                  <td>Cloudflare tunnel uzerinden erisim</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ECR Repositories -->
+    <section id="ecr" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">ECR Container Repositories</h2>
+        <span class="diagram-section__badge">Config</span>
+      </div>
+      <div class="diagram-section__content">
+        <table class="info-table">
+          <thead>
+            <tr>
+              <th>Environment</th>
+              <th>Repository</th>
+              <th>URI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="env-badge env-prod">PROD</span></td>
+              <td><strong>nickelodeon/frontend</strong></td>
+              <td><code>957976799355.dkr.ecr.eu-central-1.amazonaws.com/nickelodeon/frontend</code></td>
+            </tr>
+            <tr>
+              <td><span class="env-badge env-prod">PROD</span></td>
+              <td><strong>nickelodeon/backend</strong></td>
+              <td><code>957976799355.dkr.ecr.eu-central-1.amazonaws.com/nickelodeon/backend</code></td>
+            </tr>
+            <tr>
+              <td><span class="env-badge env-staging">STG</span></td>
+              <td><strong>nickelodeon/frontend</strong></td>
+              <td><code>123644281811.dkr.ecr.eu-central-1.amazonaws.com/nickelodeon/frontend</code></td>
+            </tr>
+            <tr>
+              <td><span class="env-badge env-staging">STG</span></td>
+              <td><strong>nickelodeon/backend</strong></td>
+              <td><code>123644281811.dkr.ecr.eu-central-1.amazonaws.com/nickelodeon/backend</code></td>
+            </tr>
+            <tr>
+              <td><span class="env-badge env-staging">STG</span></td>
+              <td><strong>legendsdxp/admin</strong></td>
+              <td><code>123644281811.dkr.ecr.eu-central-1.amazonaws.com/legendsdxp/admin</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Network Architecture -->
+    <section id="network" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Network Architecture</h2>
+        <span class="diagram-section__badge">Network</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Her environment izole VPC icinde. Subnets 2 AZ'ye dagilmis (eu-central-1a, eu-central-1b).
+        </p>
+
+        <div class="mermaid">
+flowchart TB
+    subgraph PROD_VPC["Production VPC (10.55.0.0/20)"]
+        subgraph PROD_AZ_A["eu-central-1a"]
+            PROD_SUB_A1["10.55.0.0/24<br/><small>Private</small>"]
+            PROD_SUB_A2["10.55.2.0/24<br/><small>Private</small>"]
+        end
+        subgraph PROD_AZ_B["eu-central-1b"]
+            PROD_SUB_B1["10.55.1.0/24<br/><small>Private</small>"]
+            PROD_SUB_B2["10.55.3.0/24<br/><small>Private</small>"]
+        end
+    end
+
+    subgraph STG_VPC["Staging VPC (10.99.0.0/20)"]
+        subgraph STG_AZ_A["eu-central-1a"]
+            STG_SUB_A["Subnets"]
+        end
+        subgraph STG_AZ_B["eu-central-1b"]
+            STG_SUB_B["Subnets"]
+        end
+    end
+
+    IGW["Internet Gateway"] --> PROD_VPC
+    CFT["Cloudflare Tunnel"] --> STG_VPC
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection__title">Production Subnets</h3>
+          <table class="info-table">
+            <thead>
+              <tr>
+                <th>Availability Zone</th>
+                <th>CIDR Block</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>eu-central-1a</td>
+                <td><code>10.55.0.0/24</code></td>
+                <td>Private</td>
+              </tr>
+              <tr>
+                <td>eu-central-1b</td>
+                <td><code>10.55.1.0/24</code></td>
+                <td>Private</td>
+              </tr>
+              <tr>
+                <td>eu-central-1a</td>
+                <td><code>10.55.2.0/24</code></td>
+                <td>Private</td>
+              </tr>
+              <tr>
+                <td>eu-central-1b</td>
+                <td><code>10.55.3.0/24</code></td>
+                <td>Private</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Flow -->
+    <section id="dataflow" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Request Flow</h2>
+        <span class="diagram-section__badge">Flow</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Kullanici isteklerinin Cloudflare'den AWS'e nasil ulastigi.
+        </p>
+
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant CF as Cloudflare
+    participant ALB as AWS ALB
+    participant FE as Frontend (ECS)
+    participant BE as Backend (ECS)
+    participant RDS as PostgreSQL
+
+    U->>CF: HTTPS Request
+    Note over CF: DNS Resolution<br/>SSL Termination<br/>WAF Rules
+
+    alt Frontend Request
+        CF->>ALB: Forward to Public ALB
+        ALB->>FE: Route to Frontend Service
+        FE->>BE: API Call (Internal ALB)
+        BE->>RDS: Database Query
+        RDS-->>BE: Query Result
+        BE-->>FE: API Response
+        FE-->>ALB: HTML/JSON
+        ALB-->>CF: Response
+    else API Request
+        CF->>ALB: Forward to Public ALB
+        ALB->>BE: Route to Backend Service
+        BE->>RDS: Database Query
+        RDS-->>BE: Query Result
+        BE-->>ALB: JSON Response
+        ALB-->>CF: Response
+    end
+
+    CF-->>U: HTTPS Response
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#0d9488',
+        primaryTextColor: '#fff',
+        primaryBorderColor: '#0d9488',
+        lineColor: '#666',
+        secondaryColor: '#1a1a1a',
+        tertiaryColor: '#252525',
+        background: '#252525',
+        mainBkg: '#252525',
+        secondBkg: '#1a1a1a',
+        textColor: '#fff',
+        clusterBkg: '#1a1a1a',
+        clusterBorder: '#444',
+        edgeLabelBackground: '#252525',
+        nodeTextColor: '#fff'
+      },
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      sequence: {
+        useMaxWidth: true,
+        showSequenceNumbers: true
+      }
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

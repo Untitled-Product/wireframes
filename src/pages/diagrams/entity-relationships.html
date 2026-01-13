@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entity Relationships - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #3b82f6;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .diagram-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .diagram-section__title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 12px;
+      background: #3b82f6;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .diagram-section__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .diagram-section__meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diagram-section__meta strong {
+      color: #999;
+    }
+
+    /* Mermaid Container */
+    .mermaid-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      overflow: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Groups */
+    .entity-groups {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .entity-group {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .entity-group--auth {
+      background: rgba(139, 92, 246, 0.2);
+      color: #a78bfa;
+    }
+
+    .entity-group--catalog {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+
+    .entity-group--commerce {
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+    }
+
+    /* Entity Table */
+    .entity-table {
+      margin-top: 32px;
+    }
+
+    .entity-table h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .entity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .entity-card {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .entity-card__header {
+      padding: 12px 16px;
+      background: #252525;
+      font-weight: 600;
+      font-size: 15px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .entity-card__fields {
+      padding: 12px 16px;
+    }
+
+    .entity-field {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .entity-field:last-child {
+      border-bottom: none;
+    }
+
+    .entity-field__name {
+      color: #fff;
+    }
+
+    .entity-field__type {
+      color: #666;
+    }
+
+    .entity-field--pk .entity-field__name::before {
+      content: 'PK ';
+      color: #fcd34d;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .entity-field--fk .entity-field__name::before {
+      content: 'FK ';
+      color: #a5b4fc;
+      font-size: 10px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Entity Relationships</h1>
+      <p>Veritabani sema diyagramlari</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Entities</div>
+      <a href="#tenant" class="nav-link">Tenant</a>
+      <a href="#user" class="nav-link">User</a>
+      <a href="#permission" class="nav-link">Permission</a>
+      <a href="#event" class="nav-link">Event</a>
+      <a href="#product" class="nav-link">Product</a>
+      <a href="#session" class="nav-link">Session</a>
+      <a href="#order" class="nav-link">Order</a>
+      <a href="#customer" class="nav-link">Customer</a>
+      <a href="#payment" class="nav-link">Payment</a>
+      <a href="#campaign" class="nav-link">Campaign</a>
+
+      <div class="nav-group-title">Other Diagrams</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Gallery</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>Entity Relationship Diagram</h1>
+      <p>Legends DXP multi-tenant platform veritabani sema iliskileri</p>
+    </header>
+
+    <!-- Domain Model ER -->
+    <section id="domain-er" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Domain Model</h2>
+        <span class="diagram-section__badge">ER Diagram</span>
+      </div>
+      <p class="diagram-section__description">
+        Multi-tenant e-commerce platformu icin temel entity'ler ve iliskileri.
+        Tenant bazli izolasyon, kullanici yetkilendirme ve siparis yonetimi.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Source:</strong> DOMAIN-STRATEGY.md</span>
+        <span><strong>Entities:</strong> 11</span>
+        <span><strong>Relations:</strong> 14</span>
+      </div>
+
+      <div class="entity-groups">
+        <span class="entity-group entity-group--auth">Auth & Authorization</span>
+        <span class="entity-group entity-group--catalog">Product Catalog</span>
+        <span class="entity-group entity-group--commerce">Commerce</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+erDiagram
+    TENANT ||--o{ USER : "has many"
+    TENANT ||--o{ EVENT : "has many"
+    TENANT ||--o{ PRODUCT : "has many"
+    TENANT ||--o{ ORDER : "has many"
+    TENANT ||--o{ CUSTOMER : "has many"
+    TENANT ||--o{ CAMPAIGN : "has many"
+
+    USER ||--o{ PERMISSION : "has many"
+
+    EVENT ||--o{ PRODUCT : "has many"
+    PRODUCT ||--o{ SESSION : "has many"
+
+    CUSTOMER ||--o{ ORDER : "places"
+    ORDER ||--o{ ORDER_ITEM : "contains"
+    ORDER ||--o{ PAYMENT : "paid by"
+
+    PRODUCT ||--o{ ORDER_ITEM : "in"
+    SESSION ||--o{ ORDER_ITEM : "booked for"
+
+    TENANT {
+        uuid id PK
+        string slug UK
+        string name
+        string domain
+        enum status
+    }
+
+    USER {
+        uuid id PK
+        uuid tenant_id FK
+        string phone UK
+        string email
+        string name
+        enum role
+    }
+
+    PERMISSION {
+        uuid id PK
+        uuid user_id FK
+        string category
+        string action
+        boolean granted
+    }
+
+    EVENT {
+        uuid id PK
+        uuid tenant_id FK
+        string slug
+        json name
+        datetime start_date
+        datetime end_date
+    }
+
+    PRODUCT {
+        uuid id PK
+        uuid tenant_id FK
+        uuid event_id FK
+        enum type
+        string slug
+        decimal price
+    }
+
+    SESSION {
+        uuid id PK
+        uuid product_id FK
+        datetime start_time
+        datetime end_time
+        int capacity
+        int booked
+    }
+
+    ORDER {
+        uuid id PK
+        uuid tenant_id FK
+        uuid customer_id FK
+        string order_number
+        enum status
+        decimal total
+    }
+
+    ORDER_ITEM {
+        uuid id PK
+        uuid order_id FK
+        uuid product_id FK
+        uuid session_id FK
+        int quantity
+        decimal unit_price
+    }
+
+    PAYMENT {
+        uuid id PK
+        uuid order_id FK
+        decimal amount
+        enum method
+        enum status
+    }
+
+    CUSTOMER {
+        uuid id PK
+        uuid tenant_id FK
+        string phone
+        string email
+        string name
+        boolean is_guest
+    }
+
+    CAMPAIGN {
+        uuid id PK
+        uuid tenant_id FK
+        string code
+        enum discount_type
+        decimal discount_value
+    }
+        </pre>
+      </div>
+    </section>
+
+    <!-- Entity Details -->
+    <section class="entity-table">
+      <h3>Entity Details</h3>
+      <div class="entity-grid">
+        <div class="entity-card" id="tenant">
+          <div class="entity-card__header">Tenant</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">slug</span><span class="entity-field__type">String (UK)</span></div>
+            <div class="entity-field"><span class="entity-field__name">name</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">domain</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">status</span><span class="entity-field__type">Enum</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card" id="user">
+          <div class="entity-card__header">User</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">tenant_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">phone</span><span class="entity-field__type">String (UK)</span></div>
+            <div class="entity-field"><span class="entity-field__name">email</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">name</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">role</span><span class="entity-field__type">Enum</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card" id="order">
+          <div class="entity-card__header">Order</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">tenant_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">customer_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">order_number</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">status</span><span class="entity-field__type">Enum</span></div>
+            <div class="entity-field"><span class="entity-field__name">total</span><span class="entity-field__type">Decimal</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card" id="product">
+          <div class="entity-card__header">Product</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">tenant_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">event_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">type</span><span class="entity-field__type">Enum</span></div>
+            <div class="entity-field"><span class="entity-field__name">slug</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">price</span><span class="entity-field__type">Decimal</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card" id="payment">
+          <div class="entity-card__header">Payment</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">order_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">amount</span><span class="entity-field__type">Decimal</span></div>
+            <div class="entity-field"><span class="entity-field__name">method</span><span class="entity-field__type">Enum</span></div>
+            <div class="entity-field"><span class="entity-field__name">status</span><span class="entity-field__type">Enum</span></div>
+          </div>
+        </div>
+
+        <div class="entity-card" id="customer">
+          <div class="entity-card__header">Customer</div>
+          <div class="entity-card__fields">
+            <div class="entity-field entity-field--pk"><span class="entity-field__name">id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field entity-field--fk"><span class="entity-field__name">tenant_id</span><span class="entity-field__type">UUID</span></div>
+            <div class="entity-field"><span class="entity-field__name">phone</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">email</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">name</span><span class="entity-field__type">String</span></div>
+            <div class="entity-field"><span class="entity-field__name">is_guest</span><span class="entity-field__type">Boolean</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      er: {
+        useMaxWidth: true,
+        layoutDirection: 'TB'
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

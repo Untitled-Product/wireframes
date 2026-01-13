@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Flows - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 32px;
+    }
+
+    .diagram-section__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .diagram-section__title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 12px;
+      background: #0d9488;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
+    .diagram-section__meta {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .diagram-section__meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .diagram-section__meta strong {
+      color: #999;
+    }
+
+    /* Mermaid Container */
+    .mermaid-container {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 32px;
+      overflow: auto;
+    }
+
+    .mermaid {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Notes */
+    .diagram-notes {
+      margin-top: 24px;
+      padding: 20px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+    }
+
+    .diagram-notes h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #0d9488;
+    }
+
+    .diagram-notes ul {
+      list-style: none;
+    }
+
+    .diagram-notes li {
+      font-size: 13px;
+      color: #888;
+      padding: 4px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .diagram-notes li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #0d9488;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>User Flows</h1>
+      <p>Kullanici akis diyagramlari</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">This Page</div>
+      <a href="#auth-flow" class="nav-link active">Authentication (K-001)</a>
+      <a href="#admin-hierarchy" class="nav-link">Admin Hierarchy (K-003)</a>
+
+      <div class="nav-group-title">Other Diagrams</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Gallery</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>User Flow Diagrams</h1>
+      <p>Kullanici yolculuklari ve is akislari - decisions.md kaynaklarindan</p>
+    </header>
+
+    <!-- Auth Flow -->
+    <section id="auth-flow" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Authentication Flow</h2>
+        <span class="diagram-section__badge">K-001</span>
+      </div>
+      <p class="diagram-section__description">
+        Legends DXP kimlik dogrulama akisi. Sadece cep telefonu + OTP ile giris. E-posta ve sifre sistemi yok.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Source:</strong> decisions.md</span>
+        <span><strong>Version:</strong> 1.0</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TD
+    subgraph AUTH["Authentication"]
+        START(("Başla")) --> LOGIN["Login Sayfası<br/><small>Telefon girişi</small>"]
+        LOGIN --> ENTER["Cep telefonu gir"]
+        ENTER --> CHECK{"Telefon<br/>kayıtlı?"}
+    end
+
+    subgraph OTP["OTP Verification"]
+        CHECK -->|Evet| SEND_OTP[/"POST /auth/otp/send<br/><small>SMS gönder</small>"/]
+        SEND_OTP --> OTP_PAGE["OTP Doğrulama<br/><small>6 haneli kod</small>"]
+        OTP_PAGE --> VERIFY[/"POST /auth/otp/verify"/]
+        VERIFY --> VALID{"OTP<br/>doğru?"}
+    end
+
+    subgraph SESSION["Session Management"]
+        VALID -->|Evet| CREATE["Session oluştur<br/><small>JWT token</small>"]
+        CREATE --> DASHBOARD["Dashboard<br/><small>Rol bazlı menü</small>"]
+        DASHBOARD --> END_OK(("Tamam"))
+    end
+
+    CHECK -->|Hayır| REGISTER["Kayıt Sayfası<br/><small>Yeni kullanıcı</small>"]
+
+    VALID -->|Hayır| ERROR["Hata göster<br/><small>Max 3 deneme</small>"]
+    ERROR --> RETRY{"Tekrar<br/>dene?"}
+    RETRY -->|Evet| OTP_PAGE
+    RETRY -->|Hayır| LOGIN
+
+    style START fill:#22c55e,stroke:#16a34a,color:#fff
+    style END_OK fill:#22c55e,stroke:#16a34a,color:#fff
+    style LOGIN fill:#ccfbf1,stroke:#0d9488
+    style OTP_PAGE fill:#ccfbf1,stroke:#0d9488
+    style DASHBOARD fill:#ccfbf1,stroke:#0d9488
+    style REGISTER fill:#ccfbf1,stroke:#0d9488
+    style CHECK fill:#fef3c7,stroke:#d97706
+    style VALID fill:#fef3c7,stroke:#d97706
+    style RETRY fill:#fef3c7,stroke:#d97706
+    style SEND_OTP fill:#fef3c7,stroke:#d97706
+    style VERIFY fill:#fef3c7,stroke:#d97706
+    style ERROR fill:#fee2e2,stroke:#ef4444
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Notlar</h4>
+        <ul>
+          <li>E-posta ile giriş YOK (K-001)</li>
+          <li>Şifre sistemi YOK (K-001)</li>
+          <li>Max 3 OTP deneme hakkı, sonra geçici kilitlenme</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Admin Hierarchy Flow -->
+    <section id="admin-hierarchy" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Admin Hierarchy Flow</h2>
+        <span class="diagram-section__badge">K-003</span>
+      </div>
+      <p class="diagram-section__description">
+        3 katmanli yonetici hiyerarsisi. Super Admin (Platform) → Tenant Admin (Proje) → Editor (Kullanici).
+        Multi-DB izolasyonu ile her tenant ayri veritabaninda.
+      </p>
+      <div class="diagram-section__meta">
+        <span><strong>Source:</strong> decisions.md</span>
+        <span><strong>Version:</strong> 1.0</span>
+      </div>
+
+      <div class="mermaid-container">
+        <pre class="mermaid">
+flowchart TB
+    subgraph SUPER["🟣 SUPER ADMIN - System Level"]
+        SA_LOGIN(("SA")) --> SA_DASH["Platform Dashboard<br/><small>Tüm tenant'lar</small>"]
+        SA_DASH --> TENANT_CRUD["Tenant CRUD<br/><small>Oluştur/Düzenle/Sil</small>"]
+        TENANT_CRUD --> CREATE_TA["Tenant Admin Oluştur"]
+        CREATE_TA --> SYSTEM_DB[("system_db")]
+    end
+
+    subgraph TENANT["🔵 TENANT ADMIN - Project Level"]
+        TA_LOGIN(("TA")) --> TA_DASH["Tenant Dashboard<br/><small>Kendi tenant'ı</small>"]
+        TA_DASH --> EDITOR_MGT["Editor Yönetimi"]
+        EDITOR_MGT --> CREATE_ED["Editor Oluştur<br/><small>Checkbox yetkiler</small>"]
+        CREATE_ED --> ASSIGN_PERM["Yetki Ata<br/><small>Granüler K-002</small>"]
+        ASSIGN_PERM --> TENANT_DB[("tenant_xxx_db")]
+    end
+
+    subgraph EDITOR["🟢 EDITOR - User Level"]
+        ED_LOGIN(("E")) --> ED_DASH["Editor Dashboard<br/><small>Yetki bazlı menü</small>"]
+        ED_DASH --> CHECK_PERM{"Yetki?"}
+        CHECK_PERM -->|Evet| ACCESS["Modüle Eriş"]
+        CHECK_PERM -->|Hayır| DENIED["403 Forbidden"]
+    end
+
+    CREATE_TA -.->|Davet SMS| TA_LOGIN
+    ASSIGN_PERM -.->|Davet SMS| ED_LOGIN
+
+    style SA_LOGIN fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style TA_LOGIN fill:#3b82f6,stroke:#2563eb,color:#fff
+    style ED_LOGIN fill:#0d9488,stroke:#0f766e,color:#fff
+    style SYSTEM_DB fill:#dbeafe,stroke:#2563eb
+    style TENANT_DB fill:#dbeafe,stroke:#2563eb
+    style CHECK_PERM fill:#fef3c7,stroke:#d97706
+    style DENIED fill:#fee2e2,stroke:#ef4444
+    style ACCESS fill:#dcfce7,stroke:#22c55e
+        </pre>
+      </div>
+
+      <div class="diagram-notes">
+        <h4>Veritabanı İzolasyonu</h4>
+        <ul>
+          <li><strong>system_db:</strong> Super Admin, Tenant kayıtları, platform config</li>
+          <li><strong>tenant_xxx_db:</strong> Her tenant için ayrı DB</li>
+          <li>Tenant Admin: Diğer tenant'lara erişim YOK</li>
+          <li>Editor: Başka kullanıcı oluşturma yetkisi YOK</li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      },
+      securityLevel: 'loose'
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>

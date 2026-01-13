@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Sequences - Legends DXP Diagrams</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link rel="stylesheet" href="shared/diagram-layout.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .diagram-sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 24px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #666;
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .nav-group-title:first-child {
+      margin-top: 0;
+    }
+
+    .nav-link {
+      display: block;
+      padding: 8px 12px;
+      color: #999;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-link:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+      margin-top: 16px;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main Content */
+    .diagram-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Diagram Section */
+    .diagram-section {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 12px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .diagram-section__header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2d2d2d;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .diagram-section__title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .diagram-section__badge {
+      padding: 4px 10px;
+      background: #ec4899;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .diagram-section__content {
+      padding: 24px;
+    }
+
+    .diagram-section__description {
+      color: #888;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .mermaid {
+      background: #252525;
+      border-radius: 8px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* Endpoint Table */
+    .endpoint-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .endpoint-table th,
+    .endpoint-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .endpoint-table th {
+      background: #252525;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+    }
+
+    .endpoint-table td {
+      color: #ccc;
+    }
+
+    .endpoint-table code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+    }
+
+    .method-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .method-get { background: #22c55e20; color: #22c55e; }
+    .method-post { background: #3b82f620; color: #3b82f6; }
+    .method-put { background: #f59e0b20; color: #f59e0b; }
+    .method-delete { background: #ef444420; color: #ef4444; }
+
+    /* Info Cards */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: #252525;
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .info-card__label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .info-card__value {
+      font-size: 14px;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Subsection */
+    .subsection {
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid #2d2d2d;
+    }
+
+    .subsection__title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="diagram-sidebar">
+    <div class="sidebar-header">
+      <h1>Diagrams</h1>
+      <p>Legends DXP Visual Schematics</p>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group-title">Overview</div>
+      <a href="index.html" class="nav-link">All Diagrams</a>
+
+      <div class="nav-group-title">Flow Diagrams</div>
+      <a href="user-flows.html" class="nav-link">User Flows</a>
+
+      <div class="nav-group-title">Data Diagrams</div>
+      <a href="entity-relationships.html" class="nav-link">Entity Relationships</a>
+
+      <div class="nav-group-title">State Diagrams</div>
+      <a href="state-machines.html" class="nav-link">State Machines</a>
+
+      <div class="nav-group-title">Infrastructure</div>
+      <a href="infrastructure.html" class="nav-link">CI/CD & AWS</a>
+
+      <div class="nav-group-title">Business Flows</div>
+      <a href="business-flows.html" class="nav-link">Permission & Onboarding</a>
+
+      <div class="nav-group-title">API Sequences</div>
+      <a href="#client-login" class="nav-link active">Client Login (K-001)</a>
+      <a href="#admin-login" class="nav-link">Admin Login</a>
+      <a href="#checkout-flow" class="nav-link">Checkout Flow</a>
+      <a href="#token-lifecycle" class="nav-link">Token Lifecycle</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="index.html" class="back-link">
+        <span>&larr;</span>
+        <span>Back to Diagrams</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="diagram-main">
+    <header class="page-header">
+      <h1>API Sequences</h1>
+      <p>Backend API akislari - Authentication, Checkout, Token management sequence diyagramlari.</p>
+    </header>
+
+    <!-- Client Login Sequence -->
+    <section id="client-login" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Client Login - Email OTP (K-001)</h2>
+        <span class="diagram-section__badge">Sequence</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Musteri giris akisi - Email ile OTP isteme ve dogrulama. Guest session destegi mevcut.
+        </p>
+
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User (Client)
+    participant F as Frontend
+    participant API as Backend API
+    participant DB as Database
+    participant SMS as Email Service
+
+    U->>F: Enter email address
+    F->>API: POST /api/client/auth/request-otp
+    Note right of API: {email: "user@example.com"}
+
+    API->>DB: Check user exists
+    alt User not found
+        API->>DB: Create new user record
+    end
+
+    API->>API: Generate 6-digit OTP
+    API->>DB: Store OTP (expires 5 min)
+    API->>SMS: Send OTP via Email
+    SMS-->>U: Email with OTP code
+    API-->>F: 200 OK {message: "OTP sent"}
+
+    U->>F: Enter OTP code
+    F->>API: POST /api/client/auth/verify-otp
+    Note right of API: {email, otp: "123456"}
+
+    API->>DB: Validate OTP
+    alt OTP Valid
+        API->>DB: Mark OTP as used
+        API->>API: Generate JWT tokens
+        API-->>F: 200 OK {accessToken, refreshToken, user}
+        F->>F: Store tokens in localStorage
+        F-->>U: Redirect to dashboard
+    else OTP Invalid/Expired
+        API-->>F: 401 Invalid OTP
+        F-->>U: Show error message
+    end
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">Auth Method</div>
+            <div class="info-card__value">Email + OTP</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">OTP Length</div>
+            <div class="info-card__value">6 digits</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">OTP Expiry</div>
+            <div class="info-card__value">5 minutes</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Decision Ref</div>
+            <div class="info-card__value">K-001</div>
+          </div>
+        </div>
+
+        <table class="endpoint-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Description</th>
+              <th>Auth</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/client/auth/request-otp</code></td>
+              <td>Request OTP code via Email</td>
+              <td>Public</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/client/auth/verify-otp</code></td>
+              <td>Verify Email OTP code</td>
+              <td>Public</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/client/auth/guest-session</code></td>
+              <td>Create guest session for checkout</td>
+              <td>Public</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Guest Session Subsection -->
+        <div class="subsection">
+          <h3 class="subsection__title">Guest Session Flow</h3>
+          <div class="mermaid">
+sequenceDiagram
+    participant U as Guest User
+    participant F as Frontend
+    participant API as Backend API
+
+    U->>F: Click "Checkout as Guest"
+    F->>API: POST /api/client/auth/guest-session
+    Note right of API: {deviceId: "uuid"}
+
+    API->>API: Create temporary guest record
+    API->>API: Generate limited JWT
+    API-->>F: 200 OK {guestToken, guestId}
+
+    F->>F: Store guestToken
+    F-->>U: Continue to checkout
+
+    Note over U,API: Guest can complete purchase<br/>but cannot access profile/history
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Admin Login Sequence -->
+    <section id="admin-login" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Admin Login - Email & SMS OTP</h2>
+        <span class="diagram-section__badge">Sequence</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          Yonetici giris akisi - System Admin ve Project Admin icin hem Email hem SMS OTP destegi.
+        </p>
+
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant A as Admin User
+    participant F as Admin Panel
+    participant API as Backend API
+    participant DB as Database
+    participant MSG as Email/SMS Service
+
+    A->>F: Enter email/phone
+    A->>F: Select OTP method (Email/SMS)
+
+    alt Email OTP
+        F->>API: POST /api/{admin-type}/auth/email/request-otp
+        Note right of API: {email: "admin@company.com"}
+        API->>MSG: Send Email
+    else SMS OTP
+        F->>API: POST /api/{admin-type}/auth/sms/request-otp
+        Note right of API: {phone: "+90532..."}
+        API->>MSG: Send SMS
+    end
+
+    API->>DB: Check admin in allowed_domains
+    alt Domain not allowed
+        API-->>F: 403 Domain not allowed
+        F-->>A: Show "Contact Super Admin"
+    end
+
+    API->>API: Generate OTP
+    API->>DB: Store OTP with admin context
+    MSG-->>A: OTP via Email/SMS
+    API-->>F: 200 OK
+
+    A->>F: Enter OTP
+
+    alt Email OTP Verify
+        F->>API: POST /api/{admin-type}/auth/email/verify-otp
+    else SMS OTP Verify
+        F->>API: POST /api/{admin-type}/auth/sms/verify-otp
+    end
+
+    API->>DB: Validate OTP + Load permissions
+    API->>API: Generate JWT with permissions claim
+    API-->>F: 200 OK {accessToken, refreshToken, admin, permissions[]}
+
+    F->>F: Store tokens + cache permissions
+    F-->>A: Redirect to admin dashboard
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">Admin Types</div>
+            <div class="info-card__value">System Admin, Project Admin</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">OTP Methods</div>
+            <div class="info-card__value">Email + SMS</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Domain Whitelist</div>
+            <div class="info-card__value">Required</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Permissions</div>
+            <div class="info-card__value">JWT Claim</div>
+          </div>
+        </div>
+
+        <table class="endpoint-table">
+          <thead>
+            <tr>
+              <th>Admin Type</th>
+              <th>Email Endpoints</th>
+              <th>SMS Endpoints</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>System Admin</strong></td>
+              <td>
+                <code>/api/system-admin/auth/email/request-otp</code><br>
+                <code>/api/system-admin/auth/email/verify-otp</code>
+              </td>
+              <td>
+                <code>/api/system-admin/auth/sms/request-otp</code><br>
+                <code>/api/system-admin/auth/sms/verify-otp</code>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>Project Admin</strong></td>
+              <td>
+                <code>/api/project-admin/auth/email/request-otp</code><br>
+                <code>/api/project-admin/auth/email/verify-otp</code>
+              </td>
+              <td>
+                <code>/api/project-admin/auth/sms/request-otp</code><br>
+                <code>/api/project-admin/auth/sms/verify-otp</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Checkout Flow Sequence -->
+    <section id="checkout-flow" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Checkout Flow</h2>
+        <span class="diagram-section__badge">Sequence</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          E-commerce checkout akisi - Cart validation, Order creation, Payment processing.
+        </p>
+
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant F as Frontend
+    participant API as Backend API
+    participant DB as Database
+    participant PG as Payment Gateway
+    participant INV as Inventory
+
+    rect rgb(40, 40, 40)
+    Note over U,INV: Step 1: Cart Validation
+    U->>F: Review cart & click Checkout
+    F->>API: POST /api/checkout/validate
+    Note right of API: {tickets[], addOns[]}
+
+    API->>DB: Check product availability
+    API->>DB: Check session capacity
+    API->>DB: Apply campaign discounts
+    API-->>F: 200 OK {validatedItems, pricing, matchedCampaigns[]}
+    F-->>U: Show final price breakdown
+    end
+
+    rect rgb(40, 40, 40)
+    Note over U,INV: Step 2: Checkout & Payment
+    U->>F: Enter payment details
+    F->>API: POST /api/checkout
+    Note right of API: {guest, tickets[], addOns[], payment{cardDetails}}
+
+    API->>INV: Reserve tickets (session)
+    API->>DB: Create Order (status: PENDING)
+    API->>DB: Create Payment record
+    API->>PG: Initiate 3D Secure payment
+    PG-->>F: Redirect to 3DS page
+    end
+
+    rect rgb(40, 40, 40)
+    Note over U,INV: Step 3: Payment Confirmation
+    U->>PG: Complete 3DS verification
+    PG->>API: Payment callback (success/fail)
+
+    alt Payment Success
+        API->>DB: Update Payment (status: CAPTURED)
+        API->>DB: Update Order (status: CONFIRMED)
+        API->>INV: Confirm ticket reservation
+        API-->>F: 200 OK {order, payment}
+        F-->>U: Show success + tickets
+    else Payment Failed
+        API->>DB: Update Payment (status: FAILED)
+        API->>DB: Update Order (status: CANCELLED)
+        API->>INV: Release reserved tickets
+        API-->>F: 400 Payment failed
+        F-->>U: Show error + retry option
+    end
+    end
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">Payment Method</div>
+            <div class="info-card__value">Credit Card (3DS)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Inventory</div>
+            <div class="info-card__value">Session-based reservation</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Campaigns</div>
+            <div class="info-card__value">Auto-applied discounts</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Guest Support</div>
+            <div class="info-card__value">Yes</div>
+          </div>
+        </div>
+
+        <table class="endpoint-table">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Endpoint</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/checkout/validate</code></td>
+              <td>Validate cart items, check availability, calculate discounts</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/checkout</code></td>
+              <td>Process checkout - create order, initiate payment</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-post">POST</span></td>
+              <td><code>/api/orders/{id}/confirm</code></td>
+              <td>Confirm order after successful payment</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-get">GET</span></td>
+              <td><code>/api/orders/{id}/public</code></td>
+              <td>Get order details (public access with order ID)</td>
+            </tr>
+            <tr>
+              <td><span class="method-badge method-delete">DELETE</span></td>
+              <td><code>/api/orders/{id}</code></td>
+              <td>Cancel an order</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Session Reservation Subsection -->
+        <div class="subsection">
+          <h3 class="subsection__title">Session Ticket Reservation</h3>
+          <div class="mermaid">
+sequenceDiagram
+    participant API as Backend API
+    participant DB as Database
+
+    Note over API,DB: Reserve Flow
+    API->>DB: POST /api/products/{productId}/sessions/{sessionId}/reserve
+    Note right of DB: {quantity: 2, orderId: "..."}
+    DB->>DB: Decrement availableCapacity
+    DB->>DB: Create reservation record
+    DB-->>API: 200 OK {reserved: true}
+
+    Note over API,DB: Release Flow (on cancel/timeout)
+    API->>DB: POST /api/products/{productId}/sessions/{sessionId}/release
+    DB->>DB: Increment availableCapacity
+    DB->>DB: Delete reservation record
+    DB-->>API: 200 OK {released: true}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Token Lifecycle -->
+    <section id="token-lifecycle" class="diagram-section">
+      <div class="diagram-section__header">
+        <h2 class="diagram-section__title">Token Lifecycle</h2>
+        <span class="diagram-section__badge">Sequence</span>
+      </div>
+      <div class="diagram-section__content">
+        <p class="diagram-section__description">
+          JWT token yonetimi - Access token refresh, logout, force logout akislari.
+        </p>
+
+        <div class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as User/Admin
+    participant F as Frontend
+    participant API as Backend API
+    participant DB as Database
+
+    rect rgb(40, 40, 40)
+    Note over U,DB: Token Refresh Flow
+    F->>F: Access token expired (401)
+    F->>API: POST /api/{user-type}/session/refresh
+    Note right of API: {refreshToken: "..."}
+
+    API->>DB: Validate refresh token
+    alt Token Valid
+        API->>API: Generate new access token
+        API->>DB: Rotate refresh token (optional)
+        API-->>F: 200 OK {accessToken, refreshToken}
+        F->>F: Update stored tokens
+        F->>F: Retry original request
+    else Token Invalid/Expired
+        API-->>F: 401 Unauthorized
+        F->>F: Clear tokens
+        F-->>U: Redirect to login
+    end
+    end
+
+    rect rgb(40, 40, 40)
+    Note over U,DB: Logout Flow
+    U->>F: Click Logout
+    F->>API: POST /api/{user-type}/session/logout
+    Note right of API: {} (uses Bearer token)
+
+    API->>DB: Invalidate refresh token
+    API->>DB: Add to token blacklist
+    API-->>F: 200 OK
+    F->>F: Clear all tokens
+    F-->>U: Redirect to login
+    end
+
+    rect rgb(40, 40, 40)
+    Note over U,DB: Force Logout Flow (Admin)
+    U->>F: Select user to force logout
+    F->>API: POST /api/{admin-type}/session/force-logout
+    Note right of API: {adminId: "target-admin-id"}
+
+    API->>DB: Check requester permissions
+    API->>DB: Invalidate target's all tokens
+    API-->>F: 200 OK {message: "User logged out"}
+    end
+        </div>
+
+        <div class="info-cards">
+          <div class="info-card">
+            <div class="info-card__label">Access Token</div>
+            <div class="info-card__value">Short-lived (15-30 min)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Refresh Token</div>
+            <div class="info-card__value">Long-lived (7-30 days)</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Token Storage</div>
+            <div class="info-card__value">localStorage / httpOnly cookie</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__label">Rotation</div>
+            <div class="info-card__value">On refresh (optional)</div>
+          </div>
+        </div>
+
+        <table class="endpoint-table">
+          <thead>
+            <tr>
+              <th>User Type</th>
+              <th>Refresh</th>
+              <th>Logout</th>
+              <th>Force Logout</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>System Admin</strong></td>
+              <td><code>/api/system-admin/session/refresh</code></td>
+              <td><code>/api/system-admin/session/logout</code></td>
+              <td><code>/api/system-admin/session/force-logout</code></td>
+            </tr>
+            <tr>
+              <td><strong>Project Admin</strong></td>
+              <td><code>/api/project-admin/session/refresh</code></td>
+              <td><code>/api/project-admin/session/logout</code></td>
+              <td><code>/api/project-admin/session/force-logout</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#0d9488',
+        primaryTextColor: '#fff',
+        primaryBorderColor: '#0d9488',
+        lineColor: '#666',
+        secondaryColor: '#1a1a1a',
+        tertiaryColor: '#252525',
+        background: '#252525',
+        mainBkg: '#252525',
+        secondBkg: '#1a1a1a',
+        textColor: '#fff',
+        actorBkg: '#0d9488',
+        actorBorder: '#0d9488',
+        actorTextColor: '#fff',
+        signalColor: '#888',
+        signalTextColor: '#fff',
+        labelBoxBkgColor: '#252525',
+        labelBoxBorderColor: '#444',
+        labelTextColor: '#ccc',
+        loopTextColor: '#888',
+        noteBkgColor: '#333',
+        noteTextColor: '#ccc',
+        noteBorderColor: '#444',
+        activationBkgColor: '#333',
+        activationBorderColor: '#0d9488',
+        sequenceNumberColor: '#fff'
+      },
+      sequence: {
+        diagramMarginX: 20,
+        diagramMarginY: 20,
+        actorMargin: 80,
+        width: 180,
+        height: 50,
+        boxMargin: 10,
+        boxTextMargin: 5,
+        noteMargin: 10,
+        messageMargin: 40,
+        mirrorActors: false,
+        useMaxWidth: true,
+        rightAngles: false,
+        showSequenceNumbers: true
+      }
+    });
+  </script>
+  <script src="shared/diagram-layout.js"></script>
+</body>
+</html>
