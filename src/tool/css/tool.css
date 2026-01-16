@@ -1,0 +1,506 @@
+/**
+ * Tool UI Design System
+ * Modern/Minimal style for toolbar and comments
+ */
+
+/* ===== CSS Variables ===== */
+:root {
+  /* Colors */
+  --tool-bg: #1a1a1a;
+  --tool-bg-secondary: #2d2d2d;
+  --tool-bg-hover: #3d3d3d;
+  --tool-text: #ffffff;
+  --tool-text-muted: #888888;
+  --tool-accent: #0d9488;
+  --tool-accent-hover: #0f766e;
+  --tool-border: #404040;
+  --tool-shadow: rgba(0, 0, 0, 0.3);
+
+  /* Typography */
+  --tool-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --tool-font-size: 13px;
+  --tool-font-size-sm: 11px;
+
+  /* Spacing */
+  --tool-radius: 8px;
+  --tool-radius-sm: 4px;
+  --tool-spacing: 8px;
+  --tool-spacing-lg: 16px;
+
+  /* Z-Index Layers */
+  --tool-z-toolbar: 9000;
+  --tool-z-pins: 9100;
+  --tool-z-popups: 9200;
+  --tool-z-panel: 9300;
+  --tool-z-overlay: 9400;
+}
+
+/* ===== Base Reset for Tool Elements ===== */
+.tool-toolbar,
+.tool-toolbar *,
+.tool-panel,
+.tool-panel *,
+.tool-popup,
+.tool-popup *,
+.tool-pin {
+  box-sizing: border-box;
+  font-family: var(--tool-font);
+  font-size: var(--tool-font-size);
+  line-height: 1.4;
+}
+
+/* ===== Toolbar ===== */
+.tool-toolbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--tool-z-toolbar);
+
+  display: flex;
+  align-items: center;
+  gap: var(--tool-spacing);
+  padding: var(--tool-spacing) var(--tool-spacing-lg);
+
+  background: var(--tool-bg);
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius);
+  box-shadow: 0 4px 20px var(--tool-shadow);
+}
+
+/* ===== Toolbar Button ===== */
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 8px 12px;
+  min-width: 36px;
+  min-height: 36px;
+
+  background: transparent;
+  color: var(--tool-text);
+  border: none;
+  border-radius: var(--tool-radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  font-size: var(--tool-font-size);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tool-btn:hover {
+  background: var(--tool-bg-hover);
+}
+
+.tool-btn:active {
+  background: var(--tool-bg-secondary);
+}
+
+.tool-btn.active {
+  background: var(--tool-accent);
+  color: var(--tool-text);
+}
+
+.tool-btn.active:hover {
+  background: var(--tool-accent-hover);
+}
+
+/* Icon-only button */
+.tool-btn-icon {
+  padding: 8px;
+}
+
+/* Primary button */
+.tool-btn-primary {
+  background: var(--tool-accent);
+}
+
+.tool-btn-primary:hover {
+  background: var(--tool-accent-hover);
+}
+
+/* ===== Toolbar Divider ===== */
+.tool-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--tool-border);
+  margin: 0 4px;
+}
+
+/* ===== Toolbar Badge ===== */
+.tool-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+
+  background: var(--tool-accent);
+  color: var(--tool-text);
+  border-radius: 9px;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Badge on button */
+.tool-btn .tool-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+}
+
+.tool-btn-with-badge {
+  position: relative;
+}
+
+/* ===== Version Selector ===== */
+.tool-select {
+  appearance: none;
+  background: var(--tool-bg-secondary);
+  color: var(--tool-text);
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius-sm);
+  padding: 6px 28px 6px 10px;
+  font-size: var(--tool-font-size);
+  cursor: pointer;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+.tool-select:hover {
+  border-color: var(--tool-text-muted);
+}
+
+.tool-select:focus {
+  outline: none;
+  border-color: var(--tool-accent);
+}
+
+/* ===== Comment Pin ===== */
+.tool-pin {
+  position: absolute;
+  z-index: var(--tool-z-pins);
+
+  width: 28px;
+  height: 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--tool-accent);
+  color: var(--tool-text);
+  border: 2px solid var(--tool-text);
+  border-radius: 50% 50% 50% 0;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.tool-pin:hover {
+  transform: rotate(-45deg) scale(1.1);
+  background: var(--tool-accent-hover);
+}
+
+.tool-pin span {
+  transform: rotate(45deg);
+}
+
+.tool-pin.resolved {
+  background: var(--tool-text-muted);
+  opacity: 0.6;
+}
+
+/* ===== Comment Popup ===== */
+.tool-popup {
+  position: absolute;
+  z-index: var(--tool-z-popups);
+
+  width: 320px;
+
+  background: var(--tool-bg);
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius);
+  box-shadow: 0 8px 32px var(--tool-shadow);
+
+  overflow: hidden;
+}
+
+.tool-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--tool-border);
+}
+
+.tool-popup-title {
+  font-weight: 600;
+  color: var(--tool-text);
+}
+
+.tool-popup-close {
+  background: none;
+  border: none;
+  color: var(--tool-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-popup-close:hover {
+  color: var(--tool-text);
+}
+
+.tool-popup-body {
+  padding: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.tool-popup-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--tool-border);
+  display: flex;
+  gap: 8px;
+}
+
+/* ===== Comment Panel (Side) ===== */
+.tool-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: var(--tool-z-panel);
+
+  width: 360px;
+
+  background: var(--tool-bg);
+  border-left: 1px solid var(--tool-border);
+  box-shadow: -4px 0 20px var(--tool-shadow);
+
+  display: flex;
+  flex-direction: column;
+
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+.tool-panel.open {
+  transform: translateX(0);
+}
+
+.tool-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid var(--tool-border);
+}
+
+.tool-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tool-text);
+}
+
+.tool-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.tool-panel-footer {
+  padding: 16px;
+  border-top: 1px solid var(--tool-border);
+}
+
+/* ===== Comment Thread ===== */
+.tool-thread {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--tool-border);
+}
+
+.tool-thread:last-child {
+  border-bottom: none;
+}
+
+.tool-comment {
+  margin-bottom: 12px;
+}
+
+.tool-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.tool-comment-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--tool-accent);
+  color: var(--tool-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.tool-comment-author {
+  font-weight: 600;
+  color: var(--tool-text);
+  font-size: var(--tool-font-size-sm);
+}
+
+.tool-comment-time {
+  color: var(--tool-text-muted);
+  font-size: var(--tool-font-size-sm);
+}
+
+.tool-comment-text {
+  color: var(--tool-text);
+  line-height: 1.5;
+}
+
+/* ===== Comment Input ===== */
+.tool-input {
+  width: 100%;
+  padding: 10px 12px;
+
+  background: var(--tool-bg-secondary);
+  color: var(--tool-text);
+  border: 1px solid var(--tool-border);
+  border-radius: var(--tool-radius-sm);
+
+  font-size: var(--tool-font-size);
+  resize: none;
+}
+
+.tool-input::placeholder {
+  color: var(--tool-text-muted);
+}
+
+.tool-input:focus {
+  outline: none;
+  border-color: var(--tool-accent);
+}
+
+.tool-textarea {
+  min-height: 80px;
+}
+
+/* ===== Mode Banner (Comment Mode Active) ===== */
+.tool-mode-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--tool-z-overlay);
+
+  padding: 10px 16px;
+
+  background: var(--tool-accent);
+  color: var(--tool-text);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: var(--tool-font-size);
+  font-weight: 500;
+}
+
+.tool-mode-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ===== Tool Icon ===== */
+.tool-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.tool-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Icon colors - white stroke/fill for dark toolbar */
+.tool-icon svg,
+.tool-icon svg * {
+  stroke: var(--tool-text) !important;
+  fill: none;
+}
+
+/* For filled icons */
+.tool-icon svg [fill]:not([fill="none"]) {
+  fill: var(--tool-text) !important;
+  stroke: none !important;
+}
+
+/* ===== Animations ===== */
+@keyframes tool-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes tool-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tool-popup {
+  animation: tool-slide-up 0.15s ease;
+}
+
+/* ===== Scrollbar Styling ===== */
+.tool-panel-body::-webkit-scrollbar,
+.tool-popup-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tool-panel-body::-webkit-scrollbar-track,
+.tool-popup-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tool-panel-body::-webkit-scrollbar-thumb,
+.tool-popup-body::-webkit-scrollbar-thumb {
+  background: var(--tool-border);
+  border-radius: 3px;
+}
+
+.tool-panel-body::-webkit-scrollbar-thumb:hover,
+.tool-popup-body::-webkit-scrollbar-thumb:hover {
+  background: var(--tool-text-muted);
+}
