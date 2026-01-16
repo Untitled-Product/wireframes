@@ -1,0 +1,1134 @@
+/**
+ * Wireframe Design System
+ * Sketchy, hand-drawn Balsamiq-like style
+ * Font: Indie Flower
+ * Prefix: .wf-*
+ */
+
+/* CSS Variables for Wireframe Theme */
+:root {
+  /* Theme Colors (can be overridden by theme classes) */
+  --theme-primary: #3b82f6;
+  --theme-primary-light: #dbeafe;
+  --theme-primary-dark: #1d4ed8;
+
+  /* Sketchy line style */
+  --sketch-border: 2px solid #374151;
+  --sketch-border-light: 1.5px solid #6b7280;
+}
+
+/* Theme Options */
+.theme-blue { --theme-primary: #3b82f6; --theme-primary-light: #dbeafe; --theme-primary-dark: #1d4ed8; }
+.theme-teal { --theme-primary: #14b8a6; --theme-primary-light: #ccfbf1; --theme-primary-dark: #0d9488; }
+.theme-purple { --theme-primary: #8b5cf6; --theme-primary-light: #ede9fe; --theme-primary-dark: #7c3aed; }
+.theme-orange { --theme-primary: #f97316; --theme-primary-light: #ffedd5; --theme-primary-dark: #ea580c; }
+.theme-pink { --theme-primary: #ec4899; --theme-primary-light: #fce7f3; --theme-primary-dark: #db2777; }
+.theme-green { --theme-primary: #22c55e; --theme-primary-light: #dcfce7; --theme-primary-dark: #16a34a; }
+
+/* ============================================
+   WIREFRAME PAGE BASE
+   ============================================ */
+
+/* Wireframe pages - sketchy hand-drawn look */
+.wireframe-page {
+  font-family: 'Indie Flower', cursive;
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: #1f2937;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.wireframe-page * {
+  border-radius: 3px !important;
+}
+
+/* Sketchy border effect using box-shadow */
+.wireframe-page .sketch-box {
+  background: #ffffff;
+  border: var(--sketch-border);
+  box-shadow:
+    2px 2px 0 0 #e5e7eb,
+    inset 0 0 0 1px rgba(0,0,0,0.05);
+  position: relative;
+}
+
+/* Hand-drawn wobbly border effect */
+.wireframe-page .sketch-box::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect x='2' y='2' width='96' height='96' fill='none' stroke='%23374151' stroke-width='2' stroke-dasharray='4,2' /%3E%3C/svg%3E") 1;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* ============================================
+   WIREFRAME BUTTONS
+   ============================================ */
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 18px;
+  font-weight: 500;
+  border: var(--sketch-border);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 2px 2px 0 0 #374151;
+}
+
+.wf-btn:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 0 #374151;
+}
+
+.wf-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.wf-btn-primary {
+  background: var(--theme-primary-light);
+  border-color: var(--theme-primary-dark);
+  box-shadow: 2px 2px 0 0 var(--theme-primary-dark);
+}
+
+.wf-btn-filled {
+  background: #374151;
+  color: #ffffff;
+}
+
+.wf-btn-danger {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+  box-shadow: 2px 2px 0 0 #ef4444;
+}
+
+.wf-btn-warning {
+  background: #ffedd5;
+  border-color: #f97316;
+  color: #c2410c;
+  box-shadow: 2px 2px 0 0 #f97316;
+}
+
+.wf-btn-info {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+  box-shadow: 2px 2px 0 0 #3b82f6;
+}
+
+/* ============================================
+   WIREFRAME CARDS
+   ============================================ */
+.wf-card {
+  background: #ffffff;
+  border: var(--sketch-border);
+  box-shadow: 3px 3px 0 0 #d1d5db;
+  padding: 16px;
+}
+
+/* ============================================
+   WIREFRAME INPUTS
+   ============================================ */
+.wf-input {
+  width: 100%;
+  padding: 8px 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  border: var(--sketch-border-light);
+  background: #fafafa;
+}
+
+.wf-input:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  background: #ffffff;
+}
+
+.wf-input::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.wf-label {
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  color: #374151;
+}
+
+.wf-select {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  border: var(--sketch-border-light);
+  background: #fafafa;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23374151' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+}
+
+/* ============================================
+   WIREFRAME BADGES
+   ============================================ */
+.wf-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  border: 1.5px solid #6b7280;
+  background: #f3f4f6;
+}
+
+.wf-badge-primary {
+  background: var(--theme-primary-light);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary-dark);
+}
+
+.wf-badge-success {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.wf-badge-warning {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+.wf-badge-error {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.wf-badge-info {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+/* Badge Variants - Category Specific */
+.wf-badge-combo {
+  background: #fce7f3;
+  border-color: #ec4899;
+  color: #9d174d;
+}
+
+.wf-badge-slot {
+  background: #ffedd5;
+  border-color: #f97316;
+  color: #c2410c;
+}
+
+.wf-badge-parking {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.wf-badge-locker {
+  background: #cffafe;
+  border-color: #06b6d4;
+  color: #0e7490;
+}
+
+.wf-badge-equipment {
+  background: #ffedd5;
+  border-color: #f97316;
+  color: #c2410c;
+}
+
+.wf-badge-fnb {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+.wf-badge-experience {
+  background: #f3e8ff;
+  border-color: #a855f7;
+  color: #7c3aed;
+}
+
+.wf-badge-seasonal {
+  background: #f3e8ff;
+  border-color: #a855f7;
+  color: #7c3aed;
+}
+
+.wf-badge-group {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+/* ============================================
+   WIREFRAME TABLE
+   ============================================ */
+.wf-table {
+  width: 100%;
+  font-family: 'Indie Flower', cursive;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: var(--sketch-border);
+}
+
+.wf-table th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 15px;
+  font-weight: normal;
+  background: #f3f4f6;
+  border-bottom: var(--sketch-border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wf-table td {
+  padding: 12px 16px;
+  font-size: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.wf-table tr:last-child td {
+  border-bottom: none;
+}
+
+.wf-table tr:hover td {
+  background: #f9fafb;
+}
+
+/* ============================================
+   WIREFRAME SIDEBAR
+   ============================================ */
+.wf-sidebar {
+  width: 224px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  border-right: var(--sketch-border);
+}
+
+.wf-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 2px 8px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 17px;
+  color: #374151;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.wf-sidebar-item:hover {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+}
+
+.wf-sidebar-item.active {
+  background: var(--theme-primary-light);
+  border: 2px solid var(--theme-primary);
+  color: var(--theme-primary-dark);
+}
+
+/* ============================================
+   WIREFRAME HEADER
+   ============================================ */
+.wf-header {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: #ffffff;
+  border-bottom: var(--sketch-border);
+}
+
+/* ============================================
+   WIREFRAME MODAL
+   ============================================ */
+.wf-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.wf-modal {
+  max-width: 28rem;
+  width: 100%;
+  margin: 0 16px;
+  background: #ffffff;
+  border: var(--sketch-border);
+  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.15);
+}
+
+.wf-modal-header {
+  padding: 16px 24px;
+  border-bottom: var(--sketch-border-light);
+  font-size: 20px;
+}
+
+.wf-modal-body {
+  padding: 16px 24px;
+}
+
+.wf-modal-footer {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: var(--sketch-border-light);
+  background: #f9fafb;
+}
+
+/* ============================================
+   WIREFRAME ICON
+   ============================================ */
+.wf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   WIREFRAME IMAGE PLACEHOLDER
+   ============================================ */
+.wf-image-placeholder {
+  background: #e5e7eb;
+  border: 2px dashed #9ca3af;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  font-family: 'Indie Flower', cursive;
+}
+
+/* ============================================
+   WIREFRAME DIVIDER
+   ============================================ */
+.wf-divider {
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    #374151 0px,
+    #374151 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  margin: 16px 0;
+}
+
+/* ============================================
+   WIREFRAME ANNOTATION/NOTE
+   ============================================ */
+.wf-note {
+  padding: 12px;
+  background: #fef3c7;
+  border: 2px solid #f59e0b;
+  font-family: 'Indie Flower', cursive;
+  font-size: 15px;
+  color: #92400e;
+  transform: rotate(-0.5deg);
+}
+
+/* ============================================
+   WIREFRAME CHECKBOX
+   ============================================ */
+.wf-checkbox {
+  width: 20px;
+  height: 20px;
+  border: var(--sketch-border-light);
+  background: #ffffff;
+  cursor: pointer;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-checkbox:checked {
+  background: var(--theme-primary-light);
+  border-color: var(--theme-primary);
+}
+
+.wf-checkbox:checked::after {
+  content: '\2713';
+  color: var(--theme-primary-dark);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ============================================
+   WIREFRAME TEXTAREA
+   ============================================ */
+.wf-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  border: var(--sketch-border-light);
+  background: #fafafa;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.wf-textarea:focus {
+  outline: none;
+  border-color: var(--theme-primary);
+  background: #ffffff;
+}
+
+.wf-textarea::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* ============================================
+   WIREFRAME RADIO BUTTON
+   ============================================ */
+.wf-radio {
+  width: 20px;
+  height: 20px;
+  border: var(--sketch-border-light);
+  border-radius: 50% !important;
+  background: #ffffff;
+  cursor: pointer;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-radio:checked {
+  border-color: var(--theme-primary);
+}
+
+.wf-radio:checked::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--theme-primary);
+  border-radius: 50% !important;
+}
+
+/* Radio/Checkbox Group */
+.wf-radio-group,
+.wf-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wf-radio-group.horizontal,
+.wf-checkbox-group.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.wf-radio-label,
+.wf-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+}
+
+/* ============================================
+   WIREFRAME FORM
+   ============================================ */
+.wf-form-group {
+  margin-bottom: 16px;
+}
+
+.wf-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.wf-form-error {
+  margin-top: 4px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  color: #dc2626;
+}
+
+.wf-form-error::before {
+  content: '\26A0 ';
+}
+
+.wf-form-help {
+  margin-top: 4px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.wf-fieldset {
+  border: var(--sketch-border-light);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.wf-fieldset-legend {
+  font-family: 'Indie Flower', cursive;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 0 8px;
+  color: #374151;
+}
+
+/* ============================================
+   WIREFRAME STEPPER (Wizard Steps)
+   ============================================ */
+.wf-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.wf-stepper.horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+.wf-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  font-family: 'Indie Flower', cursive;
+  cursor: pointer;
+  position: relative;
+}
+
+.wf-step-number {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--sketch-border);
+  background: #f3f4f6;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.wf-step-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.wf-step-title {
+  font-size: 16px;
+  color: #374151;
+}
+
+.wf-step-subtitle {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* Step States */
+.wf-step.active .wf-step-number {
+  background: var(--theme-primary-light);
+  border-color: var(--theme-primary);
+  color: var(--theme-primary-dark);
+}
+
+.wf-step.active .wf-step-title {
+  color: var(--theme-primary-dark);
+  font-weight: 500;
+}
+
+.wf-step.completed .wf-step-number {
+  background: var(--theme-primary);
+  border-color: var(--theme-primary-dark);
+  color: #ffffff;
+}
+
+.wf-step.completed .wf-step-number::after {
+  content: '\2713';
+}
+
+.wf-step.completed .wf-step-title {
+  color: #6b7280;
+}
+
+/* Connector line between steps */
+.wf-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 31px;
+  top: 48px;
+  width: 2px;
+  height: calc(100% - 32px);
+  background: #d1d5db;
+}
+
+.wf-step.completed:not(:last-child)::after {
+  background: var(--theme-primary);
+}
+
+/* Horizontal stepper connector */
+.wf-stepper.horizontal .wf-step:not(:last-child)::after {
+  left: auto;
+  top: 50%;
+  right: -20px;
+  width: 40px;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+/* ============================================
+   WIREFRAME CALENDAR
+   ============================================ */
+.wf-calendar {
+  border: var(--sketch-border);
+  background: #ffffff;
+  font-family: 'Indie Flower', cursive;
+}
+
+.wf-calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: var(--sketch-border-light);
+  background: #f9fafb;
+}
+
+.wf-calendar-title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.wf-calendar-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.wf-calendar-nav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--sketch-border-light);
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.wf-calendar-nav-btn:hover {
+  background: #f3f4f6;
+}
+
+.wf-calendar-grid {
+  padding: 8px;
+}
+
+.wf-calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.wf-calendar-weekday {
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.wf-calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  padding: 8px;
+}
+
+.wf-calendar-day {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.wf-calendar-day:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.wf-calendar-day.today {
+  border: 2px solid var(--theme-primary);
+}
+
+.wf-calendar-day.selected {
+  background: var(--theme-primary);
+  color: #ffffff;
+  border-color: var(--theme-primary-dark);
+}
+
+.wf-calendar-day.disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.wf-calendar-day.disabled:hover {
+  background: transparent;
+  border-color: transparent;
+}
+
+.wf-calendar-day.other-month,
+.wf-calendar-day.other {
+  color: #9ca3af;
+}
+
+/* Calendar availability states */
+.wf-calendar-day.available {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.wf-calendar-day.limited {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.wf-calendar-day.full {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   WIREFRAME TIMELINE
+   ============================================ */
+.wf-timeline {
+  position: relative;
+  padding-left: 24px;
+  font-family: 'Indie Flower', cursive;
+}
+
+.wf-timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #d1d5db;
+}
+
+.wf-timeline-item {
+  position: relative;
+  padding-bottom: 16px;
+}
+
+.wf-timeline-item:last-child {
+  padding-bottom: 0;
+}
+
+.wf-timeline-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: -22px;
+  top: 4px;
+  border: 2px solid #9ca3af;
+  background: #ffffff;
+  border-radius: 50% !important;
+}
+
+.wf-timeline-item.success .wf-timeline-dot {
+  border-color: #22c55e;
+  background: #dcfce7;
+}
+
+.wf-timeline-item.warning .wf-timeline-dot {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.wf-timeline-item.error .wf-timeline-dot {
+  border-color: #ef4444;
+  background: #fee2e2;
+}
+
+.wf-timeline-item.info .wf-timeline-dot {
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-light);
+}
+
+.wf-timeline-content {
+  margin-left: 8px;
+}
+
+.wf-timeline-title {
+  font-size: 16px;
+  color: #374151;
+}
+
+.wf-timeline-time {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.wf-timeline-description {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ============================================
+   WIREFRAME TABS
+   ============================================ */
+.wf-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: var(--sketch-border);
+}
+
+.wf-tab {
+  padding: 8px 16px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  cursor: pointer;
+  border: var(--sketch-border);
+  border-bottom: none;
+  background: #f3f4f6;
+  margin-bottom: -2px;
+  margin-right: -2px;
+}
+
+.wf-tab:hover {
+  background: #e5e7eb;
+}
+
+.wf-tab.active {
+  background: #ffffff;
+  border-bottom: 2px solid #ffffff;
+  color: var(--theme-primary-dark);
+}
+
+.wf-tab-content {
+  padding: 16px;
+  border: var(--sketch-border);
+  border-top: none;
+  background: #ffffff;
+}
+
+/* ============================================
+   WIREFRAME TOGGLE SWITCH
+   ============================================ */
+.wf-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.wf-toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wf-toggle-slider {
+  width: 48px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  border: var(--sketch-border-light);
+  background: #e5e7eb;
+  padding: 2px;
+}
+
+.wf-toggle-slider::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  display: block;
+  background: #ffffff;
+  border: var(--sketch-border-light);
+  transition: transform 0.2s;
+}
+
+.wf-toggle-input:checked + .wf-toggle-slider {
+  background: var(--theme-primary-light);
+  border-color: var(--theme-primary);
+}
+
+.wf-toggle-input:checked + .wf-toggle-slider::after {
+  transform: translateX(22px);
+  border-color: var(--theme-primary);
+}
+
+.wf-toggle-label {
+  margin-left: 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+}
+
+/* ============================================
+   WIREFRAME ALERT
+   ============================================ */
+.wf-alert {
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: var(--sketch-border);
+  font-family: 'Indie Flower', cursive;
+}
+
+.wf-alert-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.wf-alert-content {
+  flex: 1;
+}
+
+.wf-alert-title {
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.wf-alert-message {
+  font-size: 15px;
+}
+
+.wf-alert-info {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.wf-alert-success {
+  background: #dcfce7;
+  border-color: #22c55e;
+}
+
+.wf-alert-warning {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.wf-alert-error {
+  background: #fee2e2;
+  border-color: #ef4444;
+}
+
+/* ============================================
+   WIREFRAME NUMBER INPUT
+   ============================================ */
+.wf-number-input {
+  display: inline-flex;
+  align-items: center;
+  border: var(--sketch-border);
+}
+
+.wf-number-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Indie Flower', cursive;
+  font-size: 20px;
+  background: #f3f4f6;
+  cursor: pointer;
+  border: none;
+}
+
+.wf-number-btn:hover {
+  background: #e5e7eb;
+}
+
+.wf-number-btn:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.wf-number-value {
+  width: 48px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Indie Flower', cursive;
+  font-size: 18px;
+  background: #ffffff;
+  border-left: var(--sketch-border-light);
+  border-right: var(--sketch-border-light);
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Hand-drawn underline effect */
+.sketch-underline {
+  text-decoration: none;
+  background-image: linear-gradient(90deg, #374151 50%, transparent 50%);
+  background-size: 6px 2px;
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  padding-bottom: 2px;
+}
+
+/* Highlight effect */
+.sketch-highlight {
+  background: linear-gradient(180deg, transparent 60%, #fef08a 60%);
+}
+
+/* Cross-out effect */
+.sketch-crossed {
+  text-decoration: line-through;
+  text-decoration-style: wavy;
+  text-decoration-color: #ef4444;
+}

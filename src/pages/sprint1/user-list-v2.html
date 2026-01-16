@@ -1,0 +1,284 @@
+<!--
+  Wireframe: user-list-v2
+  Task: D-003, F1-012, F1-013
+  Karar Versiyonu: K-002, K-003
+  Son Guncelleme: 2026-01-12
+
+  K-002 Notu: Granuler yetki sistemi - sabit roller YOK
+  K-003 Notu: 3 katmanli admin hiyerarsisi
+  - Super Admin: Tenant Admin listesi gorur
+  - Tenant Admin: Editor listesi gorur (bu ekran)
+  - Editor: Bu sayfaya erisemez
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editorler - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    /* Font loading - hide content until font is ready */
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    // Font loading detection
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      // Fallback for older browsers
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ sidebarOpen: true, mobileMenu: false }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Content -->
+      <main class="p-4 sm:p-6 flex-1">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-xl font-medium">Editorler</h1>
+            <p class="text-gray-500 text-sm sm:text-base">Tenant'inizdaki editor kullanicilari yonetin</p>
+          </div>
+          <a href="user-form-v2.html" class="wf-btn wf-btn-primary text-center">+ Yeni Editor Ekle</a>
+        </div>
+
+        <!-- Filters -->
+        <div class="wf-card mb-6">
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div class="flex-1">
+              <input type="text" placeholder="Ad, email veya telefon ara..." class="wf-input w-full">
+            </div>
+            <div class="flex gap-2 sm:gap-4">
+              <select class="wf-select flex-1 sm:w-32">
+                <option>Tum Durum</option>
+                <option>Aktif</option>
+                <option>Devre Disi</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table - Desktop -->
+        <div class="wf-card p-0 overflow-hidden hidden sm:block">
+          <div class="overflow-x-auto">
+            <table class="wf-table">
+              <thead>
+                <tr>
+                  <th>Editor</th>
+                  <th>Telefon</th>
+                  <th>Yetkiler</th>
+                  <th>Durum</th>
+                  <th>Son Giris</th>
+                  <th class="text-right">Islemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+                      <div>
+                        <div class="font-medium">Ahmet Yilmaz</div>
+                        <div class="text-sm text-gray-500">ahmet@tersanenick.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-gray-500">+90 532 XXX XX XX</td>
+                  <td><span class="wf-badge wf-badge-primary">12 yetki</span></td>
+                  <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                  <td class="text-gray-500">2 saat once</td>
+                  <td class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                      <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">MK</div>
+                      <div>
+                        <div class="font-medium">Mehmet Kaya</div>
+                        <div class="text-sm text-gray-500">mehmet@tersanenick.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-gray-500">+90 533 XXX XX XX</td>
+                  <td><span class="wf-badge wf-badge-warning">5 yetki</span></td>
+                  <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                  <td class="text-gray-500">Dun</td>
+                  <td class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                      <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">ZD</div>
+                      <div>
+                        <div class="font-medium">Zeynep Demir</div>
+                        <div class="text-sm text-gray-500">zeynep@tersanenick.com</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-gray-500">+90 535 XXX XX XX</td>
+                  <td><span class="wf-badge">3 yetki</span></td>
+                  <td><span class="wf-badge wf-badge-error">Devre Disi</span></td>
+                  <td class="text-gray-500">1 hafta once</td>
+                  <td class="text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                      <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div class="px-4 py-3 border-t-2 border-gray-300 flex items-center justify-between">
+            <div class="text-sm text-gray-500">3 editor</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-1 text-sm" disabled>Onceki</button>
+              <span class="wf-btn wf-btn-primary py-1 text-sm">1</span>
+              <button class="wf-btn py-1 text-sm">Sonraki</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card List - Mobile -->
+        <div class="sm:hidden space-y-3">
+          <!-- Editor Card 1 -->
+          <div class="wf-card">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">AY</div>
+                <div>
+                  <div class="font-medium">Ahmet Yilmaz</div>
+                  <div class="text-sm text-gray-500">ahmet@tersanenick.com</div>
+                </div>
+              </div>
+              <span class="wf-badge wf-badge-success">Aktif</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="wf-badge wf-badge-primary">12 yetki</span>
+                <span class="text-gray-500">2 saat once</span>
+              </div>
+              <div class="flex gap-1">
+                <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Editor Card 2 -->
+          <div class="wf-card">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">MK</div>
+                <div>
+                  <div class="font-medium">Mehmet Kaya</div>
+                  <div class="text-sm text-gray-500">mehmet@tersanenick.com</div>
+                </div>
+              </div>
+              <span class="wf-badge wf-badge-success">Aktif</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="wf-badge wf-badge-warning">5 yetki</span>
+                <span class="text-gray-500">Dun</span>
+              </div>
+              <div class="flex gap-1">
+                <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Editor Card 3 -->
+          <div class="wf-card">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center text-sm">ZD</div>
+                <div>
+                  <div class="font-medium">Zeynep Demir</div>
+                  <div class="text-sm text-gray-500">zeynep@tersanenick.com</div>
+                </div>
+              </div>
+              <span class="wf-badge wf-badge-error">Devre Disi</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2">
+                <span class="wf-badge">3 yetki</span>
+                <span class="text-gray-500">1 hafta once</span>
+              </div>
+              <div class="flex gap-1">
+                <button class="wf-btn py-1 px-2 text-sm">Yetkiler</button>
+                <button class="wf-btn py-1 px-2 text-sm">Duzenle</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Pagination -->
+          <div class="flex items-center justify-between pt-2">
+            <div class="text-sm text-gray-500">3 editor</div>
+            <div class="flex items-center gap-2">
+              <button class="wf-btn py-1 text-sm" disabled>Onceki</button>
+              <span class="wf-btn wf-btn-primary py-1 text-sm">1</span>
+              <button class="wf-btn py-1 text-sm">Sonraki</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Annotation Note -->
+        <div class="wf-note mt-6">
+          K-003: Tenant Admin gorunumu. Editor listesi. Rol kolonu YOK (K-002: granuler yetkiler). Yetki sayisi badge olarak gosterilir.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <!-- Tool UI -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

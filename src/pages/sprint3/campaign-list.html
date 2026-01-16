@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kampanya Listesi - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ sidebarOpen: true, mobileMenu: false, filterOpen: false }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl">Kampanyalar</h1>
+            <p class="text-gray-500 mt-1">Kampanya kurallarini ve indirimlerini yonetin</p>
+          </div>
+          <a href="campaign-wizard.html" class="wf-btn wf-btn-primary inline-flex items-center gap-2">
+            <span>+</span>
+            Yeni Kampanya
+          </a>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Aktif Kampanyalar</div>
+            <div class="text-2xl font-semibold text-green-600">12</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Yaklasan</div>
+            <div class="text-2xl font-semibold text-amber-600">3</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Sona Eren</div>
+            <div class="text-2xl font-semibold text-gray-500">28</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Toplam Kullanim</div>
+            <div class="text-2xl font-semibold">1,245</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="wf-card mb-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex-1 min-w-[200px]">
+              <input type="text" class="wf-input w-full" placeholder="Kampanya ara...">
+            </div>
+            <select class="wf-select">
+              <option value="">Tum Durumlar</option>
+              <option value="active">Aktif</option>
+              <option value="upcoming">Yaklasan</option>
+              <option value="ended">Sona Erdi</option>
+              <option value="draft">Taslak</option>
+            </select>
+            <select class="wf-select">
+              <option value="">Tum Tipler</option>
+              <option value="discount">Indirim</option>
+              <option value="coupon">Kupon</option>
+              <option value="bundle">Bundle</option>
+            </select>
+            <button @click="filterOpen = !filterOpen" class="wf-btn">
+              <span class="wf-icon" data-icon="filter" data-size="16"></span>
+              <span class="ml-1">Filtreler</span>
+            </button>
+          </div>
+
+          <!-- Advanced Filters -->
+          <div x-show="filterOpen" x-collapse class="mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm mb-1">Baslangic Tarihi</label>
+                <input type="date" class="wf-input w-full">
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Bitis Tarihi</label>
+                <input type="date" class="wf-input w-full">
+              </div>
+              <div>
+                <label class="block text-sm mb-1">Lokasyon</label>
+                <select class="wf-select w-full">
+                  <option value="">Tum Lokasyonlar</option>
+                  <option>Park A</option>
+                  <option>Park B</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign List -->
+        <div class="wf-card">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>Kampanya</th>
+                <th>Tip</th>
+                <th>Durum</th>
+                <th>Tarih Araligi</th>
+                <th>Kullanim</th>
+                <th>Aksiyonlar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="font-medium">Yaz Indirimi 2026</div>
+                  <div class="text-xs text-gray-500">%20 tum biletlerde</div>
+                </td>
+                <td><span class="wf-badge wf-badge-info">Indirim</span></td>
+                <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                <td class="text-sm">01 Haz - 31 Agu 2026</td>
+                <td>
+                  <div class="font-medium">342</div>
+                  <div class="text-xs text-gray-500">kullanim</div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm" title="Duzenle">
+                      <span class="wf-icon" data-icon="edit-pencil" data-size="14"></span>
+                    </button>
+                    <button class="wf-btn py-1 px-2 text-sm" title="Rapor">
+                      <span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span>
+                    </button>
+                    <button class="wf-btn py-1 px-2 text-sm" title="Durdur">
+                      <span class="wf-icon" data-icon="delete-disable-block-1" data-size="14"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="font-medium">Hafta Sonu Ozel</div>
+                  <div class="text-xs text-gray-500">Cumartesi-Pazar %15</div>
+                </td>
+                <td><span class="wf-badge wf-badge-info">Indirim</span></td>
+                <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                <td class="text-sm">Surekli (Cmt-Paz)</td>
+                <td>
+                  <div class="font-medium">891</div>
+                  <div class="text-xs text-gray-500">kullanim</div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="edit-pencil" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="delete-disable-block-1" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="font-medium">WELCOME10</div>
+                  <div class="text-xs text-gray-500">Ilk alis 10% kupon</div>
+                </td>
+                <td><span class="wf-badge wf-badge-warning">Kupon</span></td>
+                <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                <td class="text-sm">Surekli</td>
+                <td>
+                  <div class="font-medium">12</div>
+                  <div class="text-xs text-gray-500">/ 100 limit</div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="edit-pencil" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="delete-disable-block-1" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="font-medium">Aile Paketi</div>
+                  <div class="text-xs text-gray-500">4 bilet al 3 ode</div>
+                </td>
+                <td><span class="wf-badge" style="background:#ddd5f9;color:#5b21b6">Bundle</span></td>
+                <td><span class="wf-badge" style="background:#fef3c7;color:#92400e">Yaklasan</span></td>
+                <td class="text-sm">15 Haz - 15 Eyl 2026</td>
+                <td>
+                  <div class="font-medium">-</div>
+                  <div class="text-xs text-gray-500">henuz baslamadi</div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="edit-pencil" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm text-red-600" title="Iptal"><span class="wf-icon" data-icon="delete-bin-2" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="opacity-60">
+                <td>
+                  <div class="font-medium">Kis Kampanyasi 2025</div>
+                  <div class="text-xs text-gray-500">%25 indirim</div>
+                </td>
+                <td><span class="wf-badge wf-badge-info">Indirim</span></td>
+                <td><span class="wf-badge" style="background:#e5e7eb;color:#6b7280">Sona Erdi</span></td>
+                <td class="text-sm">01 Ara - 28 Sub 2025</td>
+                <td>
+                  <div class="font-medium">2,156</div>
+                  <div class="text-xs text-gray-500">toplam</div>
+                </td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm" title="Kopyala"><span class="wf-icon" data-icon="content-paper-edit" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="flex items-center justify-between mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+            <div class="text-sm text-gray-500">43 kampanyadan 1-10 gosteriliyor</div>
+            <div class="flex gap-1">
+              <button class="wf-btn py-1 px-3" disabled>&lt;</button>
+              <button class="wf-btn wf-btn-primary py-1 px-3">1</button>
+              <button class="wf-btn py-1 px-3">2</button>
+              <button class="wf-btn py-1 px-3">3</button>
+              <button class="wf-btn py-1 px-3">&gt;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Annotation -->
+        <div class="wf-note mt-6">
+          <strong>D-007: Kampanya Listesi</strong><br>
+          - Filtreler: Durum, tip, tarih araligi, lokasyon<br>
+          - Status badge'leri: Aktif (yesil), Yaklasan (sari), Sona Erdi (gri), Taslak (mavi)<br>
+          - Aksiyonlar: Duzenle, Rapor, Durdur/Iptal, Kopyala
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Tool UI (Toolbar & Comments) -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

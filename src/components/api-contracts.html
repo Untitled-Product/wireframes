@@ -1,0 +1,1943 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Contracts - Legends DXP</title>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    [x-cloak] { display: none !important; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+      line-height: 1.6;
+    }
+
+    /* Sidebar */
+    .api-sidebar {
+      width: 280px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 40;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .sidebar-header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-header p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .sidebar-nav {
+      padding: 16px;
+    }
+
+    .nav-category {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 16px;
+      margin-bottom: 8px;
+      padding-left: 12px;
+    }
+
+    .nav-category:first-child {
+      margin-top: 0;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #888;
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 2px;
+      transition: all 0.15s;
+    }
+
+    .nav-item:hover {
+      background: #2d2d2d;
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: rgba(13, 148, 136, 0.2);
+      color: #0d9488;
+    }
+
+    .nav-footer {
+      margin-top: 24px;
+      padding: 16px;
+      border-top: 1px solid #2d2d2d;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      background: #2d2d2d;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .back-link:hover {
+      background: #3d3d3d;
+    }
+
+    /* Main */
+    .api-main {
+      margin-left: 280px;
+      padding: 32px;
+      min-height: 100vh;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      font-size: 15px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px;
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      margin-bottom: 32px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* Section */
+    .api-section {
+      margin-bottom: 48px;
+      scroll-margin-top: 32px;
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* Card */
+    .api-card {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+
+    .card-desc {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    /* Method Badge */
+    .method-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .method-get { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .method-post { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+    .method-put { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .method-delete { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+    .method-patch { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+    /* Path */
+    .api-path {
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      font-size: 14px;
+      color: #fff;
+      flex: 1;
+    }
+
+    /* Auth Badge */
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .auth-public { background: #374151; color: #9ca3af; }
+    .auth-bearer { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .auth-admin { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+    /* Subsection */
+    .subsection {
+      margin-bottom: 16px;
+    }
+
+    .subsection-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Table */
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .param-table th {
+      text-align: left;
+      padding: 8px 12px;
+      background: #0f0f0f;
+      color: #888;
+      font-weight: 500;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .param-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #2d2d2d;
+    }
+
+    .param-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .param-name {
+      font-family: 'SF Mono', Monaco, monospace;
+      color: #0d9488;
+    }
+
+    .param-type {
+      color: #a855f7;
+    }
+
+    .param-required {
+      color: #ef4444;
+      font-size: 11px;
+    }
+
+    /* Code Block */
+    .code-block {
+      background: #0f0f0f;
+      border: 1px solid #2d2d2d;
+      border-radius: 6px;
+      padding: 16px;
+      font-family: 'SF Mono', Monaco, monospace;
+      font-size: 12px;
+      color: #e5e7eb;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* Response Codes */
+    .response-codes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .response-code {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .response-2xx { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
+    .response-4xx { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .response-5xx { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+    /* Header Info */
+    .header-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 32px;
+      font-size: 13px;
+      color: #60a5fa;
+    }
+
+    .header-info code {
+      background: rgba(59, 130, 246, 0.2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body x-data="{ activeSection: 'health' }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside class="api-sidebar">
+      <div class="sidebar-header">
+        <h1>API Contracts</h1>
+        <p>Legends DXP v1.0</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <p class="nav-category">System</p>
+        <a href="#health" class="nav-item" :class="{ 'active': activeSection === 'health' }" @click="activeSection = 'health'">Health & Status</a>
+        <a href="#system-tenants" class="nav-item" :class="{ 'active': activeSection === 'system-tenants' }" @click="activeSection = 'system-tenants'">System Admin - Tenants</a>
+        <a href="#system-auth" class="nav-item" :class="{ 'active': activeSection === 'system-auth' }" @click="activeSection = 'system-auth'">System Admin - Auth</a>
+        <a href="#system-permissions" class="nav-item" :class="{ 'active': activeSection === 'system-permissions' }" @click="activeSection = 'system-permissions'">System Admin - Permissions</a>
+
+        <p class="nav-category">Project Admin</p>
+        <a href="#project-auth" class="nav-item" :class="{ 'active': activeSection === 'project-auth' }" @click="activeSection = 'project-auth'">Project Admin - Auth</a>
+        <a href="#project-permissions" class="nav-item" :class="{ 'active': activeSection === 'project-permissions' }" @click="activeSection = 'project-permissions'">Project Admin - Permissions</a>
+
+        <p class="nav-category">Client</p>
+        <a href="#client-auth" class="nav-item" :class="{ 'active': activeSection === 'client-auth' }" @click="activeSection = 'client-auth'">Client - Auth</a>
+        <a href="#client-profile" class="nav-item" :class="{ 'active': activeSection === 'client-profile' }" @click="activeSection = 'client-profile'">Client - Profile</a>
+
+        <p class="nav-category">Products</p>
+        <a href="#events" class="nav-item" :class="{ 'active': activeSection === 'events' }" @click="activeSection = 'events'">Events</a>
+        <a href="#tickets" class="nav-item" :class="{ 'active': activeSection === 'tickets' }" @click="activeSection = 'tickets'">Tickets</a>
+        <a href="#experiences" class="nav-item" :class="{ 'active': activeSection === 'experiences' }" @click="activeSection = 'experiences'">Experiences</a>
+        <a href="#foods" class="nav-item" :class="{ 'active': activeSection === 'foods' }" @click="activeSection = 'foods'">Foods</a>
+        <a href="#unites" class="nav-item" :class="{ 'active': activeSection === 'unites' }" @click="activeSection = 'unites'">Unites (Rooms)</a>
+        <a href="#addons" class="nav-item" :class="{ 'active': activeSection === 'addons' }" @click="activeSection = 'addons'">Addons</a>
+        <a href="#catalog" class="nav-item" :class="{ 'active': activeSection === 'catalog' }" @click="activeSection = 'catalog'">Product Catalog</a>
+
+        <p class="nav-category">Sessions</p>
+        <a href="#sessions" class="nav-item" :class="{ 'active': activeSection === 'sessions' }" @click="activeSection = 'sessions'">Session Management</a>
+
+        <p class="nav-category">Commerce</p>
+        <a href="#campaigns" class="nav-item" :class="{ 'active': activeSection === 'campaigns' }" @click="activeSection = 'campaigns'">Campaigns</a>
+        <a href="#checkout" class="nav-item" :class="{ 'active': activeSection === 'checkout' }" @click="activeSection = 'checkout'">Checkout</a>
+        <a href="#orders" class="nav-item" :class="{ 'active': activeSection === 'orders' }" @click="activeSection = 'orders'">Orders</a>
+        <a href="#payments" class="nav-item" :class="{ 'active': activeSection === 'payments' }" @click="activeSection = 'payments'">Payments</a>
+
+        <div class="nav-footer">
+          <a href="../../index.html" class="back-link">← Ana Sayfa</a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="api-main">
+      <div class="page-header">
+        <h1>API Contracts</h1>
+        <p>Legends DXP Backend API - Multi-tenant ticketing ve event yonetimi</p>
+
+        <div class="legend">
+          <div class="legend-item">
+            <span class="method-badge method-get">GET</span>
+            <span>Read</span>
+          </div>
+          <div class="legend-item">
+            <span class="method-badge method-post">POST</span>
+            <span>Create</span>
+          </div>
+          <div class="legend-item">
+            <span class="method-badge method-put">PUT</span>
+            <span>Update</span>
+          </div>
+          <div class="legend-item">
+            <span class="method-badge method-delete">DELETE</span>
+            <span>Delete</span>
+          </div>
+          <div class="legend-item">
+            <span class="auth-badge auth-public">Public</span>
+            <span>Auth gerektirmez</span>
+          </div>
+          <div class="legend-item">
+            <span class="auth-badge auth-bearer">Bearer</span>
+            <span>JWT token gerekli</span>
+          </div>
+          <div class="legend-item">
+            <span class="auth-badge auth-admin">Admin</span>
+            <span>Admin yetkisi gerekli</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-info">
+        <strong>Required Headers:</strong> Tum endpoint'ler (system-admin haric) <code>X-Tenant-ID</code> header'i gerektirir. Lokalizasyon icin <code>Accept-Language</code> (tr-TR, en-US) kullanilabilir.
+      </div>
+
+      <!-- ==================== HEALTH & STATUS ==================== -->
+      <section id="health" class="api-section">
+        <h2 class="section-title">Health & Status</h2>
+        <p class="section-desc">API durum ve saglik kontrol endpoint'leri</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">API durum bilgisi</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "status": "ok",
+  "version": "1.0.0",
+  "timestamp": "2026-01-12T10:00:00Z"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/health</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Detayli saglik kontrolu</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "status": "healthy",
+  "database": "connected",
+  "redis": "connected",
+  "uptime": 86400
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SYSTEM ADMIN - TENANTS ==================== -->
+      <section id="system-tenants" class="api-section">
+        <h2 class="section-title">System Admin - Tenants</h2>
+        <p class="section-desc">Tenant (kiracı) yonetimi. Sadece System Admin yetkisi gerektirir.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/tenants</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni tenant olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": "Tersane Nick",
+  "slug": "tersane-nick",
+  "config": {
+    "timezone": "Europe/Istanbul",
+    "currency": "TRY",
+    "languages": ["tr", "en"]
+  }
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">201 Created</span>
+                <span class="response-code response-4xx">400 Validation Error</span>
+                <span class="response-code response-4xx">409 Slug Exists</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/tenants</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tum tenant'lari listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/tenants/active</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sadece aktif tenant'lari listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/tenants/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">ID ile tenant getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Path Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">id</td><td class="param-type">uuid</td><td>Tenant ID</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/tenants/slug/{slug}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slug ile tenant getir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/system-admin/tenants/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tenant guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/system-admin/tenants/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tenant sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SYSTEM ADMIN - AUTH ==================== -->
+      <section id="system-auth" class="api-section">
+        <h2 class="section-title">System Admin - Auth</h2>
+        <p class="section-desc">System Admin kimlik dogrulama. Email veya SMS ile OTP.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/auth/email/request-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Email ile OTP gonder</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "email": "admin@legendsdxp.com"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "message": "OTP sent",
+  "expiresIn": 300
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/auth/email/verify-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Email OTP dogrula</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "email": "admin@legendsdxp.com",
+  "otp": "123456"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (AdminAuthResponseDto)</h4>
+              <div class="code-block">{
+  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+  "expiresIn": 3600,
+  "admin": {
+    "id": "uuid",
+    "email": "admin@legendsdxp.com",
+    "role": "SYSTEM_ADMIN"
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/auth/sms/request-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">SMS ile OTP gonder</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/auth/sms/verify-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">SMS OTP dogrula</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/session/logout</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Mevcut oturumu sonlandir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/session/force-logout</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Baska bir admin'in oturumunu zorla sonlandir (manage-permissions yetkisi gerekli)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/session/refresh</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Refresh token ile yeni access token al</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SYSTEM ADMIN - PERMISSIONS ==================== -->
+      <section id="system-permissions" class="api-section">
+        <h2 class="section-title">System Admin - Permissions</h2>
+        <p class="section-desc">Yetki yonetimi. Granuler permission sistemi.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/permissions/available</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Mevcut yetkileri listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">scope</td><td class="param-type">string</td><td>system | project</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/permissions/admin/{adminId}</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Belirli bir admin'in yetkilerini getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">adminType</td><td class="param-type">string</td><td>SYSTEM_ADMIN | PROJECT_ADMIN</td></tr>
+                  <tr><td class="param-name">tenantId</td><td class="param-type">uuid</td><td>Tenant ID (optional)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/system-admin/permissions/me</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Mevcut kullanicinin yetkilerini getir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/system-admin/permissions/grant</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Admin'e yetki ver</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (GrantPermissionDto)</h4>
+              <div class="code-block">{
+  "adminId": "uuid",
+  "adminType": "PROJECT_ADMIN",
+  "permission": "tickets:create",
+  "tenantId": "uuid"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/system-admin/permissions/revoke</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Admin'den yetki al</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PROJECT ADMIN - AUTH ==================== -->
+      <section id="project-auth" class="api-section">
+        <h2 class="section-title">Project Admin - Auth</h2>
+        <p class="section-desc">Project Admin (tenant bazli) kimlik dogrulama</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/project-admin/auth/email/request-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Email ile OTP gonder</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/project-admin/auth/email/verify-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Email OTP dogrula</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/project-admin/session/logout</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Oturumu sonlandir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/project-admin/session/refresh</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Token yenile</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PROJECT ADMIN - PERMISSIONS ==================== -->
+      <section id="project-permissions" class="api-section">
+        <h2 class="section-title">Project Admin - Permissions</h2>
+        <p class="section-desc">Tenant bazli yetki yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/project-admin/permissions/available</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Mevcut project yetkilerini listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/project-admin/permissions/me</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kendi yetkilerini gor</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/project-admin/permissions/grant</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yetki ver</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/project-admin/permissions/revoke</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yetki kaldir</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CLIENT - AUTH ==================== -->
+      <section id="client-auth" class="api-section">
+        <h2 class="section-title">Client - Auth</h2>
+        <p class="section-desc">Son kullanici kimlik dogrulama. Email OTP veya guest session.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/client/auth/request-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Email ile 6 haneli OTP gonder</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (RequestEmailOtpDto)</h4>
+              <div class="code-block">{
+  "email": "user@example.com"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "message": "OTP sent to email",
+  "expiresIn": 300
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/client/auth/verify-otp</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">OTP dogrula, kullanici yoksa olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (VerifyEmailOtpDto)</h4>
+              <div class="code-block">{
+  "email": "user@example.com",
+  "otp": "123456"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (AuthResponseDto)</h4>
+              <div class="code-block">{
+  "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+  "refreshToken": "eyJhbGciOiJIUzI1NiIs...",
+  "expiresIn": 3600,
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "isNewUser": true
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/client/auth/guest-session</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Gecici misafir oturumu olustur (checkout icin)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateGuestSessionDto)</h4>
+              <div class="code-block">{
+  "email": "guest@example.com",
+  "phone": "+905551234567"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (GuestSessionResponseDto)</h4>
+              <div class="code-block">{
+  "sessionId": "uuid",
+  "expiresIn": 1800,
+  "token": "guest_token_..."
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CLIENT - PROFILE ==================== -->
+      <section id="client-profile" class="api-section">
+        <h2 class="section-title">Client - Profile</h2>
+        <p class="section-desc">Kullanici profil yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/client/profile/me</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Mevcut kullanici profilini getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "id": "uuid",
+  "email": "user@example.com",
+  "phone": "+905551234567",
+  "firstName": "Ahmet",
+  "lastName": "Yilmaz",
+  "createdAt": "2026-01-01T00:00:00Z"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/client/profile/tickets</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullanicinin satin aldigi biletleri listele</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== EVENTS ==================== -->
+      <section id="events" class="api-section">
+        <h2 class="section-title">Events</h2>
+        <p class="section-desc">Etkinlik yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/events</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni etkinlik olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": { "tr": "Yaz Festivali", "en": "Summer Festival" },
+  "slug": "summer-festival-2026",
+  "description": { "tr": "...", "en": "..." },
+  "category": "concert",
+  "startDate": "2026-07-01T18:00:00Z",
+  "endDate": "2026-07-01T23:00:00Z",
+  "isPublic": true
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/events</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Etkinlikleri listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">tenantId</td><td class="param-type">uuid</td><td>Tenant ID <span class="param-required">required</span></td></tr>
+                  <tr><td class="param-name">category</td><td class="param-type">string</td><td>Kategori filtresi</td></tr>
+                  <tr><td class="param-name">isPublic</td><td class="param-type">boolean</td><td>Sadece public etkinlikler</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/events/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Etkinlik detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/events/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Etkinlik guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/events/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Etkinlik sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TICKETS ==================== -->
+      <section id="tickets" class="api-section">
+        <h2 class="section-title">Tickets</h2>
+        <p class="section-desc">Bilet urunleri yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/tickets</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni bilet urunu olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": { "tr": "Yetiskin Bileti", "en": "Adult Ticket" },
+  "slug": "adult-ticket",
+  "description": { "tr": "...", "en": "..." },
+  "price": { "amount": 150, "currency": "TRY" },
+  "validFrom": "2026-01-01",
+  "validUntil": "2026-12-31",
+  "isPublic": true,
+  "maxQuantityPerOrder": 10
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">201 Created</span>
+                <span class="response-code response-4xx">400 Validation Error</span>
+                <span class="response-code response-4xx">409 Slug Exists</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/tickets</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Biletleri listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">tenantId</td><td class="param-type">uuid</td><td>Tenant ID</td></tr>
+                  <tr><td class="param-name">isPublic</td><td class="param-type">boolean</td><td>Gorunurluk filtresi</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/tickets/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Bilet detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/tickets/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Bilet guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/tickets/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Bilet sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== EXPERIENCES ==================== -->
+      <section id="experiences" class="api-section">
+        <h2 class="section-title">Experiences</h2>
+        <p class="section-desc">Deneyim urunleri (VIP, workshop, vb.)</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/experiences</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni deneyim olustur</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/experiences</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Deneyimleri listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/experiences/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Deneyim detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/experiences/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Deneyim guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/experiences/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Deneyim sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== FOODS ==================== -->
+      <section id="foods" class="api-section">
+        <h2 class="section-title">Foods</h2>
+        <p class="section-desc">Yiyecek-icecek urunleri</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/foods</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni F&B urunu olustur</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/foods</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">F&B urunlerini listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/foods/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">F&B urun detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/foods/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">F&B urun guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/foods/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">F&B urun sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== UNITES ==================== -->
+      <section id="unites" class="api-section">
+        <h2 class="section-title">Unites (Rooms)</h2>
+        <p class="section-desc">Oda/Unite urunleri (party room, VIP lounge, vb.)</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/unites</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni unite olustur</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/unites</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Unite'leri listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/unites/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Unite detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/unites/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Unite guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/unites/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Unite sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ADDONS ==================== -->
+      <section id="addons" class="api-section">
+        <h2 class="section-title">Addons</h2>
+        <p class="section-desc">Eklenti urunleri (parking, locker, equipment, vb.)</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/addons</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni addon olustur</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/addons</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Addon'lari listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/addons/{id}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Addon detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/addons/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Addon guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/addons/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Addon sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CATALOG ==================== -->
+      <section id="catalog" class="api-section">
+        <h2 class="section-title">Product Catalog</h2>
+        <p class="section-desc">Satin alinabilir urunlerin birlesik katalogu</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/catalog</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tum satin alinabilir urunleri fiyatlarla birlikte getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Required Headers</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">X-Tenant-ID</td><td>Tenant ID <span class="param-required">required</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "tickets": [...],
+  "experiences": [...],
+  "foods": [...],
+  "addons": [...],
+  "unites": [...]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SESSIONS ==================== -->
+      <section id="sessions" class="api-section">
+        <h2 class="section-title">Sessions</h2>
+        <p class="section-desc">Urun bazli seans/slot yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/sessions</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni seans olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateSessionDto)</h4>
+              <div class="code-block">{
+  "startTime": "2026-01-15T10:00:00Z",
+  "endTime": "2026-01-15T12:00:00Z",
+  "capacity": 50,
+  "price": { "amount": 200, "currency": "TRY" }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/{productId}/sessions</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Musait/gelecek seanslari listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/{productId}/sessions/{sessionId}</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Seans detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/products/{productId}/sessions/{sessionId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Seans guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/products/{productId}/sessions/{sessionId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Seans sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/sessions/{sessionId}/reserve</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Bilet/yer rezerve et</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (ReserveTicketsDto)</h4>
+              <div class="code-block">{
+  "quantity": 2,
+  "reservationId": "uuid"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/sessions/{sessionId}/release</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Rezervasyonu iptal et / bilet birak</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/sessions/bulk</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Toplu seans olustur (tarih araligi icin)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (BulkGenerateSessionsDto)</h4>
+              <div class="code-block">{
+  "startDate": "2026-01-01",
+  "endDate": "2026-01-31",
+  "times": ["10:00", "14:00", "18:00"],
+  "capacity": 50,
+  "excludeDays": [0, 6]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CAMPAIGNS ==================== -->
+      <section id="campaigns" class="api-section">
+        <h2 class="section-title">Campaigns</h2>
+        <p class="section-desc">Kampanya ve indirim yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/campaigns</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni kampanya olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": { "tr": "Yaz Indirimi", "en": "Summer Sale" },
+  "type": "PERCENTAGE",
+  "value": 20,
+  "validFrom": "2026-06-01T00:00:00Z",
+  "validUntil": "2026-08-31T23:59:59Z",
+  "rules": {
+    "minQuantity": 2,
+    "applicableProducts": ["ticket-uuid-1", "ticket-uuid-2"]
+  },
+  "isActive": true
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/campaigns</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tenant kampanyalarini listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/campaigns/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanya detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/campaigns/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanya guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/campaigns/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanya sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CHECKOUT ==================== -->
+      <section id="checkout" class="api-section">
+        <h2 class="section-title">Checkout</h2>
+        <p class="section-desc">Odeme oncesi sepet islemleri</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/checkout/validate</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sepeti dogrula ve indirimli fiyat hesapla</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Required Headers</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">X-Tenant-ID</td><td>Tenant ID</td></tr>
+                  <tr><td class="param-name">Accept-Language</td><td>tr-TR, en-US</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "items": [
+    { "productId": "uuid", "sessionId": "uuid", "quantity": 2 }
+  ],
+  "couponCode": "SUMMER20"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "valid": true,
+  "items": [...],
+  "subtotal": 300,
+  "discount": 60,
+  "total": 240,
+  "currency": "TRY",
+  "appliedCampaigns": ["Summer Sale"]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/checkout</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Checkout isle (siparis olustur + odeme baslat)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "items": [
+    { "productId": "uuid", "sessionId": "uuid", "quantity": 2 }
+  ],
+  "couponCode": "SUMMER20",
+  "paymentMethod": "CREDIT_CARD"
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ORDERS ==================== -->
+      <section id="orders" class="api-section">
+        <h2 class="section-title">Orders</h2>
+        <p class="section-desc">Siparis yonetimi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/orders</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullanicinin siparislerini listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/orders/{id}</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis detayi</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "id": "uuid",
+  "orderNumber": "ORD-2026-001234",
+  "status": "CONFIRMED",
+  "items": [...],
+  "subtotal": 300,
+  "discount": 60,
+  "total": 240,
+  "currency": "TRY",
+  "payment": {...},
+  "createdAt": "2026-01-12T10:00:00Z"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/orders/{id}/public</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Public siparis goruntuleme (X-Tenant-ID gerekli)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/orders/{id}/confirm</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Odeme sonrasi siparis onayla</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/orders/{id}</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis iptal</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PAYMENTS ==================== -->
+      <section id="payments" class="api-section">
+        <h2 class="section-title">Payments</h2>
+        <p class="section-desc">Odeme islemleri</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/payments</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Odeme baslat</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Required Headers</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">X-Forwarded-For</td><td>Client IP</td></tr>
+                  <tr><td class="param-name">X-Real-IP</td><td>Client IP (alternative)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "orderId": "uuid",
+  "paymentMethod": "CREDIT_CARD",
+  "card": {
+    "number": "4111111111111111",
+    "expiry": "12/28",
+    "cvv": "123",
+    "holderName": "AHMET YILMAZ"
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/payments/{id}</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Odeme detayi</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/payments/order/{orderId}</code>
+            <span class="auth-badge auth-bearer">Bearer</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparise ait odemeyi getir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/payments/{id}/refund</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Odeme iadesi</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "amount": 240,
+  "reason": "Customer request"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/card-bin/lookup</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kart BIN bilgisi sorgula</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">bin</td><td class="param-type">string</td><td>Kart numarasinin ilk 6-8 hanesi</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "bank": "Garanti BBVA",
+  "cardType": "CREDIT",
+  "cardBrand": "VISA",
+  "installments": [1, 2, 3, 6, 9, 12]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>

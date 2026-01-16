@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yeni Kampanya - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  currentStep: 1,
+  campaignType: 'discount',
+  ruleLogic: 'AND',
+  rules: [
+    { type: 'date', enabled: true },
+    { type: 'location', enabled: false },
+    { type: 'dayOfWeek', enabled: false },
+    { type: 'segment', enabled: false }
+  ]
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl">Yeni Kampanya Olustur</h1>
+            <p class="text-gray-500 mt-1">Kampanya bilgilerini adim adim doldurun</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="campaign-list.html" class="wf-btn">
+              <span class="wf-icon mr-1" data-icon="arrow-left" data-size="16"></span>
+              Geri Don
+            </a>
+            <button class="wf-btn">Taslak Kaydet</button>
+            <button class="wf-btn wf-btn-primary" x-show="currentStep === 4">Kampanyayi Yayinla</button>
+          </div>
+        </div>
+
+        <!-- Wizard Container -->
+        <div class="max-w-4xl">
+          <!-- Step Indicator -->
+          <div class="flex items-center justify-between mb-8">
+            <template x-for="(step, index) in ['Temel Bilgiler', 'Kurallar', 'Indirim', 'Onizleme']" :key="index">
+              <div class="flex items-center">
+                <div class="flex items-center gap-2">
+                  <div
+                    class="w-8 h-8 border-2 flex items-center justify-center text-sm"
+                    :class="currentStep > index + 1 ? 'bg-green-500 border-green-500 text-white' : currentStep === index + 1 ? 'border-teal-500 bg-teal-500 text-white' : 'border-gray-300 text-gray-400'"
+                  >
+                    <span x-show="currentStep <= index + 1" x-text="index + 1"></span>
+                    <span x-show="currentStep > index + 1" class="wf-icon" data-icon="check" data-size="16"></span>
+                  </div>
+                  <span class="text-sm hidden sm:inline" :class="currentStep === index + 1 ? 'font-semibold' : 'text-gray-500'" x-text="step"></span>
+                </div>
+                <div x-show="index < 3" class="w-8 lg:w-16 h-0.5 mx-2" :class="currentStep > index + 1 ? 'bg-green-500' : 'bg-gray-300'"></div>
+              </div>
+            </template>
+          </div>
+
+          <!-- Step 1: Basic Info -->
+          <div x-show="currentStep === 1" class="wf-card">
+            <h2 class="text-lg font-semibold mb-4">Temel Bilgiler</h2>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Kampanya Adi *</label>
+                <input type="text" class="wf-input w-full" placeholder="Ornek: Yaz Indirimi 2026">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Aciklama</label>
+                <textarea class="wf-input w-full" rows="3" placeholder="Kampanya aciklamasi..."></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-2">Kampanya Tipi *</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <label class="wf-card cursor-pointer border-2" :class="campaignType === 'discount' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'">
+                    <input type="radio" x-model="campaignType" value="discount" class="sr-only">
+                    <div class="text-center py-2">
+                      <span class="wf-icon" data-icon="discount-percent-bubble" data-size="32"></span>
+                      <div class="font-medium mt-2">Indirim</div>
+                      <div class="text-xs text-gray-500">Yuzde veya sabit tutar</div>
+                    </div>
+                  </label>
+                  <label class="wf-card cursor-pointer border-2" :class="campaignType === 'coupon' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'">
+                    <input type="radio" x-model="campaignType" value="coupon" class="sr-only">
+                    <div class="text-center py-2">
+                      <span class="wf-icon" data-icon="coupon-percent" data-size="32"></span>
+                      <div class="font-medium mt-2">Kupon</div>
+                      <div class="text-xs text-gray-500">Kod ile aktivasyon</div>
+                    </div>
+                  </label>
+                  <label class="wf-card cursor-pointer border-2" :class="campaignType === 'bundle' ? 'border-teal-500 bg-teal-50' : 'border-gray-200'">
+                    <input type="radio" x-model="campaignType" value="bundle" class="sr-only">
+                    <div class="text-center py-2">
+                      <span class="wf-icon" data-icon="wealth-treasure-chest-open" data-size="32"></span>
+                      <div class="font-medium mt-2">Bundle</div>
+                      <div class="text-xs text-gray-500">Paket indirim</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-1">Oncelik (1-100)</label>
+                <input type="number" class="wf-input w-32" value="50" min="1" max="100">
+                <p class="text-xs text-gray-500 mt-1">Yuksek oncelikli kampanyalar once uygulanir</p>
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-6 pt-4 border-t-2 border-dashed border-gray-200">
+              <button @click="currentStep = 2" class="wf-btn wf-btn-primary">
+                Devam
+                <span class="wf-icon ml-1" data-icon="arrow-right" data-size="16"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Rules -->
+          <div x-show="currentStep === 2" class="wf-card">
+            <h2 class="text-lg font-semibold mb-4">Kampanya Kurallari</h2>
+
+            <div class="mb-4 p-3 bg-gray-100 border-2 border-dashed border-gray-300">
+              <label class="block text-sm font-medium mb-2">Kural Mantigi</label>
+              <div class="flex gap-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" x-model="ruleLogic" value="AND" class="wf-radio">
+                  <span>VE (Tum kurallar saglanmali)</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" x-model="ruleLogic" value="OR" class="wf-radio">
+                  <span>VEYA (Herhangi biri yeterli)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <!-- Date Rule -->
+              <div class="border-2 border-gray-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" x-model="rules[0].enabled" class="wf-checkbox">
+                    <span class="font-medium">Tarih Araligi</span>
+                  </label>
+                  <span class="wf-badge wf-badge-info text-xs">Onerilen</span>
+                </div>
+                <div x-show="rules[0].enabled" class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm mb-1">Baslangic</label>
+                    <input type="datetime-local" class="wf-input w-full">
+                  </div>
+                  <div>
+                    <label class="block text-sm mb-1">Bitis</label>
+                    <input type="datetime-local" class="wf-input w-full">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Day of Week Rule -->
+              <div class="border-2 border-gray-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" x-model="rules[2].enabled" class="wf-checkbox">
+                    <span class="font-medium">Hafta Gunleri</span>
+                  </label>
+                </div>
+                <div x-show="rules[2].enabled" class="flex flex-wrap gap-2">
+                  <label class="wf-btn py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only"> Pzt</label>
+                  <label class="wf-btn py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only"> Sal</label>
+                  <label class="wf-btn py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only"> Car</label>
+                  <label class="wf-btn py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only"> Per</label>
+                  <label class="wf-btn py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only"> Cum</label>
+                  <label class="wf-btn wf-btn-primary py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only" checked> Cmt</label>
+                  <label class="wf-btn wf-btn-primary py-1 px-3 cursor-pointer"><input type="checkbox" class="sr-only" checked> Paz</label>
+                </div>
+              </div>
+
+              <!-- Location Rule -->
+              <div class="border-2 border-gray-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" x-model="rules[1].enabled" class="wf-checkbox">
+                    <span class="font-medium">Lokasyon</span>
+                  </label>
+                </div>
+                <div x-show="rules[1].enabled">
+                  <div class="flex gap-4 mb-3">
+                    <label class="flex items-center gap-2">
+                      <input type="radio" name="locMode" checked class="wf-radio">
+                      <span>Dahil Et</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="radio" name="locMode" class="wf-radio">
+                      <span>Haric Tut</span>
+                    </label>
+                  </div>
+                  <select class="wf-select w-full" multiple size="4">
+                    <option>Park A - Ana Giris</option>
+                    <option selected>Park A - Su Parki</option>
+                    <option selected>Park A - Lunapark</option>
+                    <option>Park B - Tum Alanlar</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Segment Rule -->
+              <div class="border-2 border-gray-200 p-4">
+                <div class="flex items-center justify-between mb-3">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" x-model="rules[3].enabled" class="wf-checkbox">
+                    <span class="font-medium">Kullanici Segmenti</span>
+                  </label>
+                  <span class="wf-badge text-xs" style="background:#e0e7ff;color:#3730a3">Insider</span>
+                </div>
+                <div x-show="rules[3].enabled">
+                  <select class="wf-select w-full">
+                    <option>VIP Musteriler</option>
+                    <option>Yeni Kullanicilar</option>
+                    <option>Sadik Musteriler (5+ ziyaret)</option>
+                    <option>Aileler</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 pt-4 border-t-2 border-dashed border-gray-200">
+              <button @click="currentStep = 1" class="wf-btn">
+                <span class="wf-icon mr-1" data-icon="arrow-left" data-size="16"></span>
+                Geri
+              </button>
+              <button @click="currentStep = 3" class="wf-btn wf-btn-primary">
+                Devam
+                <span class="wf-icon ml-1" data-icon="arrow-right" data-size="16"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Discount -->
+          <div x-show="currentStep === 3" class="wf-card">
+            <h2 class="text-lg font-semibold mb-4">Indirim Ayarlari</h2>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium mb-2">Indirim Tipi</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <label class="wf-card cursor-pointer border-2 border-teal-500 bg-teal-50 text-center py-3">
+                    <input type="radio" name="discountType" class="sr-only" checked>
+                    <div class="font-medium">% Indirim</div>
+                  </label>
+                  <label class="wf-card cursor-pointer border-2 border-gray-200 text-center py-3">
+                    <input type="radio" name="discountType" class="sr-only">
+                    <div class="font-medium">Sabit Tutar</div>
+                  </label>
+                  <label class="wf-card cursor-pointer border-2 border-gray-200 text-center py-3">
+                    <input type="radio" name="discountType" class="sr-only">
+                    <div class="font-medium">X Al Y Ode</div>
+                  </label>
+                  <label class="wf-card cursor-pointer border-2 border-gray-200 text-center py-3">
+                    <input type="radio" name="discountType" class="sr-only">
+                    <div class="font-medium">Ucretsiz Urun</div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Indirim Orani (%)</label>
+                  <input type="number" class="wf-input w-full" value="20" min="1" max="100">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Maksimum Indirim (TL)</label>
+                  <input type="number" class="wf-input w-full" placeholder="Limitsiz">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium mb-2">Uygulanacak Urunler</label>
+                <div class="space-y-2">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="applyTo" class="wf-radio" checked>
+                    <span>Tum urunler</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="applyTo" class="wf-radio">
+                    <span>Belirli bilet tipleri</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="applyTo" class="wf-radio">
+                    <span>Belirli kategoriler</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="applyTo" class="wf-radio">
+                    <span>Minimum sepet tutari uzerinde</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Minimum Sepet Tutari (TL)</label>
+                  <input type="number" class="wf-input w-full" placeholder="0">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Kullanim Limiti</label>
+                  <input type="number" class="wf-input w-full" placeholder="Limitsiz">
+                </div>
+              </div>
+
+              <div x-show="campaignType === 'coupon'" class="p-4 bg-amber-50 border-2 border-dashed border-amber-300">
+                <label class="block text-sm font-medium mb-2">Kupon Kodu</label>
+                <div class="flex gap-2">
+                  <input type="text" class="wf-input flex-1" placeholder="WELCOME10" style="text-transform:uppercase">
+                  <button class="wf-btn">Otomatik Olustur</button>
+                </div>
+                <p class="text-xs text-amber-700 mt-1">Kupon kodlari buyuk harf ve rakamlardan olusabilir</p>
+              </div>
+            </div>
+
+            <div class="flex justify-between mt-6 pt-4 border-t-2 border-dashed border-gray-200">
+              <button @click="currentStep = 2" class="wf-btn">
+                <span class="wf-icon mr-1" data-icon="arrow-left" data-size="16"></span>
+                Geri
+              </button>
+              <button @click="currentStep = 4" class="wf-btn wf-btn-primary">
+                Onizleme
+                <span class="wf-icon ml-1" data-icon="arrow-right" data-size="16"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Preview -->
+          <div x-show="currentStep === 4" class="space-y-4">
+            <div class="wf-card">
+              <h2 class="text-lg font-semibold mb-4">Kampanya Onizleme</h2>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 class="font-medium text-gray-500 mb-2">Temel Bilgiler</h3>
+                  <table class="w-full text-sm">
+                    <tr><td class="py-1 text-gray-500">Ad:</td><td class="py-1 font-medium">Yaz Indirimi 2026</td></tr>
+                    <tr><td class="py-1 text-gray-500">Tip:</td><td class="py-1"><span class="wf-badge wf-badge-info">Indirim</span></td></tr>
+                    <tr><td class="py-1 text-gray-500">Oncelik:</td><td class="py-1">50</td></tr>
+                  </table>
+                </div>
+                <div>
+                  <h3 class="font-medium text-gray-500 mb-2">Indirim Detaylari</h3>
+                  <table class="w-full text-sm">
+                    <tr><td class="py-1 text-gray-500">Indirim:</td><td class="py-1 font-medium text-green-600">%20</td></tr>
+                    <tr><td class="py-1 text-gray-500">Uygulama:</td><td class="py-1">Tum urunler</td></tr>
+                    <tr><td class="py-1 text-gray-500">Limit:</td><td class="py-1">Limitsiz</td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+                <h3 class="font-medium text-gray-500 mb-2">Aktif Kurallar</h3>
+                <div class="flex flex-wrap gap-2">
+                  <span class="wf-badge wf-badge-info">01 Haz - 31 Agu 2026</span>
+                  <span class="wf-badge wf-badge-info">Cmt, Paz</span>
+                  <span class="wf-badge wf-badge-info">Park A - Su Parki, Lunapark</span>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Kural mantigi: <strong x-text="ruleLogic === 'AND' ? 'VE (Tum kurallar saglanmali)' : 'VEYA (Herhangi biri yeterli)'"></strong></p>
+              </div>
+            </div>
+
+            <div class="wf-card bg-green-50 border-green-300">
+              <h3 class="font-medium mb-2">Tahmini Etki</h3>
+              <div class="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div class="text-2xl font-semibold">~2,400</div>
+                  <div class="text-sm text-gray-500">Potansiyel kullanim</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-semibold text-red-600">-48,000 TL</div>
+                  <div class="text-sm text-gray-500">Tahmini indirim</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-semibold text-green-600">+12%</div>
+                  <div class="text-sm text-gray-500">Beklenen satis artisi</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-between">
+              <button @click="currentStep = 3" class="wf-btn">
+                <span class="wf-icon mr-1" data-icon="arrow-left" data-size="16"></span>
+                Geri
+              </button>
+              <div class="flex gap-2">
+                <button class="wf-btn">Taslak Kaydet</button>
+                <button class="wf-btn wf-btn-primary">
+                  <span class="wf-icon mr-1" data-icon="check" data-size="16"></span>
+                  Kampanyayi Yayinla
+                </button>
+              </div>
+            </div>
+
+            <!-- Annotation -->
+            <div class="wf-note">
+              <strong>D-008: Kampanya Wizard</strong><br>
+              - 4 adimli wizard: Temel Bilgiler > Kurallar > Indirim > Onizleme<br>
+              - Kural builder: Tarih, gun, lokasyon, segment kurallari<br>
+              - AND/OR logic secimi<br>
+              - Taslak kaydetme<br>
+              - Tahmini etki analizi
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Tool UI (Toolbar & Comments) -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

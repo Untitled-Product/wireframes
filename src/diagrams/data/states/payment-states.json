@@ -1,0 +1,197 @@
+{
+  "id": "payment-states",
+  "type": "state-machine",
+  "title": "Payment State Machine",
+  "description": "Ödeme durumu geçişleri - Payment lifecycle",
+  "version": "1.0",
+  "nodes": [
+    {
+      "id": "initiated",
+      "type": "state",
+      "label": "Initiated",
+      "sublabel": "Ödeme başlatıldı",
+      "position": { "x": 100, "y": 150 },
+      "isInitial": true
+    },
+    {
+      "id": "pending",
+      "type": "state",
+      "label": "Pending",
+      "sublabel": "Onay bekleniyor",
+      "position": { "x": 300, "y": 150 }
+    },
+    {
+      "id": "processing",
+      "type": "state",
+      "label": "Processing",
+      "sublabel": "Banka işlemi",
+      "position": { "x": 500, "y": 150 }
+    },
+    {
+      "id": "authorized",
+      "type": "state",
+      "label": "Authorized",
+      "sublabel": "Yetkilendirildi",
+      "position": { "x": 700, "y": 150 }
+    },
+    {
+      "id": "captured",
+      "type": "state",
+      "label": "Captured",
+      "sublabel": "Tahsil edildi",
+      "position": { "x": 700, "y": 300 },
+      "isActive": true
+    },
+    {
+      "id": "settled",
+      "type": "state",
+      "label": "Settled",
+      "sublabel": "Hesaba aktarıldı",
+      "position": { "x": 700, "y": 450 },
+      "isFinal": true
+    },
+    {
+      "id": "failed",
+      "type": "state",
+      "label": "Failed",
+      "sublabel": "Başarısız",
+      "position": { "x": 300, "y": 350 },
+      "isFinal": true
+    },
+    {
+      "id": "cancelled",
+      "type": "state",
+      "label": "Cancelled",
+      "sublabel": "İptal edildi",
+      "position": { "x": 500, "y": 350 },
+      "isFinal": true
+    },
+    {
+      "id": "refund-pending",
+      "type": "state",
+      "label": "Refund Pending",
+      "sublabel": "İade bekleniyor",
+      "position": { "x": 500, "y": 500 }
+    },
+    {
+      "id": "refunded",
+      "type": "state",
+      "label": "Refunded",
+      "sublabel": "İade edildi",
+      "position": { "x": 300, "y": 500 },
+      "isFinal": true
+    },
+    {
+      "id": "partial-refunded",
+      "type": "state",
+      "label": "Partial Refund",
+      "sublabel": "Kısmi iade",
+      "position": { "x": 300, "y": 650 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "t1",
+      "source": "initiated",
+      "target": "pending",
+      "type": "flow",
+      "label": "submit"
+    },
+    {
+      "id": "t2",
+      "source": "pending",
+      "target": "processing",
+      "type": "flow",
+      "label": "3D Secure"
+    },
+    {
+      "id": "t3",
+      "source": "processing",
+      "target": "authorized",
+      "type": "flow",
+      "label": "authorize"
+    },
+    {
+      "id": "t4",
+      "source": "authorized",
+      "target": "captured",
+      "type": "flow",
+      "label": "capture"
+    },
+    {
+      "id": "t5",
+      "source": "captured",
+      "target": "settled",
+      "type": "flow",
+      "label": "settle"
+    },
+    {
+      "id": "t6",
+      "source": "pending",
+      "target": "failed",
+      "type": "error",
+      "label": "reject"
+    },
+    {
+      "id": "t7",
+      "source": "processing",
+      "target": "failed",
+      "type": "error",
+      "label": "error"
+    },
+    {
+      "id": "t8",
+      "source": "authorized",
+      "target": "cancelled",
+      "type": "error",
+      "label": "void"
+    },
+    {
+      "id": "t9",
+      "source": "captured",
+      "target": "refund-pending",
+      "type": "conditional",
+      "label": "refund request"
+    },
+    {
+      "id": "t10",
+      "source": "refund-pending",
+      "target": "refunded",
+      "type": "flow",
+      "label": "full refund"
+    },
+    {
+      "id": "t11",
+      "source": "refund-pending",
+      "target": "partial-refunded",
+      "type": "conditional",
+      "label": "partial"
+    },
+    {
+      "id": "t12",
+      "source": "partial-refunded",
+      "target": "refund-pending",
+      "type": "conditional",
+      "label": "more refund"
+    },
+    {
+      "id": "t13",
+      "source": "partial-refunded",
+      "target": "refunded",
+      "type": "flow",
+      "label": "complete"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-1",
+      "text": "3D Secure: Tüm kartlar için zorunlu",
+      "position": { "x": 380, "y": 80 }
+    },
+    {
+      "id": "note-2",
+      "text": "Settlement: T+1 banka günü",
+      "position": { "x": 780, "y": 420 }
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+<!--
+  Wireframe: user-form-v2
+  Task: D-003, F1-012, F1-013
+  Karar Versiyonu: K-001, K-002, K-003
+  Son Guncelleme: 2026-01-12
+
+  K-001 Notu: Telefon + OTP giris, e-posta operasyonel
+  K-002 Notu: Granuler yetki sistemi - ROL DROPDOWN YOK, checkbox grid
+  K-003 Notu: 3 katmanli admin hiyerarsisi
+  - Tenant Admin: Editor olusturur (bu ekran)
+  - Tenant otomatik atanir, tenant secici YOK
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Ekle - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    /* Font loading - hide content until font is ready */
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    // Font loading detection
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      // Fallback for older browsers
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ sidebarOpen: true, mobileMenu: false }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Content -->
+      <main class="p-4 sm:p-6 flex-1">
+        <div class="max-w-4xl">
+          <div class="mb-6">
+            <h1 class="text-xl font-medium">Yeni Editor Ekle</h1>
+            <p class="text-gray-500 text-sm">Tenant'inize yeni bir editor kullanici ekleyin</p>
+          </div>
+
+          <form action="user-list-v2.html" class="space-y-6">
+            <!-- Kisisel Bilgiler -->
+            <div class="wf-card">
+              <h2 class="text-lg font-medium mb-4">Kisisel Bilgiler</h2>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Ad *</label>
+                  <input type="text" class="wf-input" placeholder="Ad" required>
+                </div>
+                <div class="wf-form-group">
+                  <label class="block text-sm font-medium mb-1">Soyad *</label>
+                  <input type="text" class="wf-input" placeholder="Soyad" required>
+                </div>
+              </div>
+
+              <div class="wf-form-group mt-4">
+                <label class="block text-sm font-medium mb-1">Telefon * <span class="text-gray-500 font-normal">(Giris icin kullanilir)</span></label>
+                <div class="flex gap-2">
+                  <select class="wf-select w-20 sm:w-24">
+                    <option>+90</option>
+                    <option>+1</option>
+                    <option>+44</option>
+                  </select>
+                  <input type="tel" class="wf-input flex-1" placeholder="5XX XXX XX XX" required>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">OTP dogrulamasi bu numaraya gonderilecek</p>
+              </div>
+
+              <div class="wf-form-group mt-4">
+                <label class="block text-sm font-medium mb-1">E-posta * <span class="text-gray-500 font-normal">(Bildirim/rapor icin)</span></label>
+                <input type="email" class="wf-input" placeholder="email@tersanenick.com" required>
+                <p class="text-xs text-gray-500 mt-1">Izinli domain: @tersanenick.com | Giris icin KULLANILMAZ</p>
+              </div>
+            </div>
+
+            <!-- Yetkiler - Cloudflare Style Checkbox Grid -->
+            <div class="wf-card">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-medium">Yetkiler</h2>
+                <div class="flex gap-2">
+                  <button type="button" class="wf-btn py-1 px-3 text-sm">Tum Yetkileri Sec</button>
+                  <button type="button" class="wf-btn py-1 px-3 text-sm">Sadece Goruntuleme</button>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Store Kategorisi -->
+                <div class="border-2 border-gray-200 rounded p-4">
+                  <label class="flex items-center gap-2 mb-3 font-medium">
+                    <input type="checkbox" class="wf-checkbox">
+                    <span>Store</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox" checked>
+                      <span class="text-sm">Siparisleri goruntule</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox" checked>
+                      <span class="text-sm">Siparisleri duzenle</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Kargo yonetimi</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Urun fiyat duzenleme</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- CMS Kategorisi -->
+                <div class="border-2 border-gray-200 rounded p-4">
+                  <label class="flex items-center gap-2 mb-3 font-medium">
+                    <input type="checkbox" class="wf-checkbox">
+                    <span>CMS</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox" checked>
+                      <span class="text-sm">Icerikleri goruntule</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Icerikleri duzenle</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Icerik olustur</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Icerik sil</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Kampanyalar Kategorisi -->
+                <div class="border-2 border-gray-200 rounded p-4">
+                  <label class="flex items-center gap-2 mb-3 font-medium">
+                    <input type="checkbox" class="wf-checkbox">
+                    <span>Kampanyalar</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox" checked>
+                      <span class="text-sm">Kampanyalari goruntule</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Kampanya olustur</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Kampanya duzenle</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Kupon yonetimi</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Biletler Kategorisi -->
+                <div class="border-2 border-gray-200 rounded p-4">
+                  <label class="flex items-center gap-2 mb-3 font-medium">
+                    <input type="checkbox" class="wf-checkbox">
+                    <span>Biletler</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox" checked>
+                      <span class="text-sm">Biletleri goruntule</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Bilet olustur</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Bilet duzenle</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Eklenti yonetimi</span>
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Kayitlar Kategorisi -->
+                <div class="border-2 border-gray-200 rounded p-4">
+                  <label class="flex items-center gap-2 mb-3 font-medium">
+                    <input type="checkbox" class="wf-checkbox">
+                    <span>Kayitlar</span>
+                  </label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pl-6">
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Odeme kayitlarini goruntule</span>
+                    </label>
+                    <label class="flex items-center gap-2">
+                      <input type="checkbox" class="wf-checkbox">
+                      <span class="text-sm">Denetim kayitlarini goruntule</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Durum -->
+            <div class="wf-card">
+              <h2 class="text-lg font-medium mb-4">Hesap Durumu</h2>
+
+              <div class="wf-form-group">
+                <label class="flex items-start sm:items-center gap-3">
+                  <input type="checkbox" class="wf-checkbox mt-1 sm:mt-0" checked>
+                  <div>
+                    <span class="font-medium">Hesap Aktif</span>
+                    <p class="text-sm text-gray-500">Devre disi hesaplar sisteme giris yapamaz</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-4">
+              <a href="user-list-v2.html" class="wf-btn text-center">Iptal</a>
+              <button type="submit" class="wf-btn wf-btn-primary">Editor Olustur</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Annotation Note -->
+        <div class="wf-note mt-6">
+          K-002/K-003: Tenant Admin -> Editor olusturma formu. ROL DROPDOWN YOK. Cloudflare tarzi checkbox grid ile granuler yetki atama. Tenant otomatik atanir.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <!-- Tool UI -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

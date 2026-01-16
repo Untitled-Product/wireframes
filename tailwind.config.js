@@ -128,6 +128,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Indie Flower', 'cursive'],
+        mono: ['Indie Flower', 'cursive'],
         wireframe: ['Indie Flower', 'cursive'],
       },
       borderRadius: {

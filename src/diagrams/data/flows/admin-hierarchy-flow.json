@@ -1,0 +1,286 @@
+{
+  "id": "admin-hierarchy-flow",
+  "type": "swimlane",
+  "title": "Admin Hierarchy Flow (K-003)",
+  "description": "3 katmanlı yönetici hiyerarşisi - Super Admin → Tenant Admin → Editor",
+  "version": "1.0",
+  "source": "decisions.md - K-003",
+  "swimlanes": [
+    {
+      "id": "super-admin-lane",
+      "label": "Super Admin (System Level)",
+      "sublabel": "Legends DXP Platform",
+      "color": "purple"
+    },
+    {
+      "id": "tenant-admin-lane",
+      "label": "Tenant Admin (Project Level)",
+      "sublabel": "örn: Tersane Nick",
+      "color": "blue"
+    },
+    {
+      "id": "editor-lane",
+      "label": "Editor (User Level)",
+      "sublabel": "Granüler yetkiler",
+      "color": "teal"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "sa-login",
+      "type": "start",
+      "label": "SA Giriş",
+      "position": { "x": 50, "y": 50 },
+      "swimlane": "super-admin-lane"
+    },
+    {
+      "id": "sa-dashboard",
+      "type": "page",
+      "label": "Platform Dashboard",
+      "sublabel": "Tüm tenant'lar",
+      "position": { "x": 150, "y": 50 },
+      "swimlane": "super-admin-lane",
+      "metadata": {
+        "wireframe": "admin/super-admin-dashboard.html"
+      }
+    },
+    {
+      "id": "tenant-crud",
+      "type": "action",
+      "label": "Tenant CRUD",
+      "sublabel": "Oluştur/Düzenle/Sil",
+      "position": { "x": 330, "y": 50 },
+      "swimlane": "super-admin-lane"
+    },
+    {
+      "id": "create-tenant-admin",
+      "type": "action",
+      "label": "Tenant Admin Oluştur",
+      "position": { "x": 520, "y": 50 },
+      "swimlane": "super-admin-lane"
+    },
+    {
+      "id": "system-db",
+      "type": "database",
+      "label": "system_db",
+      "sublabel": "Merkezi",
+      "position": { "x": 730, "y": 40 },
+      "swimlane": "super-admin-lane"
+    },
+    {
+      "id": "ta-login",
+      "type": "start",
+      "label": "TA Giriş",
+      "position": { "x": 50, "y": 200 },
+      "swimlane": "tenant-admin-lane"
+    },
+    {
+      "id": "ta-dashboard",
+      "type": "page",
+      "label": "Tenant Dashboard",
+      "sublabel": "Kendi tenant'ı",
+      "position": { "x": 150, "y": 200 },
+      "swimlane": "tenant-admin-lane",
+      "metadata": {
+        "wireframe": "admin/tenant-admin-dashboard.html"
+      }
+    },
+    {
+      "id": "editor-management",
+      "type": "page",
+      "label": "Editor Yönetimi",
+      "sublabel": "Kullanıcı listesi",
+      "position": { "x": 330, "y": 200 },
+      "swimlane": "tenant-admin-lane",
+      "metadata": {
+        "wireframe": "admin/editor-list.html"
+      }
+    },
+    {
+      "id": "create-editor",
+      "type": "action",
+      "label": "Editor Oluştur",
+      "sublabel": "Checkbox yetkiler",
+      "position": { "x": 520, "y": 200 },
+      "swimlane": "tenant-admin-lane"
+    },
+    {
+      "id": "assign-permissions",
+      "type": "action",
+      "label": "Yetki Ata",
+      "sublabel": "Granüler (K-002)",
+      "position": { "x": 700, "y": 200 },
+      "swimlane": "tenant-admin-lane"
+    },
+    {
+      "id": "tenant-db",
+      "type": "database",
+      "label": "tenant_xxx_db",
+      "sublabel": "Tenant başına ayrı",
+      "position": { "x": 880, "y": 190 },
+      "swimlane": "tenant-admin-lane"
+    },
+    {
+      "id": "editor-login",
+      "type": "start",
+      "label": "E Giriş",
+      "position": { "x": 50, "y": 350 },
+      "swimlane": "editor-lane"
+    },
+    {
+      "id": "editor-dashboard",
+      "type": "page",
+      "label": "Editor Dashboard",
+      "sublabel": "Yetki bazlı menü",
+      "position": { "x": 150, "y": 350 },
+      "swimlane": "editor-lane",
+      "metadata": {
+        "wireframe": "sprint1/dashboard.html"
+      }
+    },
+    {
+      "id": "check-permissions",
+      "type": "decision",
+      "label": "Yetki var mı?",
+      "position": { "x": 340, "y": 340 },
+      "swimlane": "editor-lane"
+    },
+    {
+      "id": "access-module",
+      "type": "action",
+      "label": "Modüle Eriş",
+      "sublabel": "Store/CMS/Kampanya",
+      "position": { "x": 520, "y": 350 },
+      "swimlane": "editor-lane"
+    },
+    {
+      "id": "access-denied",
+      "type": "action",
+      "label": "Erişim Engeli",
+      "sublabel": "403 Forbidden",
+      "position": { "x": 520, "y": 480 },
+      "swimlane": "editor-lane"
+    },
+    {
+      "id": "end-editor",
+      "type": "end",
+      "label": "Bitti",
+      "position": { "x": 700, "y": 360 },
+      "swimlane": "editor-lane"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "sa-login",
+      "target": "sa-dashboard",
+      "type": "flow"
+    },
+    {
+      "id": "e2",
+      "source": "sa-dashboard",
+      "target": "tenant-crud",
+      "type": "flow"
+    },
+    {
+      "id": "e3",
+      "source": "tenant-crud",
+      "target": "create-tenant-admin",
+      "type": "flow"
+    },
+    {
+      "id": "e4",
+      "source": "create-tenant-admin",
+      "target": "system-db",
+      "type": "data"
+    },
+    {
+      "id": "e5",
+      "source": "create-tenant-admin",
+      "target": "ta-login",
+      "type": "async",
+      "label": "Davet SMS"
+    },
+    {
+      "id": "e6",
+      "source": "ta-login",
+      "target": "ta-dashboard",
+      "type": "flow"
+    },
+    {
+      "id": "e7",
+      "source": "ta-dashboard",
+      "target": "editor-management",
+      "type": "flow"
+    },
+    {
+      "id": "e8",
+      "source": "editor-management",
+      "target": "create-editor",
+      "type": "flow"
+    },
+    {
+      "id": "e9",
+      "source": "create-editor",
+      "target": "assign-permissions",
+      "type": "flow"
+    },
+    {
+      "id": "e10",
+      "source": "assign-permissions",
+      "target": "tenant-db",
+      "type": "data"
+    },
+    {
+      "id": "e11",
+      "source": "assign-permissions",
+      "target": "editor-login",
+      "type": "async",
+      "label": "Davet SMS"
+    },
+    {
+      "id": "e12",
+      "source": "editor-login",
+      "target": "editor-dashboard",
+      "type": "flow"
+    },
+    {
+      "id": "e13",
+      "source": "editor-dashboard",
+      "target": "check-permissions",
+      "type": "flow"
+    },
+    {
+      "id": "e14",
+      "source": "check-permissions",
+      "target": "access-module",
+      "type": "flow",
+      "label": "Evet"
+    },
+    {
+      "id": "e15",
+      "source": "check-permissions",
+      "target": "access-denied",
+      "type": "error",
+      "label": "Hayır"
+    },
+    {
+      "id": "e16",
+      "source": "access-module",
+      "target": "end-editor",
+      "type": "flow"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-1",
+      "text": "Diğer tenant'lara erişim YOK",
+      "position": { "x": 500, "y": 280 }
+    },
+    {
+      "id": "note-2",
+      "text": "Başka kullanıcı oluşturma yetkisi YOK",
+      "position": { "x": 700, "y": 430 }
+    }
+  ]
+}

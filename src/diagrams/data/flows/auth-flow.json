@@ -1,0 +1,236 @@
+{
+  "id": "auth-flow",
+  "type": "user-flow",
+  "title": "Authentication Flow (K-001)",
+  "description": "Legends DXP kimlik doğrulama akışı - Sadece cep telefonu + OTP ile giriş",
+  "version": "1.0",
+  "source": "decisions.md - K-001",
+  "nodes": [
+    {
+      "id": "start",
+      "type": "start",
+      "label": "Başla",
+      "position": { "x": 100, "y": 50 }
+    },
+    {
+      "id": "login-page",
+      "type": "page",
+      "label": "Login Sayfası",
+      "sublabel": "Telefon girişi",
+      "position": { "x": 70, "y": 150 },
+      "metadata": {
+        "wireframe": "sprint1/login.html"
+      }
+    },
+    {
+      "id": "enter-phone",
+      "type": "action",
+      "label": "Cep telefonu gir",
+      "position": { "x": 70, "y": 260 }
+    },
+    {
+      "id": "check-phone",
+      "type": "decision",
+      "label": "Telefon kayıtlı?",
+      "position": { "x": 80, "y": 380 }
+    },
+    {
+      "id": "send-otp",
+      "type": "api",
+      "label": "POST /auth/otp/send",
+      "sublabel": "SMS gönder",
+      "position": { "x": 50, "y": 520 }
+    },
+    {
+      "id": "otp-page",
+      "type": "page",
+      "label": "OTP Doğrulama",
+      "sublabel": "6 haneli kod",
+      "position": { "x": 70, "y": 640 },
+      "metadata": {
+        "wireframe": "sprint1/otp-verify.html"
+      }
+    },
+    {
+      "id": "verify-otp",
+      "type": "api",
+      "label": "POST /auth/otp/verify",
+      "position": { "x": 50, "y": 760 }
+    },
+    {
+      "id": "otp-valid",
+      "type": "decision",
+      "label": "OTP doğru?",
+      "position": { "x": 80, "y": 880 }
+    },
+    {
+      "id": "create-session",
+      "type": "action",
+      "label": "Session oluştur",
+      "sublabel": "JWT token",
+      "position": { "x": 70, "y": 1020 }
+    },
+    {
+      "id": "dashboard",
+      "type": "page",
+      "label": "Dashboard",
+      "sublabel": "Rol bazlı menü",
+      "position": { "x": 70, "y": 1130 },
+      "metadata": {
+        "wireframe": "sprint1/dashboard.html"
+      }
+    },
+    {
+      "id": "end-success",
+      "type": "end",
+      "label": "Tamam",
+      "position": { "x": 100, "y": 1240 }
+    },
+    {
+      "id": "register-redirect",
+      "type": "page",
+      "label": "Kayıt Sayfası",
+      "sublabel": "Yeni kullanıcı",
+      "position": { "x": 300, "y": 380 },
+      "metadata": {
+        "wireframe": "sprint1/register.html"
+      }
+    },
+    {
+      "id": "error-state",
+      "type": "action",
+      "label": "Hata göster",
+      "sublabel": "Max 3 deneme",
+      "position": { "x": 300, "y": 880 }
+    },
+    {
+      "id": "retry-loop",
+      "type": "decision",
+      "label": "Tekrar dene?",
+      "position": { "x": 310, "y": 1000 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "start",
+      "target": "login-page",
+      "type": "flow"
+    },
+    {
+      "id": "e2",
+      "source": "login-page",
+      "target": "enter-phone",
+      "type": "flow"
+    },
+    {
+      "id": "e3",
+      "source": "enter-phone",
+      "target": "check-phone",
+      "type": "flow"
+    },
+    {
+      "id": "e4",
+      "source": "check-phone",
+      "target": "send-otp",
+      "type": "flow",
+      "label": "Evet"
+    },
+    {
+      "id": "e5",
+      "source": "check-phone",
+      "target": "register-redirect",
+      "type": "conditional",
+      "label": "Hayır"
+    },
+    {
+      "id": "e6",
+      "source": "send-otp",
+      "target": "otp-page",
+      "type": "flow"
+    },
+    {
+      "id": "e7",
+      "source": "otp-page",
+      "target": "verify-otp",
+      "type": "flow"
+    },
+    {
+      "id": "e8",
+      "source": "verify-otp",
+      "target": "otp-valid",
+      "type": "flow"
+    },
+    {
+      "id": "e9",
+      "source": "otp-valid",
+      "target": "create-session",
+      "type": "flow",
+      "label": "Evet"
+    },
+    {
+      "id": "e10",
+      "source": "otp-valid",
+      "target": "error-state",
+      "type": "error",
+      "label": "Hayır"
+    },
+    {
+      "id": "e11",
+      "source": "create-session",
+      "target": "dashboard",
+      "type": "flow"
+    },
+    {
+      "id": "e12",
+      "source": "dashboard",
+      "target": "end-success",
+      "type": "flow"
+    },
+    {
+      "id": "e13",
+      "source": "error-state",
+      "target": "retry-loop",
+      "type": "flow"
+    },
+    {
+      "id": "e14",
+      "source": "retry-loop",
+      "target": "otp-page",
+      "type": "conditional",
+      "label": "Evet"
+    }
+  ],
+  "groups": [
+    {
+      "id": "auth-group",
+      "label": "Authentication",
+      "nodes": ["login-page", "enter-phone", "check-phone"],
+      "color": "teal"
+    },
+    {
+      "id": "otp-group",
+      "label": "OTP Verification",
+      "nodes": ["send-otp", "otp-page", "verify-otp", "otp-valid"],
+      "color": "blue"
+    },
+    {
+      "id": "session-group",
+      "label": "Session Management",
+      "nodes": ["create-session", "dashboard"],
+      "color": "purple"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-1",
+      "text": "E-posta ile giriş YOK, şifre sistemi YOK (K-001)",
+      "position": { "x": 280, "y": 150 }
+    },
+    {
+      "id": "note-2",
+      "text": "Max 3 deneme hakkı, sonra geçici kilitlenme",
+      "position": { "x": 450, "y": 880 }
+    }
+  ]
+}

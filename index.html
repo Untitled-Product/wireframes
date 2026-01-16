@@ -9,12 +9,421 @@
   <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
   <link rel="stylesheet" href="dist/output.css">
-  <script src="src/js/icons.js"></script>
+  <link rel="stylesheet" href="src/tool/css/tool.css">
+  <script src="src/tool/js/tool-icons.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
     [x-cloak] { display: none !important; }
     .fonts-loading { opacity: 0; }
     .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+
+    /* Modern Index Page Styles */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #ffffff;
+    }
+
+    /* Sidebar */
+    .index-sidebar {
+      width: 72px;
+      background: #1a1a1a;
+      border-right: 1px solid #2d2d2d;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      gap: 8px;
+    }
+
+    .index-logo {
+      width: 40px;
+      height: 40px;
+      background: #0d9488;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .index-sprint-btn {
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: 1px solid #3d3d3d;
+      border-radius: 8px;
+      color: #888;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .index-sprint-btn:hover {
+      background: #2d2d2d;
+      border-color: #4d4d4d;
+      color: #fff;
+    }
+
+    .index-sprint-btn.active {
+      background: #0d9488;
+      border-color: #0d9488;
+      color: #fff;
+    }
+
+    .index-theme-picker {
+      margin-top: auto;
+      padding: 12px;
+      background: #2d2d2d;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .index-theme-btn {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .index-theme-btn:hover,
+    .index-theme-btn.active {
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* Main Content */
+    .index-main {
+      flex: 1;
+      background: #0f0f0f;
+    }
+
+    .index-header {
+      height: 64px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #2d2d2d;
+      background: #1a1a1a;
+    }
+
+    .index-header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .index-header-subtitle {
+      font-size: 14px;
+      color: #888;
+      margin-left: 12px;
+    }
+
+    .index-badge {
+      padding: 4px 12px;
+      background: rgba(13, 148, 136, 0.2);
+      color: #0d9488;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .index-components-btn {
+      padding: 8px 16px;
+      background: #2d2d2d;
+      border: 1px solid #3d3d3d;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+
+    .index-components-btn:hover {
+      background: #3d3d3d;
+      border-color: #4d4d4d;
+    }
+
+    /* Content Grid */
+    .index-content {
+      padding: 32px;
+    }
+
+    .index-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #2d2d2d;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .index-card {
+      background: #1a1a1a;
+      border: 1px solid #2d2d2d;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.15s;
+      display: block;
+    }
+
+    .index-card:hover {
+      background: #252525;
+      border-color: #0d9488;
+    }
+
+    .index-card-icon {
+      width: 40px;
+      height: 40px;
+      background: #2d2d2d;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .index-card:hover .index-card-icon {
+      background: rgba(13, 148, 136, 0.2);
+    }
+
+    /* Icon colors - line icons use stroke */
+    .index-card-icon .tool-icon svg path,
+    .index-card-icon .tool-icon svg circle,
+    .index-card-icon .tool-icon svg rect {
+      stroke: #888 !important;
+    }
+
+    .index-card:hover .index-card-icon .tool-icon svg path,
+    .index-card:hover .index-card-icon .tool-icon svg circle,
+    .index-card:hover .index-card-icon .tool-icon svg rect {
+      stroke: #0d9488 !important;
+    }
+
+    .index-components-btn .tool-icon svg path,
+    .index-components-btn .tool-icon svg circle,
+    .index-components-btn .tool-icon svg rect {
+      stroke: #888 !important;
+    }
+
+    .index-components-btn:hover .tool-icon svg path,
+    .index-components-btn:hover .tool-icon svg circle,
+    .index-components-btn:hover .tool-icon svg rect {
+      stroke: #fff !important;
+    }
+
+    .index-card-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .index-card-desc {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .index-card-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      padding: 2px 8px;
+      background: #f59e0b;
+      color: #000;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    /* Info Banner */
+    .index-info-banner {
+      background: rgba(13, 148, 136, 0.1);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .index-info-banner h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0d9488;
+      margin-bottom: 8px;
+    }
+
+    .index-info-banner p {
+      font-size: 13px;
+      color: #888;
+    }
+
+    /* Warning Banner */
+    .index-warning-banner {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .index-warning-banner h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: 4px;
+    }
+
+    .index-warning-banner p {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* Reference Card Style */
+    .index-card.reference {
+      border-style: dashed;
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.05);
+    }
+
+    .index-card.reference:hover {
+      border-color: #f59e0b;
+    }
+
+    .index-card.reference .index-card-icon {
+      background: rgba(245, 158, 11, 0.2);
+    }
+
+    /* Info Card (Sprint Info) */
+    .index-info-card {
+      background: rgba(13, 148, 136, 0.1);
+      border: 1px solid rgba(13, 148, 136, 0.3);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .index-info-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(13, 148, 136, 0.2);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .index-info-content h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0d9488;
+      margin-bottom: 6px;
+    }
+
+    .index-info-content p {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    /* Section spacing */
+    .index-section {
+      margin-bottom: 32px;
+    }
+
+    /* Card Grid */
+    .index-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    @media (min-width: 1024px) {
+      .index-card-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* Tool Icon Colors for Index Page */
+    .tool-icon svg,
+    .tool-icon svg path,
+    .tool-icon svg circle,
+    .tool-icon svg rect,
+    .tool-icon svg line,
+    .tool-icon svg polyline,
+    .tool-icon svg polygon {
+      stroke: #888888 !important;
+      fill: none !important;
+    }
+
+    /* Icon color on card hover */
+    .index-card:hover .tool-icon svg,
+    .index-card:hover .tool-icon svg path,
+    .index-card:hover .tool-icon svg circle,
+    .index-card:hover .tool-icon svg rect,
+    .index-card:hover .tool-icon svg line,
+    .index-card:hover .tool-icon svg polyline,
+    .index-card:hover .tool-icon svg polygon {
+      stroke: #0d9488 !important;
+    }
+
+    /* Logo icon - white */
+    .index-logo .tool-icon svg,
+    .index-logo .tool-icon svg path,
+    .index-logo .tool-icon svg circle,
+    .index-logo .tool-icon svg rect {
+      stroke: #ffffff !important;
+    }
+
+    /* Section title icons */
+    .index-section-title .tool-icon svg,
+    .index-section-title .tool-icon svg path {
+      stroke: #888888 !important;
+    }
+
+    /* Components button icon */
+    .index-components-btn .tool-icon svg,
+    .index-components-btn .tool-icon svg path {
+      stroke: #888888 !important;
+    }
+
+    .index-components-btn:hover .tool-icon svg,
+    .index-components-btn:hover .tool-icon svg path {
+      stroke: #0d9488 !important;
+    }
+
+    /* Info card icon */
+    .index-info-icon .tool-icon svg,
+    .index-info-icon .tool-icon svg path {
+      stroke: #0d9488 !important;
+    }
+
+    /* Reference card hover - orange */
+    .index-card.reference:hover .tool-icon svg,
+    .index-card.reference:hover .tool-icon svg path {
+      stroke: #f59e0b !important;
+    }
   </style>
   <script>
     document.documentElement.classList.add('fonts-loading');
@@ -31,143 +440,150 @@
     }
   </script>
 </head>
-<body class="min-h-screen wireframe-page" x-data="{
+<body class="min-h-screen" x-data="{
   selectedTheme: 'teal',
-  selectedSprint: new URLSearchParams(window.location.search).get('sprint') || 'sprint2'
+  selectedSprint: (function() {
+    // Check hash first (e.g., #sprint1)
+    const hash = window.location.hash.replace('#', '');
+    if (['sprint1', 'sprint2', 'sprint3', 'diagrams'].includes(hash)) return hash;
+    // Then check query param
+    const param = new URLSearchParams(window.location.search).get('sprint');
+    if (param) return param;
+    // Default
+    return 'sprint2';
+  })()
 }">
 
   <div class="flex min-h-screen">
 
-    <!-- Wireframe Sidebar -->
-    <aside class="w-20 border-r-2 border-gray-400 bg-gray-50 flex flex-col items-center py-6 gap-3">
+    <!-- Modern Sidebar -->
+    <aside class="index-sidebar">
       <!-- Logo -->
-      <div class="w-12 h-12 border-2 border-gray-700 flex items-center justify-center text-2xl mb-4" title="Legends DXP">
-        <span class="wf-icon" data-icon="home" data-size="28"></span>
+      <div class="index-logo" title="Legends DXP">
+        <span class="tool-icon" data-tool-icon="Home" data-size="20"></span>
       </div>
 
       <!-- Sprint Buttons -->
       <button
         @click="selectedSprint = 'sprint1'"
-        :class="selectedSprint === 'sprint1' ? 'bg-gray-200 border-gray-700' : 'border-gray-400 hover:border-gray-600 hover:bg-gray-100'"
-        class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all"
+        :class="selectedSprint === 'sprint1' ? 'active' : ''"
+        class="index-sprint-btn"
         title="Sprint 1 - Auth & Users"
       >S1</button>
 
       <button
         @click="selectedSprint = 'sprint2'"
-        :class="selectedSprint === 'sprint2' ? 'bg-gray-200 border-gray-700' : 'border-gray-400 hover:border-gray-600 hover:bg-gray-100'"
-        class="w-12 h-12 border-2 flex items-center justify-center text-lg transition-all"
+        :class="selectedSprint === 'sprint2' ? 'active' : ''"
+        class="index-sprint-btn"
         title="Sprint 2 - Ticketing"
       >S2</button>
 
       <button
-        disabled
-        class="w-12 h-12 border-2 border-dashed border-gray-300 flex items-center justify-center text-lg text-gray-400 cursor-not-allowed"
-        title="Sprint 3 (Yakinda)"
+        @click="selectedSprint = 'sprint3'"
+        :class="selectedSprint === 'sprint3' ? 'active' : ''"
+        class="index-sprint-btn"
+        title="Sprint 3 - Campaigns"
       >S3</button>
 
-      <div class="flex-1"></div>
-
       <!-- Theme Colors -->
-      <div class="flex flex-col gap-2 p-2 border-2 border-gray-300">
-        <button @click="selectedTheme = 'teal'" :class="selectedTheme === 'teal' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-teal-500 border border-gray-400" title="Teal"></button>
-        <button @click="selectedTheme = 'blue'" :class="selectedTheme === 'blue' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-blue-500 border border-gray-400" title="Blue"></button>
-        <button @click="selectedTheme = 'purple'" :class="selectedTheme === 'purple' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-violet-500 border border-gray-400" title="Purple"></button>
-        <button @click="selectedTheme = 'orange'" :class="selectedTheme === 'orange' ? 'ring-2 ring-gray-700 ring-offset-2' : ''" class="w-6 h-6 bg-orange-500 border border-gray-400" title="Orange"></button>
+      <div class="index-theme-picker">
+        <button @click="selectedTheme = 'teal'" :class="selectedTheme === 'teal' ? 'active' : ''" class="index-theme-btn bg-teal-500" title="Teal"></button>
+        <button @click="selectedTheme = 'blue'" :class="selectedTheme === 'blue' ? 'active' : ''" class="index-theme-btn bg-blue-500" title="Blue"></button>
+        <button @click="selectedTheme = 'purple'" :class="selectedTheme === 'purple' ? 'active' : ''" class="index-theme-btn bg-violet-500" title="Purple"></button>
+        <button @click="selectedTheme = 'orange'" :class="selectedTheme === 'orange' ? 'active' : ''" class="index-theme-btn bg-orange-500" title="Orange"></button>
       </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1">
+    <main class="index-main">
 
       <!-- Header -->
-      <header class="h-16 border-b-2 border-gray-400 px-8 flex items-center justify-between bg-white">
-        <div class="flex items-center gap-4">
-          <h1 class="text-2xl" x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : 'Sprint 2'"></h1>
-          <span class="text-gray-500 text-lg" x-text="selectedSprint === 'sprint1' ? '- Auth & Users' : '- Ticketing & Add-ons'"></span>
+      <header class="index-header">
+        <div class="flex items-center">
+          <h1 x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : (selectedSprint === 'sprint2' ? 'Sprint 2' : 'Sprint 3')"></h1>
+          <span class="index-header-subtitle" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : (selectedSprint === 'sprint2' ? 'Ticketing & Add-ons' : 'Campaigns')"></span>
         </div>
         <div class="flex items-center gap-4">
-          <span class="wf-badge wf-badge-success text-base px-3 py-1" x-text="selectedSprint === 'sprint1' ? '8/8 Tamamlandi' : '11/11 Tamamlandi'">
-          </span>
-          <a href="src/components/form-elements.html" class="wf-btn text-base">
-            <span class="wf-icon" data-icon="settings-cog" data-size="18"></span>
+          <span class="index-badge" x-text="selectedSprint === 'sprint1' ? '8/8 Complete' : (selectedSprint === 'sprint2' ? '11/11 Complete' : '4/4 Complete')"></span>
+          <a href="src/components/form-elements.html" class="index-components-btn">
+            <span class="tool-icon" data-tool-icon="Settings Gear" data-size="16"></span>
             Components
+          </a>
+          <a href="src/components/api-contracts.html" class="index-components-btn">
+            <span class="tool-icon" data-tool-icon="Code" data-size="16"></span>
+            API Contracts
+          </a>
+          <a href="src/pages/diagrams/index.html" class="index-components-btn">
+            <span class="tool-icon" data-tool-icon="Layout Grid" data-size="16"></span>
+            Diagrams
           </a>
         </div>
       </header>
 
-      <div class="p-8">
+      <div class="index-content">
 
         <!-- ==================== SPRINT 1 ==================== -->
         <div x-show="selectedSprint === 'sprint1'" x-cloak>
 
           <!-- Admin Section -->
           <div class="mb-8">
-            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
-              <span class="wf-icon" data-icon="app-window-user" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
-              Admin Sayfalari
-              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="User 1" data-size="16"></span>
+              Admin Pages
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-              <a :href="'src/pages/sprint1/login-phone.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Login - Telefon</div>
-                    <div class="text-gray-500 text-sm">D-001 | SMS ile giris</div>
-                  </div>
+              <a :href="'src/pages/sprint1/login-phone.html?theme=' + selectedTheme" class="index-card relative">
+                <span class="index-card-badge">K-001</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Attachment" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Login - Phone</div>
+                <div class="index-card-desc">D-001 | Telefon + OTP</div>
               </a>
 
-              <a :href="'src/pages/sprint1/login-otp.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="lock-key-1" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Login - OTP</div>
-                    <div class="text-gray-500 text-sm">D-001 | 6 haneli kod</div>
-                  </div>
+              <a :href="'src/pages/sprint1/login-otp.html?theme=' + selectedTheme" class="index-card relative">
+                <span class="index-card-badge">K-001</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Lock (Close)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Login - OTP</div>
+                <div class="index-card-desc">D-001 | 6-digit code</div>
               </a>
 
-              <a :href="'src/pages/sprint1/login-locked.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Login - Kilitli</div>
-                    <div class="text-gray-500 text-sm">D-001 | Rate limit</div>
-                  </div>
+              <a :href="'src/pages/sprint1/login-locked.html?theme=' + selectedTheme" class="index-card relative">
+                <span class="index-card-badge">K-001</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Alarm Bell" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Login - Locked</div>
+                <div class="index-card-desc">D-001 | Rate limit</div>
               </a>
 
-              <a :href="'src/pages/sprint1/user-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Kullanici Listesi</div>
-                    <div class="text-gray-500 text-sm">D-003 | RBAC yonetimi</div>
-                  </div>
+              <a :href="'src/pages/sprint1/anasayfa.html?theme=' + selectedTheme + '&sprint=1'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Home" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Anasayfa</div>
+                <div class="index-card-desc">Admin Dashboard</div>
               </a>
 
-              <a :href="'src/pages/sprint1/user-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Kullanici Formu</div>
-                    <div class="text-gray-500 text-sm">D-003 | Rol atama</div>
-                  </div>
+              <a :href="'src/pages/sprint1/user-list-v2.html?theme=' + selectedTheme + '&sprint=1'" class="index-card relative">
+                <span class="index-card-badge">K-002 K-003</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="User 1" data-size="20"></span>
                 </div>
+                <div class="index-card-title">User List</div>
+                <div class="index-card-desc">D-003 | Hiyerarşi bazlı liste</div>
+              </a>
+
+              <a :href="'src/pages/sprint1/user-form-v2.html?theme=' + selectedTheme + '&sprint=1'" class="index-card relative">
+                <span class="index-card-badge">K-002 K-003</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">User Form</div>
+                <div class="index-card-desc">D-003 | Granüler yetki checkbox</div>
               </a>
 
             </div>
@@ -175,68 +591,43 @@
 
           <!-- Layout Section -->
           <div>
-            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
-              <span class="wf-icon" data-icon="dashboard-layout" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
-              Layout Sayfalari
-              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Layout Grid" data-size="16"></span>
+              Layout Pages
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-              <a :href="'src/pages/sprint1/layout-sidebar-open.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Sidebar - Acik</div>
-                    <div class="text-gray-500 text-sm">D-002 | Ana navigasyon</div>
-                  </div>
+              <a :href="'src/pages/sprint1/layout-sidebar-open.html?theme=' + selectedTheme + '&sprint=1'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Burger Icon (Lines)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Sidebar - Open</div>
+                <div class="index-card-desc">D-002 | Main navigation</div>
               </a>
 
-              <a :href="'src/pages/sprint1/layout-sidebar-collapsed.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Sidebar - Kapali</div>
-                    <div class="text-gray-500 text-sm">D-002 | Ikon modu</div>
-                  </div>
+              <a :href="'src/pages/sprint1/layout-sidebar-collapsed.html?theme=' + selectedTheme + '&sprint=1'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Burger Icon (Lines)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Sidebar - Collapsed</div>
+                <div class="index-card-desc">D-002 | Icon mode</div>
               </a>
 
-              <a :href="'src/pages/sprint1/layout-mobile.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="menu-navigation-2" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Mobile Layout</div>
-                    <div class="text-gray-500 text-sm">D-002 | Hamburger menu</div>
-                  </div>
+              <a :href="'src/pages/sprint1/layout-mobile.html?theme=' + selectedTheme + '&sprint=1'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Browser Window" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Mobile Layout</div>
+                <div class="index-card-desc">D-002 | Hamburger menu</div>
               </a>
 
             </div>
           </div>
 
-          <!-- Sprint Info Banner - ALTA TAŞINDI -->
-          <div class="wf-card bg-teal-50 border-teal-400 mt-6">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 border-2 border-teal-500 flex items-center justify-center bg-white text-teal-600 flex-shrink-0">
-                <span class="wf-icon" data-icon="form-validation-check-square-1" data-size="24"></span>
-              </div>
-              <div class="flex-1">
-                <h3 class="text-lg font-medium text-teal-800">Sprint 1: Authentication & User Management</h3>
-                <p class="text-teal-700 mt-1">EPIC 01: Identity & Access Management | Login, OTP, RBAC, Kullanici Yonetimi</p>
-                <div class="flex flex-wrap gap-2 mt-2">
-                  <span class="wf-badge wf-badge-success text-xs">D-001 Login</span>
-                  <span class="wf-badge wf-badge-success text-xs">D-002 Layout</span>
-                  <span class="wf-badge wf-badge-success text-xs">D-003 Users</span>
-                </div>
-              </div>
-            </div>
+          <!-- Sprint Info Banner -->
+          <div class="index-info-banner">
+            <h3>Sprint 1: Authentication & User Management</h3>
+            <p>EPIC 01: Identity & Access Management | Login, OTP, RBAC, User Management</p>
           </div>
 
         </div>
@@ -246,188 +637,183 @@
 
           <!-- Admin Section -->
           <div class="mb-8">
-            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
-              <span class="wf-icon" data-icon="dashboard-layout" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
-              Admin Sayfalari
-              <span class="wf-badge wf-badge-info text-xs ml-2">Production</span>
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Layout Grid" data-size="16"></span>
+              Admin Pages
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-              <a :href="'src/pages/admin/ticket-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Bilet Listesi</div>
-                    <div class="text-gray-500 text-sm">D-004 | 6 bilet tipi</div>
-                  </div>
+              <a :href="'src/pages/admin/ticket-list.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Tags" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Ticket List</div>
+                <div class="index-card-desc">D-004 | 6 ticket types</div>
               </a>
 
-              <a :href="'src/pages/admin/ticket-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Bilet Formu</div>
-                    <div class="text-gray-500 text-sm">D-004 | Dinamik alanlar</div>
-                  </div>
+              <a :href="'src/pages/admin/ticket-form.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Ticket Form</div>
+                <div class="index-card-desc">D-004 | Dynamic fields</div>
               </a>
 
-              <a :href="'src/pages/admin/addon-list.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Add-on Listesi</div>
-                    <div class="text-gray-500 text-sm">D-005 | 5 kategori</div>
-                  </div>
+              <a :href="'src/pages/admin/addon-list.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Zoom (Plus)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Add-on List</div>
+                <div class="index-card-desc">D-005 | 5 categories</div>
               </a>
 
-              <a :href="'src/pages/admin/addon-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="edit-pencil" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Add-on Formu</div>
-                    <div class="text-gray-500 text-sm">D-005 | Bilet uyumluluk</div>
-                  </div>
+              <a :href="'src/pages/admin/addon-form.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Add-on Form</div>
+                <div class="index-card-desc">D-005 | Ticket compatibility</div>
               </a>
 
-              <a :href="'src/pages/admin/order-detail.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Siparis Detay</div>
-                    <div class="text-gray-500 text-sm">D-004 | Iptal/iade modal</div>
-                  </div>
+              <a :href="'src/pages/admin/order-detail.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Floppy Disk" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Order Detail</div>
+                <div class="index-card-desc">D-004 | Cancel/refund modal</div>
               </a>
 
-              <a :href="'src/pages/admin/slot-calendar.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-gray-400 flex items-center justify-center bg-gray-100 group-hover:bg-teal-50 group-hover:border-teal-500">
-                    <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-teal-600">Slot Takvimi</div>
-                    <div class="text-gray-500 text-sm">D-004 | Kapasite yonetimi</div>
-                  </div>
+              <a :href="'src/pages/admin/slot-calendar.html?theme=' + selectedTheme + '&sprint=2'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Calendar" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Slot Calendar</div>
+                <div class="index-card-desc">D-004 | Capacity management</div>
               </a>
 
             </div>
           </div>
 
-          <!-- Sprint Info Banner - Admin ile Public arasi -->
-          <div class="wf-card bg-teal-50 border-teal-400 my-6">
-            <div class="flex items-start gap-4">
-              <div class="w-12 h-12 border-2 border-teal-500 flex items-center justify-center bg-white text-teal-600 flex-shrink-0">
-                <span class="wf-icon" data-icon="form-validation-check-square-1" data-size="24"></span>
-              </div>
-              <div class="flex-1">
-                <h3 class="text-lg font-medium text-teal-800">Sprint 2: Ticketing & Add-ons</h3>
-                <p class="text-teal-700 mt-1">EPIC 03: E-commerce / Ticketing | Bilet tipleri, add-on'lar, Park Yazilim entegrasyonu</p>
-                <div class="flex flex-wrap gap-2 mt-2">
-                  <span class="wf-badge wf-badge-success text-xs">D-004 Bilet Admin</span>
-                  <span class="wf-badge wf-badge-success text-xs">D-005 Add-on Admin</span>
-                  <span class="wf-badge bg-amber-100 text-amber-700 border-amber-400 text-xs">D-006 Public (Ref)</span>
-                </div>
-              </div>
-            </div>
+          <!-- Sprint Info Banner -->
+          <div class="index-info-banner">
+            <h3>Sprint 2: Ticketing & Add-ons</h3>
+            <p>EPIC 03: E-commerce / Ticketing | Ticket types, add-ons, Park Software integration</p>
           </div>
 
           <!-- Public Section - Reference Only -->
-          <div>
-            <h2 class="text-xl text-gray-600 mb-4 pb-2 border-b-2 border-dashed border-gray-300">
-              <span class="wf-icon" data-icon="app-window-user" data-size="24" style="margin-right: 0.5rem; display: inline-block;"></span>
-              Public Sayfalari (Reference)
-              <span class="wf-badge bg-amber-100 text-amber-700 border-amber-400 text-xs ml-2">Reference Only</span>
+          <div class="mt-8">
+            <h2 class="index-section-title" style="color: #f59e0b;">
+              <span class="tool-icon" data-tool-icon="Navigation" data-size="16"></span>
+              Public Pages (Reference Only)
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
-              <a :href="'src/pages/public/ticket-catalog.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
-                    <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-amber-700">Bilet Katalogu</div>
-                    <div class="text-gray-500 text-sm">D-006 | Grid gorunum</div>
-                  </div>
+              <a :href="'src/pages/public/ticket-catalog.html?theme=' + selectedTheme" class="index-card reference">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Tags" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Ticket Catalog</div>
+                <div class="index-card-desc">D-006 | Grid view</div>
               </a>
 
-              <a :href="'src/pages/public/addon-selection.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
-                    <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-amber-700">Add-on Secimi</div>
-                    <div class="text-gray-500 text-sm">D-006 | Kategori tabs</div>
-                  </div>
+              <a :href="'src/pages/public/addon-selection.html?theme=' + selectedTheme" class="index-card reference">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Zoom (Plus)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Add-on Selection</div>
+                <div class="index-card-desc">D-006 | Category tabs</div>
               </a>
 
-              <a :href="'src/pages/public/forms/school-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
-                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-amber-700">Okul Formu</div>
-                    <div class="text-gray-500 text-sm">F1-170 | Grup basvuru</div>
-                  </div>
+              <a :href="'src/pages/public/forms/school-form.html?theme=' + selectedTheme" class="index-card reference">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Attachment" data-size="20"></span>
                 </div>
+                <div class="index-card-title">School Form</div>
+                <div class="index-card-desc">F1-170 | Group application</div>
               </a>
 
-              <a :href="'src/pages/public/forms/agency-form.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
-                    <span class="wf-icon" data-icon="send-email-fly" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-amber-700">Acente Formu</div>
-                    <div class="text-gray-500 text-sm">F1-171 | B2B basvuru</div>
-                  </div>
+              <a :href="'src/pages/public/forms/agency-form.html?theme=' + selectedTheme" class="index-card reference">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Attachment" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Agency Form</div>
+                <div class="index-card-desc">F1-171 | B2B application</div>
               </a>
 
-              <a :href="'src/pages/public/forms/ticket-request.html?theme=' + selectedTheme" class="wf-card hover:shadow-lg transition-all group relative border-dashed border-amber-300 bg-amber-50/30">
-                <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 border-2 border-amber-300 flex items-center justify-center bg-amber-50 group-hover:bg-amber-100 group-hover:border-amber-500">
-                    <span class="wf-icon" data-icon="remove-delete-sign-bold" data-size="20"></span>
-                  </div>
-                  <div>
-                    <div class="text-lg group-hover:text-amber-700">Iptal/Iade Talebi</div>
-                    <div class="text-gray-500 text-sm">F1-172 | PNR ile talep</div>
-                  </div>
+              <a :href="'src/pages/public/forms/ticket-request.html?theme=' + selectedTheme" class="index-card reference">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="X-Mark (Normal)" data-size="20"></span>
                 </div>
+                <div class="index-card-title">Cancel/Refund Request</div>
+                <div class="index-card-desc">F1-172 | PNR lookup</div>
               </a>
 
             </div>
 
             <!-- Warning Banner -->
-            <div class="wf-card bg-amber-50 border-amber-400 border-dashed mt-6">
-              <div class="flex items-start gap-3">
-                <div class="w-10 h-10 border-2 border-amber-500 flex items-center justify-center bg-white text-amber-600 flex-shrink-0">
-                  <span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span>
+            <div class="index-warning-banner">
+              <h4>Reference Only - Separate Project</h4>
+              <p>These pages show customer-facing designs. NOT part of admin panel. Will be developed in a separate frontend project.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== SPRINT 3 ==================== -->
+        <div x-show="selectedSprint === 'sprint3'" x-cloak>
+
+          <!-- Campaign Management Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Tags" data-size="24"></span>
+              Kampanya Yonetimi
+              <span class="index-badge">Sprint 3</span>
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint3/campaign-list.html?theme=' + selectedTheme + '&sprint=3'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Tags" data-size="20"></span>
                 </div>
-                <div class="flex-1">
-                  <h4 class="font-medium text-amber-800">Reference Only - Ayri Projede Gelistirilecek</h4>
-                  <p class="text-amber-700 text-sm mt-1">Bu sayfalar musteri tarafinin nasil gorunecegini gostermek icindir. Production admin paneline dahil <strong>OLMAYACAK</strong>. Ayri bir frontend projesinde gelistirilecek.</p>
+                <div class="index-card-title">Kampanya Listesi</div>
+                <div class="index-card-desc">D-007 | Filtre, durum, aksiyonlar</div>
+              </a>
+
+              <a :href="'src/pages/sprint3/campaign-wizard.html?theme=' + selectedTheme + '&sprint=3'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Zoom (Plus)" data-size="20"></span>
                 </div>
-              </div>
+                <div class="index-card-title">Kampanya Wizard</div>
+                <div class="index-card-desc">D-008 | Multi-step, kural builder</div>
+              </a>
+
+              <a :href="'src/pages/sprint3/coupon-list.html?theme=' + selectedTheme + '&sprint=3'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Certificate" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kupon Yonetimi</div>
+                <div class="index-card-desc">D-009 | Liste, form, import</div>
+              </a>
+
+              <a :href="'src/pages/sprint3/campaign-dashboard.html?theme=' + selectedTheme + '&sprint=3'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kampanya Dashboard</div>
+                <div class="index-card-desc">D-010 | KPI, grafikler, raporlar</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint 3 Info -->
+          <div class="index-info-card">
+            <div class="index-info-icon">
+              <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+            </div>
+            <div class="index-info-content">
+              <h4>Sprint 3: Campaign Management System</h4>
+              <p>20 Ocak - 1 Subat 2026 | Kampanya kurallari, indirim tipleri, kupon sistemi ve raporlama.</p>
             </div>
           </div>
 

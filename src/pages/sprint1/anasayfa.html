@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anasayfa - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ sidebarOpen: true, mobileMenu: false }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl">Hosgeldiniz!</h1>
+            <p class="text-gray-500 mt-1">Legends DXP Yonetim Paneli</p>
+          </div>
+          <div class="text-sm text-gray-500">
+            Son guncelleme: Bugun, 14:32
+          </div>
+        </div>
+
+        <!-- KPI Cards - Sprint 1 (IAM) -->
+        <div class="mb-8">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
+            Kullanici Yonetimi
+          </h2>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-teal-500 bg-teal-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="app-window-user" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Toplam Kullanici</div>
+                  <div class="text-2xl font-semibold">24</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-green-500 bg-green-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="check-circle" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Aktif Oturum</div>
+                  <div class="text-2xl font-semibold text-green-600">8</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-amber-500 bg-amber-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="alert-alarm-bell" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Bekleyen Davet</div>
+                  <div class="text-2xl font-semibold text-amber-600">3</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-red-500 bg-red-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="lock-unlock" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Kilitli Hesap</div>
+                  <div class="text-2xl font-semibold text-red-600">1</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards - Sprint 2 (Ticketing) -->
+        <div class="mb-8">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
+            Bilet Yonetimi
+          </h2>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-teal-500 bg-teal-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="coupon-cut" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Bilet Turleri</div>
+                  <div class="text-2xl font-semibold">6</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-green-500 bg-green-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="shop-cart" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Bugunun Satisi</div>
+                  <div class="text-2xl font-semibold text-green-600">47</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-blue-500 bg-blue-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="add-sign-bold" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Aktif Eklenti</div>
+                  <div class="text-2xl font-semibold text-blue-600">12</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-purple-500 bg-purple-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="calendar-grid" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Bugunku Slot</div>
+                  <div class="text-2xl font-semibold text-purple-600">8</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards - Sprint 3 (Campaign) -->
+        <div class="mb-8">
+          <h2 class="text-lg font-medium mb-4 flex items-center gap-2">
+            <span class="wf-icon" data-icon="discount-percent-bubble" data-size="20"></span>
+            Kampanya Yonetimi
+          </h2>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-teal-500 bg-teal-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="discount-percent-bubble" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Aktif Kampanya</div>
+                  <div class="text-2xl font-semibold">5</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-green-500 bg-green-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="coupon-percent" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Aktif Kupon</div>
+                  <div class="text-2xl font-semibold text-green-600">23</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-amber-500 bg-amber-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="check-circle" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Bugun Kullanim</div>
+                  <div class="text-2xl font-semibold text-amber-600">18</div>
+                </div>
+              </div>
+            </div>
+            <div class="wf-card">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 border-2 border-blue-500 bg-blue-50 flex items-center justify-center">
+                  <span class="wf-icon" data-icon="analytics-graph-bar" data-size="20"></span>
+                </div>
+                <div>
+                  <div class="text-sm text-gray-500">Toplam Tasarruf</div>
+                  <div class="text-2xl font-semibold text-blue-600">4,250 TL</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Lists -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Son Girisler -->
+          <div class="wf-card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-medium flex items-center gap-2">
+                <span class="wf-icon" data-icon="login-enter-arrow" data-size="18"></span>
+                Son Girisler
+              </h3>
+              <a href="user-list.html" class="text-sm text-teal-600 hover:underline">Tumunu Gor</a>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-2 border-b border-dashed border-gray-200">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">AY</div>
+                  <div>
+                    <div class="font-medium text-sm">Ahmet Yilmaz</div>
+                    <div class="text-xs text-gray-500">Admin</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">5 dk once</div>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-dashed border-gray-200">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">MK</div>
+                  <div>
+                    <div class="font-medium text-sm">Mehmet Kaya</div>
+                    <div class="text-xs text-gray-500">Operator</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">1 saat once</div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 border-2 border-gray-300 rounded-full flex items-center justify-center text-xs">ZD</div>
+                  <div>
+                    <div class="font-medium text-sm">Zeynep Demir</div>
+                    <div class="text-xs text-gray-500">Viewer</div>
+                  </div>
+                </div>
+                <div class="text-xs text-gray-500">3 saat once</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Son Kampanya Kullanimlari -->
+          <div class="wf-card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-medium flex items-center gap-2">
+                <span class="wf-icon" data-icon="coupon-percent" data-size="18"></span>
+                Son Kupon Kullanimlari
+              </h3>
+              <a href="../sprint3/coupon-list.html" class="text-sm text-teal-600 hover:underline">Tumunu Gor</a>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center justify-between py-2 border-b border-dashed border-gray-200">
+                <div>
+                  <div class="font-medium text-sm">YAZ2026</div>
+                  <div class="text-xs text-gray-500">%20 Indirim</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm text-green-600">-150 TL</div>
+                  <div class="text-xs text-gray-500">2 dk once</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2 border-b border-dashed border-gray-200">
+                <div>
+                  <div class="font-medium text-sm">ILKALIS50</div>
+                  <div class="text-xs text-gray-500">50 TL Indirim</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm text-green-600">-50 TL</div>
+                  <div class="text-xs text-gray-500">15 dk once</div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <div>
+                  <div class="font-medium text-sm">BUNDLE3</div>
+                  <div class="text-xs text-gray-500">3 Al 2 Ode</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm text-green-600">-120 TL</div>
+                  <div class="text-xs text-gray-500">45 dk once</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="wf-card">
+          <h3 class="font-medium mb-4">Hizli Islemler</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <a href="user-form.html" class="wf-btn text-center py-3 flex flex-col items-center gap-2">
+              <span class="wf-icon" data-icon="app-window-user" data-size="24"></span>
+              <span class="text-sm">Yeni Kullanici</span>
+            </a>
+            <a href="../admin/ticket-list.html" class="wf-btn text-center py-3 flex flex-col items-center gap-2">
+              <span class="wf-icon" data-icon="coupon-cut" data-size="24"></span>
+              <span class="text-sm">Bilet Ekle</span>
+            </a>
+            <a href="../sprint3/campaign-wizard.html" class="wf-btn text-center py-3 flex flex-col items-center gap-2">
+              <span class="wf-icon" data-icon="discount-percent-bubble" data-size="24"></span>
+              <span class="text-sm">Yeni Kampanya</span>
+            </a>
+            <a href="../sprint3/coupon-list.html" class="wf-btn text-center py-3 flex flex-col items-center gap-2">
+              <span class="wf-icon" data-icon="coupon-percent" data-size="24"></span>
+              <span class="text-sm">Kupon Olustur</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Annotation Note -->
+        <div class="wf-note mt-6">
+          Admin Anasayfa Dashboard. Sprint 1-3 modullerinin ozet istatistiklerini gosterir.
+          Her sprint sonunda yeni modul widget'lari eklenir.
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Tool UI (Toolbar & Comments) -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

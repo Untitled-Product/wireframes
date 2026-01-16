@@ -1,0 +1,301 @@
+{
+  "id": "domain-er",
+  "type": "entity-relationship",
+  "title": "Legends DXP Domain Model",
+  "description": "Multi-tenant platform entity relationships",
+  "version": "1.0",
+  "source": "DOMAIN-STRATEGY.md, decisions.md",
+  "nodes": [
+    {
+      "id": "tenant",
+      "type": "entity",
+      "label": "Tenant",
+      "position": { "x": 400, "y": 50 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "slug", "type": "String", "unique": true },
+        { "name": "name", "type": "String" },
+        { "name": "domain", "type": "String" },
+        { "name": "status", "type": "Enum" },
+        { "name": "created_at", "type": "DateTime" }
+      ]
+    },
+    {
+      "id": "user",
+      "type": "entity",
+      "label": "User",
+      "position": { "x": 100, "y": 200 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "phone", "type": "String", "unique": true },
+        { "name": "email", "type": "String" },
+        { "name": "name", "type": "String" },
+        { "name": "role", "type": "Enum" },
+        { "name": "status", "type": "Enum" }
+      ]
+    },
+    {
+      "id": "permission",
+      "type": "entity",
+      "label": "Permission",
+      "position": { "x": 100, "y": 450 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "user_id", "type": "UUID", "fk": true },
+        { "name": "category", "type": "String" },
+        { "name": "action", "type": "String" },
+        { "name": "granted", "type": "Boolean" }
+      ]
+    },
+    {
+      "id": "event",
+      "type": "entity",
+      "label": "Event",
+      "position": { "x": 700, "y": 200 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "slug", "type": "String" },
+        { "name": "name", "type": "JSON" },
+        { "name": "start_date", "type": "DateTime" },
+        { "name": "end_date", "type": "DateTime" },
+        { "name": "status", "type": "Enum" }
+      ]
+    },
+    {
+      "id": "product",
+      "type": "entity",
+      "label": "Product",
+      "position": { "x": 400, "y": 350 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "event_id", "type": "UUID", "fk": true },
+        { "name": "type", "type": "Enum" },
+        { "name": "slug", "type": "String" },
+        { "name": "name", "type": "JSON" },
+        { "name": "price", "type": "Decimal" }
+      ]
+    },
+    {
+      "id": "session",
+      "type": "entity",
+      "label": "Session",
+      "position": { "x": 700, "y": 450 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "product_id", "type": "UUID", "fk": true },
+        { "name": "start_time", "type": "DateTime" },
+        { "name": "end_time", "type": "DateTime" },
+        { "name": "capacity", "type": "Integer" },
+        { "name": "booked", "type": "Integer" }
+      ]
+    },
+    {
+      "id": "order",
+      "type": "entity",
+      "label": "Order",
+      "position": { "x": 100, "y": 650 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "customer_id", "type": "UUID", "fk": true },
+        { "name": "order_number", "type": "String" },
+        { "name": "status", "type": "Enum" },
+        { "name": "total", "type": "Decimal" }
+      ]
+    },
+    {
+      "id": "order_item",
+      "type": "entity",
+      "label": "OrderItem",
+      "position": { "x": 400, "y": 650 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "order_id", "type": "UUID", "fk": true },
+        { "name": "product_id", "type": "UUID", "fk": true },
+        { "name": "session_id", "type": "UUID", "fk": true },
+        { "name": "quantity", "type": "Integer" },
+        { "name": "unit_price", "type": "Decimal" }
+      ]
+    },
+    {
+      "id": "payment",
+      "type": "entity",
+      "label": "Payment",
+      "position": { "x": 100, "y": 850 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "order_id", "type": "UUID", "fk": true },
+        { "name": "amount", "type": "Decimal" },
+        { "name": "method", "type": "Enum" },
+        { "name": "status", "type": "Enum" },
+        { "name": "provider_ref", "type": "String" }
+      ]
+    },
+    {
+      "id": "customer",
+      "type": "entity",
+      "label": "Customer",
+      "position": { "x": 700, "y": 650 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "phone", "type": "String" },
+        { "name": "email", "type": "String" },
+        { "name": "name", "type": "String" },
+        { "name": "is_guest", "type": "Boolean" }
+      ]
+    },
+    {
+      "id": "campaign",
+      "type": "entity",
+      "label": "Campaign",
+      "position": { "x": 400, "y": 850 },
+      "fields": [
+        { "name": "id", "type": "UUID", "pk": true },
+        { "name": "tenant_id", "type": "UUID", "fk": true },
+        { "name": "code", "type": "String" },
+        { "name": "discount_type", "type": "Enum" },
+        { "name": "discount_value", "type": "Decimal" },
+        { "name": "valid_from", "type": "DateTime" },
+        { "name": "valid_until", "type": "DateTime" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "r1",
+      "source": "tenant",
+      "target": "user",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r2",
+      "source": "user",
+      "target": "permission",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r3",
+      "source": "tenant",
+      "target": "event",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r4",
+      "source": "tenant",
+      "target": "product",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r5",
+      "source": "event",
+      "target": "product",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r6",
+      "source": "product",
+      "target": "session",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r7",
+      "source": "tenant",
+      "target": "order",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r8",
+      "source": "customer",
+      "target": "order",
+      "type": "association",
+      "label": "places",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r9",
+      "source": "order",
+      "target": "order_item",
+      "type": "association",
+      "label": "contains",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r10",
+      "source": "product",
+      "target": "order_item",
+      "type": "association",
+      "label": "in",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r11",
+      "source": "session",
+      "target": "order_item",
+      "type": "association",
+      "label": "booked for",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r12",
+      "source": "order",
+      "target": "payment",
+      "type": "association",
+      "label": "paid by",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r13",
+      "source": "tenant",
+      "target": "customer",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    },
+    {
+      "id": "r14",
+      "source": "tenant",
+      "target": "campaign",
+      "type": "association",
+      "label": "has many",
+      "relationship": "one-to-many"
+    }
+  ],
+  "groups": [
+    {
+      "id": "auth-entities",
+      "label": "Auth & Authorization",
+      "nodes": ["user", "permission"],
+      "color": "purple"
+    },
+    {
+      "id": "catalog-entities",
+      "label": "Product Catalog",
+      "nodes": ["event", "product", "session"],
+      "color": "blue"
+    },
+    {
+      "id": "commerce-entities",
+      "label": "Commerce",
+      "nodes": ["order", "order_item", "payment", "customer", "campaign"],
+      "color": "teal"
+    }
+  ]
+}

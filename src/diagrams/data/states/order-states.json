@@ -1,0 +1,182 @@
+{
+  "id": "order-states",
+  "type": "state-machine",
+  "title": "Order State Machine",
+  "description": "Sipariş durumu geçişleri - Order lifecycle",
+  "version": "1.0",
+  "nodes": [
+    {
+      "id": "created",
+      "type": "state",
+      "label": "Created",
+      "sublabel": "Sepet oluşturuldu",
+      "position": { "x": 100, "y": 100 },
+      "isInitial": true
+    },
+    {
+      "id": "pending-payment",
+      "type": "state",
+      "label": "Pending Payment",
+      "sublabel": "Ödeme bekleniyor",
+      "position": { "x": 300, "y": 100 }
+    },
+    {
+      "id": "payment-processing",
+      "type": "state",
+      "label": "Processing",
+      "sublabel": "Ödeme işleniyor",
+      "position": { "x": 500, "y": 100 }
+    },
+    {
+      "id": "paid",
+      "type": "state",
+      "label": "Paid",
+      "sublabel": "Ödeme tamamlandı",
+      "position": { "x": 700, "y": 100 },
+      "isActive": true
+    },
+    {
+      "id": "confirmed",
+      "type": "state",
+      "label": "Confirmed",
+      "sublabel": "Sipariş onaylandı",
+      "position": { "x": 700, "y": 250 }
+    },
+    {
+      "id": "ready",
+      "type": "state",
+      "label": "Ready",
+      "sublabel": "Hazırlandı",
+      "position": { "x": 700, "y": 400 }
+    },
+    {
+      "id": "completed",
+      "type": "state",
+      "label": "Completed",
+      "sublabel": "Teslim edildi",
+      "position": { "x": 700, "y": 550 },
+      "isFinal": true
+    },
+    {
+      "id": "cancelled",
+      "type": "state",
+      "label": "Cancelled",
+      "sublabel": "İptal edildi",
+      "position": { "x": 300, "y": 400 },
+      "isFinal": true
+    },
+    {
+      "id": "refunded",
+      "type": "state",
+      "label": "Refunded",
+      "sublabel": "İade edildi",
+      "position": { "x": 500, "y": 550 },
+      "isFinal": true
+    },
+    {
+      "id": "payment-failed",
+      "type": "state",
+      "label": "Payment Failed",
+      "sublabel": "Ödeme başarısız",
+      "position": { "x": 500, "y": 250 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "t1",
+      "source": "created",
+      "target": "pending-payment",
+      "type": "flow",
+      "label": "checkout"
+    },
+    {
+      "id": "t2",
+      "source": "pending-payment",
+      "target": "payment-processing",
+      "type": "flow",
+      "label": "pay"
+    },
+    {
+      "id": "t3",
+      "source": "payment-processing",
+      "target": "paid",
+      "type": "flow",
+      "label": "success"
+    },
+    {
+      "id": "t4",
+      "source": "payment-processing",
+      "target": "payment-failed",
+      "type": "error",
+      "label": "fail"
+    },
+    {
+      "id": "t5",
+      "source": "payment-failed",
+      "target": "pending-payment",
+      "type": "conditional",
+      "label": "retry"
+    },
+    {
+      "id": "t6",
+      "source": "paid",
+      "target": "confirmed",
+      "type": "flow",
+      "label": "confirm"
+    },
+    {
+      "id": "t7",
+      "source": "confirmed",
+      "target": "ready",
+      "type": "flow",
+      "label": "prepare"
+    },
+    {
+      "id": "t8",
+      "source": "ready",
+      "target": "completed",
+      "type": "flow",
+      "label": "deliver"
+    },
+    {
+      "id": "t9",
+      "source": "pending-payment",
+      "target": "cancelled",
+      "type": "error",
+      "label": "timeout/cancel"
+    },
+    {
+      "id": "t10",
+      "source": "payment-failed",
+      "target": "cancelled",
+      "type": "error",
+      "label": "abandon"
+    },
+    {
+      "id": "t11",
+      "source": "paid",
+      "target": "refunded",
+      "type": "conditional",
+      "label": "refund"
+    },
+    {
+      "id": "t12",
+      "source": "confirmed",
+      "target": "refunded",
+      "type": "conditional",
+      "label": "refund"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-1",
+      "text": "Ödeme zaman aşımı: 15 dakika",
+      "position": { "x": 150, "y": 380 }
+    },
+    {
+      "id": "note-2",
+      "text": "İade: sadece ödeme sonrası, teslimden önce",
+      "position": { "x": 350, "y": 500 }
+    }
+  ]
+}

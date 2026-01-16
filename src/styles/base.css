@@ -368,13 +368,9 @@
     background: #f9fafb;
   }
 
-  /* Sketchy Icons Placeholder */
+  /* SVG Icons */
   .wf-icon {
     @apply inline-flex items-center justify-center;
-    width: 20px;
-    height: 20px;
-    border: 1.5px solid currentColor;
-    border-radius: 2px !important;
   }
 
   /* Image Placeholder */

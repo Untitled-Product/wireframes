@@ -1,0 +1,748 @@
+/**
+ * Diagram Design System
+ * n8n-style node-based visual diagrams
+ * Wireframe sketchy style with Indie Flower font
+ * Prefix: .wf-diagram-*
+ */
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+  /* Diagram Colors */
+  --diagram-bg: #fafafa;
+  --diagram-border: #374151;
+  --diagram-border-light: #9ca3af;
+  --diagram-edge: #6b7280;
+
+  /* Node Colors */
+  --diagram-node-bg: #ffffff;
+  --diagram-node-start: #22c55e;
+  --diagram-node-end: #ef4444;
+  --diagram-node-decision: #f59e0b;
+  --diagram-node-page: var(--theme-primary-light, #ccfbf1);
+  --diagram-node-action: #e0e7ff;
+  --diagram-node-api: #fef3c7;
+  --diagram-node-database: #dbeafe;
+  --diagram-node-service: #f3e8ff;
+
+  /* Edge Colors */
+  --diagram-edge-flow: #6b7280;
+  --diagram-edge-conditional: #9ca3af;
+  --diagram-edge-data: #3b82f6;
+  --diagram-edge-async: #8b5cf6;
+  --diagram-edge-error: #ef4444;
+
+  /* Sizes */
+  --diagram-node-min-width: 120px;
+  --diagram-node-padding: 12px 20px;
+  --diagram-grid-size: 50px;
+}
+
+/* ============================================
+   DIAGRAM CANVAS
+   ============================================ */
+.wf-diagram-canvas {
+  position: relative;
+  min-height: 600px;
+  background-color: var(--diagram-bg);
+  background-image:
+    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-size: var(--diagram-grid-size) var(--diagram-grid-size);
+  border: 2px dashed var(--diagram-border-light);
+  border-radius: 8px;
+  overflow: auto;
+  font-family: 'Indie Flower', cursive;
+}
+
+.wf-diagram-canvas--full {
+  width: 100%;
+  height: calc(100vh - 200px);
+}
+
+/* SVG container inside canvas */
+.wf-diagram-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 800px;
+  min-height: 600px;
+}
+
+/* ============================================
+   DIAGRAM NODES - BASE
+   ============================================ */
+.wf-diagram-node {
+  position: absolute;
+  min-width: var(--diagram-node-min-width);
+  padding: var(--diagram-node-padding);
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  text-align: center;
+  background: var(--diagram-node-bg);
+  border: 2px solid var(--diagram-border);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  z-index: 10;
+}
+
+.wf-diagram-node:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+}
+
+.wf-diagram-node:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+}
+
+.wf-diagram-node__label {
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.wf-diagram-node__sublabel {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ============================================
+   DIAGRAM NODES - TYPES
+   ============================================ */
+
+/* Start Node - Green Circle */
+.wf-diagram-node--start {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border-radius: 50% !important;
+  background: var(--diagram-node-start);
+  border-color: #16a34a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* End Node - Red Circle */
+.wf-diagram-node--end {
+  min-width: 60px;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border-radius: 50% !important;
+  background: var(--diagram-node-end);
+  border-color: #dc2626;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Page/Screen Node - Rounded Rectangle */
+.wf-diagram-node--page {
+  background: var(--diagram-node-page);
+  border-color: var(--theme-primary-dark, #0d9488);
+  border-radius: 12px !important;
+}
+
+.wf-diagram-node--page::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  background: var(--diagram-node-page);
+  border: 2px solid var(--theme-primary-dark, #0d9488);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0 !important;
+}
+
+/* Decision Node - Diamond */
+.wf-diagram-node--decision {
+  min-width: 80px;
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  background: var(--diagram-node-decision);
+  border-color: #d97706;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-diagram-node--decision .wf-diagram-node__label {
+  transform: rotate(-45deg);
+  font-size: 14px;
+  max-width: 80px;
+}
+
+.wf-diagram-node--decision:hover {
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* Action Node - Rectangle */
+.wf-diagram-node--action {
+  background: var(--diagram-node-action);
+  border-color: #4f46e5;
+}
+
+/* API Node - Hexagon-ish */
+.wf-diagram-node--api {
+  background: var(--diagram-node-api);
+  border-color: #d97706;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+  padding: 16px 30px;
+}
+
+/* Database Node - Cylinder */
+.wf-diagram-node--database {
+  background: var(--diagram-node-database);
+  border-color: #2563eb;
+  border-radius: 4px !important;
+  padding-top: 20px;
+}
+
+.wf-diagram-node--database::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -2px;
+  right: -2px;
+  height: 16px;
+  background: var(--diagram-node-database);
+  border: 2px solid #2563eb;
+  border-radius: 50% !important;
+}
+
+.wf-diagram-node--database::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -2px;
+  right: -2px;
+  height: 16px;
+  background: var(--diagram-node-database);
+  border: 2px solid #2563eb;
+  border-top: none;
+  border-radius: 0 0 50% 50% / 0 0 100% 100% !important;
+}
+
+/* Service Node - Box with shadow */
+.wf-diagram-node--service {
+  background: var(--diagram-node-service);
+  border-color: #7c3aed;
+  box-shadow: 4px 4px 0 rgba(124, 58, 237, 0.3);
+}
+
+/* Data Node - Parallelogram */
+.wf-diagram-node--data {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  transform: skewX(-10deg);
+}
+
+.wf-diagram-node--data .wf-diagram-node__label {
+  transform: skewX(10deg);
+}
+
+/* Swimlane Header */
+.wf-diagram-node--swimlane {
+  min-width: 100%;
+  background: #f3f4f6;
+  border-color: var(--diagram-border-light);
+  border-radius: 0 !important;
+  text-align: left;
+  padding: 8px 16px;
+  font-weight: 600;
+}
+
+/* ============================================
+   DIAGRAM EDGES - SVG PATHS
+   ============================================ */
+.wf-diagram-edge {
+  fill: none;
+  stroke: var(--diagram-edge-flow);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.wf-diagram-edge--flow {
+  stroke: var(--diagram-edge-flow);
+}
+
+.wf-diagram-edge--conditional {
+  stroke: var(--diagram-edge-conditional);
+  stroke-dasharray: 8, 4;
+}
+
+.wf-diagram-edge--data {
+  stroke: var(--diagram-edge-data);
+  stroke-width: 3;
+}
+
+.wf-diagram-edge--async {
+  stroke: var(--diagram-edge-async);
+  stroke-dasharray: 4, 4;
+}
+
+.wf-diagram-edge--error {
+  stroke: var(--diagram-edge-error);
+  stroke-width: 2.5;
+}
+
+/* Edge hover effect */
+.wf-diagram-edge:hover {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+/* ============================================
+   DIAGRAM ARROWHEADS
+   ============================================ */
+.wf-diagram-arrow {
+  fill: var(--diagram-edge-flow);
+}
+
+.wf-diagram-arrow--error {
+  fill: var(--diagram-edge-error);
+}
+
+.wf-diagram-arrow--data {
+  fill: var(--diagram-edge-data);
+}
+
+/* ============================================
+   DIAGRAM EDGE LABELS
+   ============================================ */
+.wf-diagram-edge-label {
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  fill: #374151;
+  text-anchor: middle;
+}
+
+.wf-diagram-edge-label-bg {
+  fill: #ffffff;
+  rx: 4;
+  ry: 4;
+}
+
+/* ============================================
+   DIAGRAM GROUPS
+   ============================================ */
+.wf-diagram-group {
+  position: absolute;
+  border: 2px dashed var(--theme-primary, #14b8a6);
+  border-radius: 16px;
+  background: rgba(20, 184, 166, 0.05);
+  padding: 40px 20px 20px;
+  z-index: 1;
+}
+
+.wf-diagram-group__label {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--theme-primary-dark, #0d9488);
+  background: var(--theme-primary-light, #ccfbf1);
+  padding: 2px 10px;
+  border-radius: 4px;
+}
+
+/* Group color variants */
+.wf-diagram-group--teal {
+  border-color: #14b8a6;
+  background: rgba(20, 184, 166, 0.05);
+}
+.wf-diagram-group--teal .wf-diagram-group__label {
+  color: #0d9488;
+  background: #ccfbf1;
+}
+
+.wf-diagram-group--blue {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
+}
+.wf-diagram-group--blue .wf-diagram-group__label {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.wf-diagram-group--purple {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.05);
+}
+.wf-diagram-group--purple .wf-diagram-group__label {
+  color: #7c3aed;
+  background: #ede9fe;
+}
+
+.wf-diagram-group--orange {
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.05);
+}
+.wf-diagram-group--orange .wf-diagram-group__label {
+  color: #ea580c;
+  background: #ffedd5;
+}
+
+/* ============================================
+   DIAGRAM SWIMLANES
+   ============================================ */
+.wf-diagram-swimlane {
+  position: relative;
+  border: 2px solid var(--diagram-border-light);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background: #ffffff;
+}
+
+.wf-diagram-swimlane__header {
+  padding: 12px 20px;
+  background: #f3f4f6;
+  border-bottom: 2px solid var(--diagram-border-light);
+  font-family: 'Indie Flower', cursive;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.wf-diagram-swimlane__content {
+  padding: 20px;
+  min-height: 150px;
+  position: relative;
+}
+
+/* ============================================
+   DIAGRAM LEGEND
+   ============================================ */
+.wf-diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid var(--diagram-border-light);
+  border-radius: 8px;
+  margin-top: 20px;
+  font-family: 'Indie Flower', cursive;
+}
+
+.wf-diagram-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.wf-diagram-legend__icon {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--diagram-border);
+  border-radius: 4px;
+}
+
+.wf-diagram-legend__icon--start {
+  border-radius: 50%;
+  background: var(--diagram-node-start);
+  border-color: #16a34a;
+}
+
+.wf-diagram-legend__icon--end {
+  border-radius: 50%;
+  background: var(--diagram-node-end);
+  border-color: #dc2626;
+}
+
+.wf-diagram-legend__icon--page {
+  background: var(--diagram-node-page);
+  border-color: var(--theme-primary-dark, #0d9488);
+}
+
+.wf-diagram-legend__icon--decision {
+  transform: rotate(45deg) scale(0.7);
+  background: var(--diagram-node-decision);
+  border-color: #d97706;
+}
+
+.wf-diagram-legend__icon--action {
+  background: var(--diagram-node-action);
+  border-color: #4f46e5;
+}
+
+/* ============================================
+   DIAGRAM ANNOTATIONS
+   ============================================ */
+.wf-diagram-annotation {
+  position: absolute;
+  max-width: 200px;
+  padding: 8px 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 13px;
+  color: #6b7280;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  z-index: 20;
+}
+
+.wf-diagram-annotation::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #fcd34d;
+}
+
+/* ============================================
+   DIAGRAM TOOLBAR
+   ============================================ */
+.wf-diagram-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border: 2px solid var(--diagram-border-light);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.wf-diagram-toolbar__btn {
+  padding: 8px 12px;
+  font-family: 'Indie Flower', cursive;
+  font-size: 14px;
+  background: #f3f4f6;
+  border: 2px solid var(--diagram-border-light);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.wf-diagram-toolbar__btn:hover {
+  background: var(--theme-primary-light, #ccfbf1);
+  border-color: var(--theme-primary, #14b8a6);
+}
+
+.wf-diagram-toolbar__btn--active {
+  background: var(--theme-primary-light, #ccfbf1);
+  border-color: var(--theme-primary, #14b8a6);
+}
+
+/* ============================================
+   DIAGRAM INFO PANEL
+   ============================================ */
+.wf-diagram-info {
+  padding: 16px;
+  background: #ffffff;
+  border: 2px solid var(--diagram-border-light);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.wf-diagram-info__title {
+  font-family: 'Indie Flower', cursive;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.wf-diagram-info__description {
+  font-family: 'Indie Flower', cursive;
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.wf-diagram-info__meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.wf-diagram-info__meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================
+   SKETCHY SVG FILTER
+   ============================================ */
+/* Add this SVG filter to your page for sketchy effect */
+/*
+<svg style="display:none">
+  <defs>
+    <filter id="sketchy-filter" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
+*/
+
+.wf-diagram-sketchy {
+  filter: url(#sketchy-filter);
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 768px) {
+  .wf-diagram-canvas {
+    min-height: 400px;
+  }
+
+  .wf-diagram-node {
+    font-size: 14px;
+    padding: 8px 14px;
+    min-width: 100px;
+  }
+
+  .wf-diagram-legend {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* ============================================
+   ENTITY RELATIONSHIP SPECIFIC
+   ============================================ */
+.wf-diagram-entity {
+  min-width: 180px;
+  background: #ffffff;
+  border: 2px solid var(--diagram-border);
+  border-radius: 4px !important;
+  padding: 0;
+  text-align: left;
+}
+
+.wf-diagram-entity__header {
+  padding: 10px 14px;
+  background: var(--theme-primary-light, #ccfbf1);
+  border-bottom: 2px solid var(--diagram-border);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.wf-diagram-entity__fields {
+  padding: 8px 0;
+}
+
+.wf-diagram-entity__field {
+  padding: 4px 14px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wf-diagram-entity__field--pk {
+  font-weight: 600;
+}
+
+.wf-diagram-entity__field--pk::before {
+  content: 'PK';
+  font-size: 10px;
+  background: #fcd34d;
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+.wf-diagram-entity__field--fk::before {
+  content: 'FK';
+  font-size: 10px;
+  background: #a5b4fc;
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-right: 6px;
+}
+
+.wf-diagram-entity__type {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* ============================================
+   STATE MACHINE SPECIFIC
+   ============================================ */
+.wf-diagram-state {
+  min-width: 100px;
+  padding: 12px 20px;
+  background: #ffffff;
+  border: 3px solid var(--diagram-border);
+  border-radius: 24px !important;
+  text-align: center;
+}
+
+.wf-diagram-state--initial {
+  border-style: double;
+  border-width: 4px;
+}
+
+.wf-diagram-state--final {
+  background: #f3f4f6;
+  border-style: double;
+  border-width: 4px;
+}
+
+.wf-diagram-state--active {
+  background: var(--theme-primary-light, #ccfbf1);
+  border-color: var(--theme-primary, #14b8a6);
+}
+
+/* ============================================
+   SEQUENCE DIAGRAM SPECIFIC
+   ============================================ */
+.wf-diagram-participant {
+  min-width: 120px;
+  padding: 12px 20px;
+  background: var(--theme-primary-light, #ccfbf1);
+  border: 2px solid var(--theme-primary-dark, #0d9488);
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.wf-diagram-lifeline {
+  stroke: var(--diagram-border-light);
+  stroke-width: 2;
+  stroke-dasharray: 8, 4;
+}
+
+.wf-diagram-activation {
+  fill: var(--theme-primary-light, #ccfbf1);
+  stroke: var(--theme-primary-dark, #0d9488);
+  stroke-width: 2;
+}
+
+.wf-diagram-message {
+  stroke: var(--diagram-border);
+  stroke-width: 2;
+  marker-end: url(#arrowhead);
+}
+
+.wf-diagram-message--response {
+  stroke-dasharray: 6, 3;
+}
+
+.wf-diagram-message--async {
+  stroke: var(--diagram-edge-async);
+}

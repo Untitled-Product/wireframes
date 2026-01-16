@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kupon Yonetimi - Legends DXP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{ sidebarOpen: true, showCreateModal: false, showImportModal: false }">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header Component -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl">Kuponlar</h1>
+            <p class="text-gray-500 mt-1">Kupon kodlarini yonetin ve takip edin</p>
+          </div>
+          <div class="flex gap-2">
+            <button @click="showImportModal = true" class="wf-btn inline-flex items-center gap-2">
+              <span class="wf-icon" data-icon="upload-1" data-size="16"></span>
+              Import
+            </button>
+            <button @click="showCreateModal = true" class="wf-btn wf-btn-primary inline-flex items-center gap-2">
+              <span>+</span>
+              Kupon Olustur
+            </button>
+          </div>
+        </div>
+        <!-- Stats -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Toplam Kupon</div>
+            <div class="text-2xl font-semibold">1,250</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Kullanilan</div>
+            <div class="text-2xl font-semibold text-green-600">892</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Aktif</div>
+            <div class="text-2xl font-semibold text-blue-600">358</div>
+          </div>
+          <div class="wf-card">
+            <div class="text-sm text-gray-500">Suresi Dolan</div>
+            <div class="text-2xl font-semibold text-gray-400">156</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="wf-card mb-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex-1 min-w-[200px]">
+              <input type="text" class="wf-input w-full" placeholder="Kupon kodu ara...">
+            </div>
+            <select class="wf-select">
+              <option value="">Tum Durumlar</option>
+              <option value="active">Aktif</option>
+              <option value="used">Kullanildi</option>
+              <option value="expired">Suresi Doldu</option>
+            </select>
+            <select class="wf-select">
+              <option value="">Tum Tipler</option>
+              <option value="generic">Jenerik</option>
+              <option value="unique">Tekil (Unique)</option>
+            </select>
+            <select class="wf-select">
+              <option value="">Tum Kampanyalar</option>
+              <option>WELCOME10</option>
+              <option>YAZ2026</option>
+              <option>INFLUENCER</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Coupon List -->
+        <div class="wf-card">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>Kupon Kodu</th>
+                <th>Tip</th>
+                <th>Kampanya</th>
+                <th>Indirim</th>
+                <th>Kullanim</th>
+                <th>Durum</th>
+                <th>Aksiyonlar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="font-mono font-medium">WELCOME10</div>
+                  <div class="text-xs text-gray-500">Olusturma: 01 Oca 2026</div>
+                </td>
+                <td><span class="wf-badge wf-badge-info">Jenerik</span></td>
+                <td>Hosgeldin Kampanyasi</td>
+                <td class="font-medium text-green-600">%10</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 bg-green-500 rounded-full" style="width: 45%"></div>
+                    </div>
+                    <span class="text-sm">45/100</span>
+                  </div>
+                </td>
+                <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm" title="Duzenle">
+                      <span class="wf-icon" data-icon="edit-pencil" data-size="14"></span>
+                    </button>
+                    <button class="wf-btn py-1 px-2 text-sm" title="Kopyala">
+                      <span class="wf-icon" data-icon="content-paper-edit" data-size="14"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="font-mono font-medium">YAZ2026-A7B3X</div>
+                  <div class="text-xs text-gray-500">Olusturma: 15 May 2026</div>
+                </td>
+                <td><span class="wf-badge wf-badge-warning">Tekil</span></td>
+                <td>Yaz Indirimi 2026</td>
+                <td class="font-medium text-green-600">%20</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 bg-green-500 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <span class="text-sm">1/1</span>
+                  </div>
+                </td>
+                <td><span class="wf-badge" style="background:#dcfce7;color:#166534">Kullanildi</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm" title="Detay">
+                      <span class="wf-icon" data-icon="edit-pen-write-paper" data-size="14"></span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="font-mono font-medium">INFLUENCER-AYSE</div>
+                  <div class="text-xs text-gray-500">Olusturma: 10 Mar 2026</div>
+                </td>
+                <td><span class="wf-badge wf-badge-warning">Tekil</span></td>
+                <td>Influencer Kampanyasi</td>
+                <td class="font-medium text-green-600">%15</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 bg-green-500 rounded-full" style="width: 72%"></div>
+                    </div>
+                    <span class="text-sm">72/100</span>
+                  </div>
+                </td>
+                <td><span class="wf-badge wf-badge-success">Aktif</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="edit-pencil" data-size="14"></span></button>
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="analytics-graph-bar-horizontal" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+              <tr class="opacity-60">
+                <td>
+                  <div class="font-mono font-medium">NEWYEAR25</div>
+                  <div class="text-xs text-gray-500">Olusturma: 20 Ara 2025</div>
+                </td>
+                <td><span class="wf-badge wf-badge-info">Jenerik</span></td>
+                <td>Yilbasi Kampanyasi</td>
+                <td class="font-medium">%25</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <div class="w-20 h-2 bg-gray-200 rounded-full">
+                      <div class="h-2 bg-gray-400 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <span class="text-sm">500/500</span>
+                  </div>
+                </td>
+                <td><span class="wf-badge" style="background:#e5e7eb;color:#6b7280">Suresi Doldu</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <button class="wf-btn py-1 px-2 text-sm"><span class="wf-icon" data-icon="edit-pen-write-paper" data-size="14"></span></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Pagination -->
+          <div class="flex items-center justify-between mt-4 pt-4 border-t-2 border-dashed border-gray-200">
+            <div class="text-sm text-gray-500">1,250 kupondan 1-10 gosteriliyor</div>
+            <div class="flex gap-1">
+              <button class="wf-btn py-1 px-3" disabled>&lt;</button>
+              <button class="wf-btn wf-btn-primary py-1 px-3">1</button>
+              <button class="wf-btn py-1 px-3">2</button>
+              <button class="wf-btn py-1 px-3">...</button>
+              <button class="wf-btn py-1 px-3">125</button>
+              <button class="wf-btn py-1 px-3">&gt;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Annotation -->
+        <div class="wf-note mt-6">
+          <strong>D-009: Kupon Yonetimi</strong><br>
+          - Liste: Kod, tip (jenerik/tekil), kampanya, indirim, kullanim orani, durum<br>
+          - Filtreler: Durum, tip, kampanya<br>
+          - Aksiyonlar: Olustur, Import (CSV), Duzenle, Kopyala<br>
+          - Progress bar ile kullanim orani gosterimi
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Create Coupon Modal -->
+  <div x-show="showCreateModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5)">
+    <div class="wf-card w-full max-w-lg" @click.outside="showCreateModal = false">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Yeni Kupon Olustur</h2>
+        <button @click="showCreateModal = false" class="wf-btn py-1 px-2">X</button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Kupon Tipi</label>
+          <div class="flex gap-4">
+            <label class="flex items-center gap-2">
+              <input type="radio" name="couponType" checked class="wf-radio">
+              <span>Jenerik (Tek kod, coklu kullanim)</span>
+            </label>
+            <label class="flex items-center gap-2">
+              <input type="radio" name="couponType" class="wf-radio">
+              <span>Tekil (Her kullanici icin unique)</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Kupon Kodu</label>
+          <div class="flex gap-2">
+            <input type="text" class="wf-input flex-1" placeholder="ORNEK10" style="text-transform:uppercase">
+            <button class="wf-btn">Rastgele</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Bagli Kampanya</label>
+          <select class="wf-select w-full">
+            <option>Hosgeldin Kampanyasi</option>
+            <option>Yaz Indirimi 2026</option>
+            <option>Influencer Kampanyasi</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Kullanim Limiti</label>
+            <input type="number" class="wf-input w-full" value="100">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Gecerlilik Suresi</label>
+            <input type="date" class="wf-input w-full">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-6 pt-4 border-t-2 border-dashed border-gray-200">
+        <button @click="showCreateModal = false" class="wf-btn">Iptal</button>
+        <button class="wf-btn wf-btn-primary">Kupon Olustur</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div x-show="showImportModal" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5)">
+    <div class="wf-card w-full max-w-lg" @click.outside="showImportModal = false">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold">Kupon Import (CSV)</h2>
+        <button @click="showImportModal = false" class="wf-btn py-1 px-2">X</button>
+      </div>
+
+      <div class="space-y-4">
+        <div class="border-2 border-dashed border-gray-300 p-8 text-center">
+          <span class="wf-icon" data-icon="upload-1" data-size="48"></span>
+          <p class="mt-2">CSV dosyasini surukle birak veya</p>
+          <button class="wf-btn mt-2">Dosya Sec</button>
+        </div>
+
+        <div class="p-3 bg-gray-100 text-sm">
+          <strong>CSV Format:</strong><br>
+          <code>code,campaign_id,usage_limit,expires_at</code><br>
+          <code>SUMMER01,123,1,2026-08-31</code>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Bagli Kampanya</label>
+          <select class="wf-select w-full">
+            <option>CSV'den al</option>
+            <option>Yaz Indirimi 2026</option>
+            <option>Influencer Kampanyasi</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-6 pt-4 border-t-2 border-dashed border-gray-200">
+        <button @click="showImportModal = false" class="wf-btn">Iptal</button>
+        <button class="wf-btn wf-btn-primary">Import Et</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool UI (Toolbar & Comments) -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>
