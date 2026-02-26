@@ -1,0 +1,522 @@
+<!--
+  Wireframe: iptal-iade-listesi (V2)
+  Task: D-A03, A-010
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-25
+
+  V2 Figma Kaynak: Yeni ekran goruntusu (25 Subat 2026)
+  - 11 kolon (PNR, Satis Tarihi, Talep Durum, Talep Turu, Basvuru Tarihi,
+    Siparis Durumu, Yeni Bilet Tarihi, Ad Soyad, E Posta, Telefon, Operator Ismi)
+  - Islemler kolonu KALDIRILDI
+  - Sirala dropdown KALDIRILDI - inline sort arrows
+  - Pagination KALDIRILDI - lazy load
+  - PNR copy icon eklendi
+  - Talep Durum: renkli text (badge degil)
+  - Talep Turu: duz text (badge degil)
+  - Siparis Durumu: ikon + renkli text
+  - Satis Tarihi ve Basvuru Tarihi: iki satirli format (tarih + saat)
+  - Filtre drawer (6 alan) ayni
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iptal/Iade Formlari - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+    .avatar-circle {
+      width: 28px; height: 28px; border-radius: 9999px;
+      border: 2px solid #d1d5db; display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; flex-shrink: 0;
+      background: #f9fafb; color: #6b7280;
+    }
+    .avatar-circle-operator {
+      width: 28px; height: 28px; border-radius: 9999px;
+      border: 2px solid #a5b4fc; display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 600; flex-shrink: 0;
+      background: #eef2ff; color: #6366f1;
+    }
+    .status-text-green { color: #16a34a; font-weight: 500; font-size: 0.875rem; }
+    .status-text-red { color: #dc2626; font-weight: 500; font-size: 0.875rem; }
+    .status-text-orange { color: #d97706; font-weight: 500; font-size: 0.875rem; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  filterDrawerOpen: false,
+  showEmptyState: false
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+
+        <!-- Search + Actions Bar -->
+        <div class="flex items-center gap-3 mb-5">
+          <!-- Search Input -->
+          <div class="flex-1 max-w-md">
+            <div class="wf-v2-search">
+              <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="Form ara..." class="wf-v2-search-input">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <!-- Filter Button -->
+            <button @click="filterDrawerOpen = true" class="wf-v2-btn inline-flex items-center gap-2">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filtre
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Table (11 kolon - Islemler kolonu kaldirildi) -->
+        <div class="wf-v2-table-wrapper overflow-x-auto" x-show="!showEmptyState">
+          <table class="wf-v2-table" style="min-width: 1500px;">
+            <thead>
+              <tr>
+                <th style="min-width: 170px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    PNR
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Satis Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 160px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Talep Durum
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 140px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Talep Turu
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Basvuru Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 170px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Siparis Durumu
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Yeni Bilet Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 170px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Ad Soyad
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 200px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    E Posta Adresi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 160px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Telefon Numarasi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th style="min-width: 170px;">
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Operator Ismi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: Yeni Basvuru - Iade - Iade Edildi -->
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td><span class="status-text-green">Yeni Basvuru</span></td>
+                <td class="text-sm text-gray-600">Iade</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span class="status-text-green">Iade Edildi</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">2026-01-16</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle">HA</span>
+                    <span class="text-sm text-gray-900">Halil Altiparmak</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">burak.can@example.com</td>
+                <td class="text-sm text-gray-600">+90 0543 987 65 43</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle-operator">HA</span>
+                    <span class="text-sm text-gray-600">Halil Altiparmak</span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 2: Onaylandi - Iade - Tarih/Saat Degistirildi -->
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td><span class="status-text-green">Onaylandi</span></td>
+                <td class="text-sm text-gray-600">Iade</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-orange-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span class="status-text-orange">Tarih/Saat Degistirildi</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">2026-01-16</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle">AY</span>
+                    <span class="text-sm text-gray-900">Ahmet Yilmaz</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">Vladimir@example.com</td>
+                <td class="text-sm text-gray-600">+90 0543 987 65 43</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle-operator">AY</span>
+                    <span class="text-sm text-gray-600">Ahmet Yilmaz</span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 3: Reddedildi - Iade - Iade Edildi -->
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td><span class="status-text-red">Reddedildi</span></td>
+                <td class="text-sm text-gray-600">Iade</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span class="status-text-green">Iade Edildi</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">2026-01-16</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle">SO</span>
+                    <span class="text-sm text-gray-900">Sabri Ozer</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">burak.can@example.com</td>
+                <td class="text-sm text-gray-600">+90 0543 987 65 43</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle-operator">SO</span>
+                    <span class="text-sm text-gray-600">Sabri Ozer</span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 4: Iade Tamamlandi - Iade - Iade Edildi -->
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td><span class="status-text-green">Iade Tamamlandi</span></td>
+                <td class="text-sm text-gray-600">Iade</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span class="status-text-green">Iade Edildi</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">2026-01-16</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle">EY</span>
+                    <span class="text-sm text-gray-900">Emre Yaylagul</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">burak.can@example.com</td>
+                <td class="text-sm text-gray-600">+90 0543 987 65 43</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle-operator">EY</span>
+                    <span class="text-sm text-gray-600">Emre Yaylagul</span>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Row 5: Tarih/Saat Degisikligi - Tarih Degisikligi - Iade Edildi -->
+              <tr>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td><span class="status-text-orange">Tarih/Saat Degisikligi</span></td>
+                <td class="text-sm text-gray-600">Tarih Degisikligi</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-green-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <span class="status-text-green">Iade Edildi</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">2026-01-16</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle">AN</span>
+                    <span class="text-sm text-gray-900">Abdullah Nur</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">burak.can@example.com</td>
+                <td class="text-sm text-gray-600">+90 0543 987 65 43</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="avatar-circle-operator">AN</span>
+                    <span class="text-sm text-gray-600">Abdullah Nur</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="wf-v2-empty-state" x-show="showEmptyState" style="display: none;">
+          <div class="wf-v2-empty-state-icon">
+            <svg class="w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Henuz iptal/iade talebi bulunmuyor</h3>
+          <p class="text-sm text-gray-500 max-w-sm">
+            Musteriler siparis detayindan iade veya tarih degisikligi talebi olusturdugunda burada gorunecektir.
+          </p>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Filter Drawer (Right Side Panel) -->
+  <div x-show="filterDrawerOpen" class="fixed inset-0 z-50" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="filterDrawerOpen = false"></div>
+    <div class="wf-v2-filter-drawer"
+         :class="{ 'open': filterDrawerOpen }">
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h2 class="text-base font-semibold text-gray-900">Filtre</h2>
+        <button @click="filterDrawerOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Drawer Content (Scrollable) -->
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+        <!-- 1. Talep Tarihi Araligi -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Talep Tarihi Araligi</label>
+          <div class="flex gap-2 items-center">
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="text-gray-400 text-sm">-</span>
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. E Posta -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">E Posta</label>
+          <input type="email" class="wf-v2-input" placeholder="E-posta adresi girin">
+        </div>
+
+        <!-- 3. Telefon Numarasi -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Telefon Numarasi</label>
+          <div class="flex gap-2">
+            <div class="wf-v2-input w-16 flex items-center justify-center text-sm text-gray-500 bg-gray-50 px-2">+90</div>
+            <input type="tel" class="wf-v2-input flex-1" placeholder="Telefon numarasi girin">
+          </div>
+        </div>
+
+        <!-- 4. PNR -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">PNR</label>
+          <input type="text" class="wf-v2-input" placeholder="PNR kodu girin">
+        </div>
+
+        <!-- 5. Talep Durumu -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Talep Durumu</label>
+          <div class="relative">
+            <select class="wf-v2-input appearance-none pr-8">
+              <option value="">Talep durumu secin</option>
+              <option>Yeni Basvuru</option>
+              <option>Onaylandi</option>
+              <option>Reddedildi</option>
+              <option>Iade Tamamlandi</option>
+              <option>Tarih / Saat Degistirildi</option>
+            </select>
+            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+        <!-- 6. Talep Turu -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Talep Turu</label>
+          <div class="relative">
+            <select class="wf-v2-input appearance-none pr-8">
+              <option value="">Talep turu secin</option>
+              <option>Iade</option>
+              <option>Tarih Degisikligi</option>
+            </select>
+            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="flex gap-3 px-6 py-4 border-t border-gray-200">
+        <button @click="filterDrawerOpen = false" class="wf-v2-btn flex-1 justify-center">Vazgec</button>
+        <button @click="filterDrawerOpen = false" class="wf-v2-btn wf-v2-btn-primary flex-1 justify-center">Filtre Uygula</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

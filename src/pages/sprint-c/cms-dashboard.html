@@ -1,0 +1,291 @@
+<!--
+  Wireframe: cms-dashboard (V2)
+  Task: D-C01
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  CMS genel bakis dashboard - son duzenlemeler, hizli linkler, icerik istatistikleri
+  - Toplam sayfa, banner, FAQ, medya istatistikleri
+  - Son duzenlemeler listesi
+  - Hizli linkler (sayfa olustur, banner duzenle, FAQ ekle vb.)
+  - Dil tamamlanma durumu barlari
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Dashboard - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="mb-5">
+          <h1 class="text-xl font-semibold text-gray-900">Content Management</h1>
+          <p class="text-sm text-gray-500 mt-0.5">CMS genel bakis</p>
+        </div>
+
+        <!-- Stats Cards Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <!-- Toplam Sayfa -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-2xl font-bold text-gray-900">12</span>
+              <span class="wf-v2-badge wf-v2-badge-success">9 yayinda</span>
+            </div>
+            <span class="text-sm text-gray-500">Toplam Sayfa</span>
+          </div>
+
+          <!-- Bannerlar -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-2xl font-bold text-gray-900">9</span>
+              <span class="text-xs text-gray-400">3 grup</span>
+            </div>
+            <span class="text-sm text-gray-500">Bannerlar</span>
+          </div>
+
+          <!-- FAQ Sorulari -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <div class="mb-1">
+              <span class="text-2xl font-bold text-gray-900">28</span>
+            </div>
+            <span class="text-sm text-gray-500">FAQ Sorulari</span>
+          </div>
+
+          <!-- Medya Dosyalari -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-2xl font-bold text-gray-900">156</span>
+              <span class="text-xs text-gray-400">24.5 MB</span>
+            </div>
+            <span class="text-sm text-gray-500">Medya Dosyalari</span>
+          </div>
+        </div>
+
+        <!-- Two-Column Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+          <!-- LEFT COLUMN (60%) -->
+          <div class="lg:col-span-3">
+            <div class="border-2 border-gray-300 rounded-lg bg-white">
+              <div class="p-5 border-b border-gray-200">
+                <h2 class="text-base font-semibold text-gray-900">Son Duzenlemeler</h2>
+              </div>
+              <div class="divide-y divide-gray-100">
+                <!-- Item 1 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Ana Sayfa</a>
+                      <span class="text-xs text-gray-400">- Hero Banner guncellendi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Elif Kaya &middot; 2 saat once</div>
+                  </div>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="faq-listesi.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">FAQ</a>
+                      <span class="text-xs text-gray-400">- Yeni soru eklendi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Elif Kaya &middot; 4 saat once</div>
+                  </div>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Nickelodeon Hotels</a>
+                      <span class="text-xs text-gray-400">- Oda fotosu eklendi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Ahmet Yilmaz &middot; dun</div>
+                  </div>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-green-500 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Shopping Avenue</a>
+                      <span class="text-xs text-gray-400">- Menu linki duzeltildi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Elif Kaya &middot; dun</div>
+                  </div>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-gray-400 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Contact</a>
+                      <span class="text-xs text-gray-400">- Form alani eklendi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Ahmet Yilmaz &middot; 2 gun once</div>
+                  </div>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="p-4 flex items-start gap-3 hover:bg-gray-50 transition-colors">
+                  <span class="mt-1.5 w-2.5 h-2.5 rounded-full bg-gray-400 flex-shrink-0"></span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Events</a>
+                      <span class="text-xs text-gray-400">- Banner guncellendi</span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">Elif Kaya &middot; 3 gun once</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN (40%) -->
+          <div class="lg:col-span-2 space-y-6">
+
+            <!-- Hizli Linkler -->
+            <div class="border-2 border-gray-300 rounded-lg bg-white">
+              <div class="p-5 border-b border-gray-200">
+                <h2 class="text-base font-semibold text-gray-900">Hizli Linkler</h2>
+              </div>
+              <div class="p-4 space-y-2">
+                <a href="sayfa-builder.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>Yeni Sayfa Olustur</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+                <a href="banner-listesi.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>Banner Duzenle</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+                <a href="faq-form.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>FAQ Ekle</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+                <a href="medya-kutuphanesi.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>Medya Yukle</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+                <a href="menu-yonetimi.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>Menu Duzenle</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+                <a href="site-ayarlari.html" class="wf-v2-btn w-full flex items-center justify-between text-sm text-left px-4 py-2.5">
+                  <span>Site Ayarlari</span>
+                  <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+              </div>
+            </div>
+
+            <!-- Dil Tamamlanma Durumu -->
+            <div class="border-2 border-gray-300 rounded-lg bg-white">
+              <div class="p-5 border-b border-gray-200">
+                <h2 class="text-base font-semibold text-gray-900">Dil Tamamlanma Durumu</h2>
+              </div>
+              <div class="p-5 space-y-4">
+                <!-- TR -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-gray-700">TR</span>
+                    <span class="text-sm text-gray-500">100%</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                  </div>
+                </div>
+
+                <!-- EN -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-gray-700">EN</span>
+                    <span class="text-sm text-gray-500">85%</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500 rounded-full" style="width: 85%"></div>
+                  </div>
+                </div>
+
+                <!-- DE -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-gray-700">DE</span>
+                    <span class="text-sm text-gray-500">45%</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-orange-500 rounded-full" style="width: 45%"></div>
+                  </div>
+                </div>
+
+                <!-- RU -->
+                <div>
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-sm font-medium text-gray-700">RU</span>
+                    <span class="text-sm text-gray-500">30%</span>
+                  </div>
+                  <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 rounded-full" style="width: 30%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

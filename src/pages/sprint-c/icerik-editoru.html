@@ -1,0 +1,392 @@
+<!--
+  Wireframe: icerik-editoru (V2)
+  Task: C-002
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  Icerik Editoru - Rich Text Editor
+  - Ust: Geri butonu + Sayfa adi + Durum badge + Kaydet butonu
+  - Dil tablari: TR (aktif), EN, DE*, RU* (bos dil gostergesi)
+  - WYSIWYG Toolbar: Formatlama, baslik, hizalama, liste, medya, geri-al
+  - Editor alani: Ornek zengin icerik (H2, paragraf, liste)
+  - Alt: Kelime/karakter sayaci
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icerik Editoru - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeLang: 'tr',
+  medyaModalOpen: false
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Editor Top Bar -->
+      <div class="border-b-2 border-gray-300 bg-white px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="sayfa-listesi.html" class="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Sayfalar
+          </a>
+          <div class="w-px h-5 bg-gray-200"></div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-lg font-semibold text-gray-900">Accessible Adventure</h1>
+              <span class="wf-v2-badge wf-v2-badge-gray">Taslak</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      <!-- Editor Content Area -->
+      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
+        <div class="max-w-4xl mx-auto">
+
+          <!-- Language Tabs -->
+          <div class="mb-4">
+            <div class="flex border-2 border-gray-300 rounded-lg overflow-hidden bg-white">
+              <template x-for="lang in ['tr', 'en', 'de', 'ru']" :key="lang">
+                <button @click="activeLang = lang"
+                        :class="activeLang === lang ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-500 hover:bg-gray-50'"
+                        class="flex-1 py-2.5 text-sm text-center uppercase transition-colors relative">
+                  <span x-text="lang"></span>
+                  <!-- Bos dil gostergesi (turuncu nokta) -->
+                  <template x-if="lang === 'de' || lang === 'ru'">
+                    <span class="absolute top-1.5 right-2 w-2 h-2 bg-orange-400 rounded-full" title="Icerik girilmemis"></span>
+                  </template>
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- WYSIWYG Editor Container -->
+          <div class="bg-white border-2 border-gray-300 rounded-lg overflow-hidden">
+
+            <!-- Toolbar Row 1: Text Formatting + Headings + Alignment -->
+            <div class="border-b-2 border-gray-300 px-3 py-2 flex items-center gap-1 flex-wrap">
+              <!-- Text Formatting -->
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 font-bold text-sm" title="Kalin">
+                B
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 italic text-sm" title="Italik">
+                I
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 underline text-sm" title="Alti Cizili">
+                U
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 line-through text-sm" title="Ustu Cizili">
+                S
+              </button>
+
+              <!-- Separator -->
+              <div class="w-px h-5 bg-gray-200 mx-1"></div>
+
+              <!-- Headings -->
+              <button class="h-8 px-2 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 text-xs font-semibold" title="Baslik 1">
+                H1
+              </button>
+              <button class="h-8 px-2 flex items-center justify-center rounded bg-gray-100 text-indigo-700 text-xs font-semibold" title="Baslik 2">
+                H2
+              </button>
+              <button class="h-8 px-2 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 text-xs font-semibold" title="Baslik 3">
+                H3
+              </button>
+              <button class="h-8 px-2 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600 text-xs font-semibold" title="Paragraf">
+                P
+              </button>
+
+              <!-- Separator -->
+              <div class="w-px h-5 bg-gray-200 mx-1"></div>
+
+              <!-- Alignment -->
+              <button class="w-8 h-8 flex items-center justify-center rounded bg-gray-100 text-indigo-700" title="Sola Hizala">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="17" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Ortala">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="10" x2="6" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="18" y1="14" x2="6" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Saga Hizala">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="7" y2="14"/><line x1="21" y1="18" x2="3" y2="18"/></svg>
+              </button>
+            </div>
+
+            <!-- Toolbar Row 2: Lists + Media + Undo/Redo -->
+            <div class="border-b-2 border-gray-300 px-3 py-2 flex items-center gap-1 flex-wrap">
+              <!-- Lists -->
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Madde Listesi">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Numarali Liste">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="10" y1="6" x2="21" y2="6"/><line x1="10" y1="12" x2="21" y2="12"/><line x1="10" y1="18" x2="21" y2="18"/><text x="3" y="7" font-size="7" fill="currentColor" stroke="none" font-family="Inter">1</text><text x="3" y="13" font-size="7" fill="currentColor" stroke="none" font-family="Inter">2</text><text x="3" y="19" font-size="7" fill="currentColor" stroke="none" font-family="Inter">3</text></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Alinti Blogu">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 17h3l2-4V7H5v6h3M15 17h3l2-4V7h-6v6h3"/></svg>
+              </button>
+
+              <!-- Separator -->
+              <div class="w-px h-5 bg-gray-200 mx-1"></div>
+
+              <!-- Insert Tools -->
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Baglanti Ekle">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button @click="medyaModalOpen = true" class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Gorsel Ekle (Medya Kutuphanesi)">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Tablo Ekle">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+              </button>
+
+              <!-- Separator -->
+              <div class="w-px h-5 bg-gray-200 mx-1"></div>
+
+              <!-- Undo / Redo -->
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-600" title="Geri Al">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+              </button>
+              <button class="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-100 text-gray-400 cursor-not-allowed" title="Ileri Al">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg>
+              </button>
+            </div>
+
+            <!-- Editor Area: Sample Rich Content -->
+            <div class="p-6" style="min-height: 480px" x-show="activeLang === 'tr'">
+              <!-- H2 -->
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Engelsiz Macera</h2>
+
+              <!-- Paragraph -->
+              <p class="text-base text-gray-700 leading-relaxed mb-4">
+                The Land of Legends, tum ziyaretcilerine esit ve erislebilir bir deneyim sunmayi
+                amaclamaktadir. Engelsiz Macera programimiz kapsaminda parkimizin her kosesini
+                herkes icin erislebilir kilmak adina onemli adimlar attik. Amacimiz, her bireyin
+                benzersiz macera deneyimimizin tadini cikarabilmesidir.
+              </p>
+
+              <!-- Bullet List -->
+              <ul class="mb-4 space-y-2">
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">Tekerlekli sandalye ile erislebilir tum alanlar ve atraksiyon giris noktalari haritada isaretlenmistir</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">Isitme engelli ziyaretciler icin gorsel uyari sistemleri ve isaret dili destek noktalarimiz mevcuttur</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">Ozel gereksinimli cocuklar icin duyusal dinlenme odalari parkimizin cesitli noktalarinda hizmet vermektedir</span>
+                </li>
+              </ul>
+
+              <!-- Another Paragraph -->
+              <p class="text-base text-gray-700 leading-relaxed">
+                Daha fazla bilgi ve destek icin misafir iliskileri ekibimizle iletisime gecebilir
+                veya park girisindeki Engelsiz Macera Danisma Noktamizi ziyaret edebilirsiniz.
+                Ekibimiz, ziyaretinizi en konforlu sekilde gecirmeniz icin size yardimci olmaktan
+                mutluluk duyacaktir.
+              </p>
+            </div>
+
+            <!-- Empty state for EN -->
+            <div class="p-6" style="min-height: 480px; display: none;" x-show="activeLang === 'en'">
+              <h2 class="text-2xl font-bold text-gray-900 mb-4">Accessible Adventure</h2>
+
+              <p class="text-base text-gray-700 leading-relaxed mb-4">
+                The Land of Legends is committed to providing an equal and accessible experience
+                for all visitors. Through our Accessible Adventure program, we have taken important
+                steps to make every corner of our park accessible to everyone.
+              </p>
+
+              <ul class="mb-4 space-y-2">
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">All wheelchair-accessible areas and attraction entry points are marked on the map</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">Visual alert systems and sign language support points are available for hearing-impaired visitors</span>
+                </li>
+                <li class="flex items-start gap-2">
+                  <span class="mt-1.5 w-1.5 h-1.5 bg-gray-500 rounded-full flex-shrink-0"></span>
+                  <span class="text-base text-gray-700">Sensory rest rooms for children with special needs are located throughout the park</span>
+                </li>
+              </ul>
+
+              <p class="text-base text-gray-700 leading-relaxed">
+                For more information and support, please contact our guest relations team
+                or visit our Accessible Adventure Information Point at the park entrance.
+              </p>
+            </div>
+
+            <!-- Empty state for DE -->
+            <div class="p-6 flex items-center justify-center" style="min-height: 480px; display: none;" x-show="activeLang === 'de'">
+              <div class="text-center">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <p class="text-sm text-gray-400 mb-1">Bu dil icin icerik henuz girilmemis</p>
+                <p class="text-xs text-gray-300">TR icerigi kopyalayarak baslayabilirsiniz</p>
+                <button class="mt-3 wf-v2-btn text-xs inline-flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  TR'den Kopyala
+                </button>
+              </div>
+            </div>
+
+            <!-- Empty state for RU -->
+            <div class="p-6 flex items-center justify-center" style="min-height: 480px; display: none;" x-show="activeLang === 'ru'">
+              <div class="text-center">
+                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                <p class="text-sm text-gray-400 mb-1">Bu dil icin icerik henuz girilmemis</p>
+                <p class="text-xs text-gray-300">TR icerigi kopyalayarak baslayabilirsiniz</p>
+                <button class="mt-3 wf-v2-btn text-xs inline-flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  TR'den Kopyala
+                </button>
+              </div>
+            </div>
+
+            <!-- Word Count / Character Count Bar -->
+            <div class="border-t-2 border-gray-300 px-4 py-2 flex items-center justify-between text-xs text-gray-400 bg-gray-50">
+              <div class="flex items-center gap-4">
+                <span>Kelime: <strong class="text-gray-600">87</strong></span>
+                <span>Karakter: <strong class="text-gray-600">642</strong></span>
+              </div>
+              <div class="flex items-center gap-3">
+                <span>Son kayit: 26.02.2026 15:42</span>
+              </div>
+            </div>
+
+          </div>
+          <!-- /WYSIWYG Editor Container -->
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Medya Kutuphanesi Modal -->
+  <div x-show="medyaModalOpen" class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="medyaModalOpen = false"></div>
+    <div class="wf-v2-modal relative z-10 w-full max-w-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-900">Medya Kutuphanesi</h3>
+        <button @click="medyaModalOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="mb-4">
+        <input type="text" class="wf-v2-input text-sm" placeholder="Gorsel ara...">
+      </div>
+
+      <!-- Image Grid -->
+      <div class="grid grid-cols-4 gap-3 max-h-72 overflow-y-auto mb-4">
+        <div class="aspect-square bg-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            hero-01.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-indigo-400 rounded-lg flex items-center justify-center text-xs text-gray-400 ring-2 ring-indigo-200 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            park-map.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            access-01.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            access-02.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            banner-01.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-gray-200 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            waterpark.jpg
+          </div>
+        </div>
+        <div class="aspect-square bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center text-xs text-gray-400 hover:border-indigo-400 cursor-pointer">
+          <div class="text-center">
+            <svg class="w-6 h-6 mx-auto mb-1 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yukle
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 justify-end">
+        <button @click="medyaModalOpen = false" class="wf-v2-btn">Vazgec</button>
+        <button @click="medyaModalOpen = false" class="wf-v2-btn wf-v2-btn-primary">Gorsel Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

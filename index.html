@@ -6,8 +6,7 @@
   <title>Legends DXP - Wireframe Kit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" href="https://fonts.gstatic.com/s/indieflower/v21/m8JVjfNVeKWVnh3QMuKkFcZlbkGG1dKEDw.woff2" as="font" type="font/woff2" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="dist/output.css">
   <link rel="stylesheet" href="src/tool/css/tool.css">
   <script src="src/tool/js/tool-icons.js"></script>
@@ -445,7 +444,7 @@
   selectedSprint: (function() {
     // Check hash first (e.g., #sprint1)
     const hash = window.location.hash.replace('#', '');
-    if (['sprint1', 'sprint2', 'sprint3', 'diagrams'].includes(hash)) return hash;
+    if (['sprint1', 'sprint2', 'sprint3', 'sprint-a', 'sprint-c', 'diagrams'].includes(hash)) return hash;
     // Then check query param
     const param = new URLSearchParams(window.location.search).get('sprint');
     if (param) return param;
@@ -485,6 +484,24 @@
         title="Sprint 3 - Campaigns"
       >S3</button>
 
+      <div style="width: 32px; border-top: 1px solid #3d3d3d; margin: 4px 0;"></div>
+
+      <button
+        @click="selectedSprint = 'sprint-a'"
+        :class="selectedSprint === 'sprint-a' ? 'active' : ''"
+        class="index-sprint-btn"
+        title="Sprint A - Golden Circle: Order Management"
+        style="font-size: 11px;"
+      >SA</button>
+
+      <button
+        @click="selectedSprint = 'sprint-c'"
+        :class="selectedSprint === 'sprint-c' ? 'active' : ''"
+        class="index-sprint-btn"
+        title="Sprint C - CMS & Content Management"
+        style="font-size: 11px;"
+      >SC</button>
+
       <!-- Theme Colors -->
       <div class="index-theme-picker">
         <button @click="selectedTheme = 'teal'" :class="selectedTheme === 'teal' ? 'active' : ''" class="index-theme-btn bg-teal-500" title="Teal"></button>
@@ -500,11 +517,11 @@
       <!-- Header -->
       <header class="index-header">
         <div class="flex items-center">
-          <h1 x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : (selectedSprint === 'sprint2' ? 'Sprint 2' : 'Sprint 3')"></h1>
-          <span class="index-header-subtitle" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : (selectedSprint === 'sprint2' ? 'Ticketing & Add-ons' : 'Campaigns')"></span>
+          <h1 x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : (selectedSprint === 'sprint2' ? 'Sprint 2' : (selectedSprint === 'sprint3' ? 'Sprint 3' : (selectedSprint === 'sprint-a' ? 'Sprint A' : 'Sprint C')))"></h1>
+          <span class="index-header-subtitle" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : (selectedSprint === 'sprint2' ? 'Ticketing & Add-ons' : (selectedSprint === 'sprint3' ? 'Campaigns' : (selectedSprint === 'sprint-a' ? 'Golden Circle: Order Management' : 'CMS & Content Management')))"></span>
         </div>
         <div class="flex items-center gap-4">
-          <span class="index-badge" x-text="selectedSprint === 'sprint1' ? '8/8 Complete' : (selectedSprint === 'sprint2' ? '11/11 Complete' : '4/4 Complete')"></span>
+          <span class="index-badge" x-text="selectedSprint === 'sprint1' ? '8/8 Complete' : (selectedSprint === 'sprint2' ? '11/11 Complete' : (selectedSprint === 'sprint3' ? '4/4 Complete' : (selectedSprint === 'sprint-a' ? '3/3 Complete' : '16/16 Complete')))"></span>
           <a href="src/components/form-elements.html" class="index-components-btn">
             <span class="tool-icon" data-tool-icon="Settings Gear" data-size="16"></span>
             Components
@@ -814,6 +831,277 @@
             <div class="index-info-content">
               <h4>Sprint 3: Campaign Management System</h4>
               <p>20 Ocak - 1 Subat 2026 | Kampanya kurallari, indirim tipleri, kupon sistemi ve raporlama.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== SPRINT A (Golden Circle) ==================== -->
+        <div x-show="selectedSprint === 'sprint-a'" x-cloak>
+
+          <!-- Siparis Yonetimi Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Floppy Disk" data-size="24"></span>
+              Siparis Yonetimi
+              <span class="index-badge">Sprint A</span>
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-a/siparis-listesi.html?theme=' + selectedTheme + '&sprint=4'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Floppy Disk" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Siparis Listesi</div>
+                <div class="index-card-desc">D-A01, A-004 | V2, 7 kolon, PNR, filtre drawer</div>
+              </a>
+
+              <a :href="'src/pages/sprint-a/siparis-detay.html?theme=' + selectedTheme + '&sprint=4'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Siparis Detay</div>
+                <div class="index-card-desc">D-A01, A-005 | PNR, urunler, odeme, modal'lar</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Iptal/Iade Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="X-Mark (Normal)" data-size="24"></span>
+              Iptal / Iade Yonetimi
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-a/iptal-iade-listesi.html?theme=' + selectedTheme + '&sprint=4'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="X-Mark (Normal)" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Iptal/Iade Formlari</div>
+                <div class="index-card-desc">D-A03, A-011 | V2, 11 kolon, inline sort, PNR copy, renkli durum text</div>
+              </a>
+
+              <a :href="'src/pages/sprint-a/iptal-iade-detay.html?theme=' + selectedTheme + '&sprint=4'" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Form Detay</div>
+                <div class="index-card-desc">D-A03, A-011 | Aksiyonlar + Kullanici bilgileri, durum dropdown, maile gonder</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint A Info -->
+          <div class="index-info-card">
+            <div class="index-info-icon">
+              <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+            </div>
+            <div class="index-info-content">
+              <h4>Sprint A: Golden Circle - Admin Core + Order Management</h4>
+              <p>10 Sub - 23 Sub 2026 | Siparis listesi, siparis detay, odeme izleme, iptal/iade formlari. Backend API'leri hazir, admin panel temel altyapisi.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== SPRINT C (CMS) ==================== -->
+        <div x-show="selectedSprint === 'sprint-c'" x-cloak>
+
+          <!-- Page Management Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Layout Grid" data-size="24"></span>
+              Sayfa Yonetimi
+              <span class="index-badge">Sprint C</span>
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-c/sayfa-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layout Grid" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Sayfa Listesi</div>
+                <div class="index-card-desc">C-001/C-003 | Sablon, durum, dil tamamlanma</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/sayfa-builder.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Sayfa Builder</div>
+                <div class="index-card-desc">C-003 | Blok canvas + config panel</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/icerik-editoru.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Attachment" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Icerik Editoru</div>
+                <div class="index-card-desc">C-002 | WYSIWYG, 4 dil tab</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/onizleme.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Browser Window" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Onizleme</div>
+                <div class="index-card-desc">C-007 | Cihaz/dil toggle</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Banner & Media Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Camera" data-size="24"></span>
+              Banner & Medya
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-c/banner-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Banner Listesi</div>
+                <div class="index-card-desc">C-001 | Grup tab, slide siralama</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/banner-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Banner Form</div>
+                <div class="index-card-desc">C-002 | Slide Manager pattern</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/medya-kutuphanesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Camera" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Medya Kutuphanesi</div>
+                <div class="index-card-desc">C-006 | Grid, upload, detay modal</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Content Entities Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Floppy Disk" data-size="24"></span>
+              Icerik Ogeleri
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-c/faq-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+                </div>
+                <div class="index-card-title">FAQ Listesi</div>
+                <div class="index-card-desc">C-001 | Kategori filtre, siralama</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/faq-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">FAQ Form</div>
+                <div class="index-card-desc">C-002 | Accordion editor, 4 dil</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/koleksiyon-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Certificate" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Koleksiyonlar</div>
+                <div class="index-card-desc">C-001 | Logo, servis, sertifika</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/koleksiyon-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Koleksiyon Form</div>
+                <div class="index-card-desc">C-002 | Repeatable Items pattern</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Navigation & Settings Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Settings Gear" data-size="24"></span>
+              Navigasyon & Ayarlar
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-c/menu-yonetimi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Burger Icon (Lines)" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Menu Yonetimi</div>
+                <div class="index-card-desc">C-004 | Header + Footer drag-drop</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/site-ayarlari.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Settings Gear" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Site Ayarlari</div>
+                <div class="index-card-desc">C-004 | Sosyal medya, iletisim, app</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/cms-dashboard.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Home" data-size="20"></span>
+                </div>
+                <div class="index-card-title">CMS Dashboard</div>
+                <div class="index-card-desc">D-C01 | Genel bakis, hizli linkler</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Event Calendar Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Calendar" data-size="24"></span>
+              Etkinlik Takvimi
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-c/etkinlik-takvimi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Calendar" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Etkinlik Takvimi</div>
+                <div class="index-card-desc">C-005 | Hafta/ay/liste gorunum</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/etkinlik-zamanlama.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Clock" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Etkinlik Zamanlama</div>
+                <div class="index-card-desc">C-005 | Tekrarlama kurali editoru</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint C Info -->
+          <div class="index-info-card">
+            <div class="index-info-icon">
+              <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+            </div>
+            <div class="index-info-content">
+              <h4>Sprint C: CMS & Content Management</h4>
+              <p>24 Sub - 9 Mar 2026 | Sayfa builder, banner yonetimi, medya kutuphanesi, FAQ, koleksiyonlar, menu/site ayarlari, etkinlik takvimi. 32 generic CMS blogu icin admin panel.</p>
             </div>
           </div>
 

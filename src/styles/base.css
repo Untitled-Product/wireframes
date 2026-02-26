@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Google Fonts - Indie Flower for sketchy wireframe look */
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
+/* Google Fonts - Inter for clean wireframe look */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* CSS Variables for Theme Colors */
 :root {
@@ -32,9 +32,9 @@
     @apply h-full;
   }
 
-  /* Homepage uses Indie Flower font */
+  /* Homepage uses Inter font */
   .homepage {
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     @apply bg-slate-2 text-slate-12 antialiased;
   }
 }
@@ -45,7 +45,7 @@
 
 /* Wireframe pages - sketchy hand-drawn look */
 .wireframe-page {
-  font-family: 'Indie Flower', cursive;
+  font-family: 'Inter', sans-serif;
   background-color: #ffffff;
   background-image:
     linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
@@ -88,7 +88,7 @@
   /* Wireframe Buttons */
   .wf-btn {
     @apply px-4 py-2 font-medium;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     border: var(--sketch-border);
     background: #ffffff;
@@ -150,7 +150,7 @@
   /* Wireframe Inputs */
   .wf-input {
     @apply w-full px-3 py-2;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     border: var(--sketch-border-light);
     background: #fafafa;
@@ -169,7 +169,7 @@
 
   .wf-label {
     @apply block mb-1;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #374151;
   }
@@ -187,7 +187,7 @@
   /* Wireframe Badges */
   .wf-badge {
     @apply inline-flex items-center px-2 py-0.5;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     border: 1.5px solid #6b7280;
     background: #f3f4f6;
@@ -275,7 +275,7 @@
   /* Wireframe Table */
   .wf-table {
     @apply w-full;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     border-collapse: separate;
     border-spacing: 0;
     border: var(--sketch-border);
@@ -314,7 +314,7 @@
 
   .wf-sidebar-item {
     @apply flex items-center gap-3 px-4 py-2.5 mx-2 my-0.5;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 17px;
     color: #374151;
     border: 2px solid transparent;
@@ -381,7 +381,7 @@
     align-items: center;
     justify-content: center;
     color: #6b7280;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
   }
 
   /* Sketchy Divider */
@@ -402,7 +402,7 @@
     @apply p-3;
     background: #fef3c7;
     border: 2px solid #f59e0b;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     color: #92400e;
     transform: rotate(-0.5deg);
@@ -439,7 +439,7 @@
   /* Textarea */
   .wf-textarea {
     @apply w-full px-3 py-2;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     border: var(--sketch-border-light);
     background: #fafafa;
@@ -497,7 +497,7 @@
   .wf-radio-label,
   .wf-checkbox-label {
     @apply flex items-center gap-2 cursor-pointer;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
   }
 
@@ -513,7 +513,7 @@
   /* Form Error */
   .wf-form-error {
     @apply mt-1 text-sm;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     color: #dc2626;
   }
 
@@ -524,7 +524,7 @@
   /* Form Help Text */
   .wf-form-help {
     @apply mt-1 text-sm;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     color: #6b7280;
     font-style: italic;
   }
@@ -537,7 +537,7 @@
   }
 
   .wf-fieldset-legend {
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     font-weight: 500;
     padding: 0 8px;
@@ -557,7 +557,7 @@
 
   .wf-step {
     @apply flex items-center gap-3 py-3 px-4 cursor-pointer;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     position: relative;
   }
 
@@ -640,7 +640,7 @@
   .wf-calendar {
     border: var(--sketch-border);
     background: #ffffff;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
   }
 
   .wf-calendar-header {
@@ -761,7 +761,7 @@
      ============================================ */
   .wf-timeline {
     @apply relative pl-6;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
   }
 
   .wf-timeline::before {
@@ -841,7 +841,7 @@
 
   .wf-tab {
     @apply px-4 py-2 cursor-pointer;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     border: var(--sketch-border);
     border-bottom: none;
@@ -905,7 +905,7 @@
 
   .wf-toggle-label {
     @apply ml-3;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
   }
 
@@ -915,7 +915,7 @@
   .wf-alert {
     @apply p-4 flex items-start gap-3;
     border: var(--sketch-border);
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
   }
 
   .wf-alert-icon {
@@ -966,7 +966,7 @@
 
   .wf-number-btn {
     @apply w-10 h-10 flex items-center justify-center;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 20px;
     background: #f3f4f6;
     cursor: pointer;
@@ -984,7 +984,7 @@
 
   .wf-number-value {
     @apply w-12 h-10 flex items-center justify-center;
-    font-family: 'Indie Flower', cursive;
+    font-family: 'Inter', sans-serif;
     font-size: 18px;
     background: #ffffff;
     border-left: var(--sketch-border-light);

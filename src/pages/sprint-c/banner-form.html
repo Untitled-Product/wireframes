@@ -1,0 +1,423 @@
+<!--
+  Wireframe: banner-form (V2)
+  Task: C-002
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  Slide Manager Pattern - HeroBanner slide'larinin detay editoru
+  - Sol: Dil bazli icerik alanlari (%60)
+  - Sag: Gorsel, ayarlar, durum (%40)
+  - 4 dil tab (TR, EN, DE, RU) - bos diller turuncu dot
+  - Badge stili dropdown
+  - Gorsel preview + mobil gorsel
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banner Slide Duzenle - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  configLang: 'tr',
+  isActive: true,
+  overlayEnabled: true,
+  mediaPickerOpen: false,
+  mediaPickerTab: 'library',
+  mediaPickerTarget: null,
+  mediaPickerSearch: '',
+  mediaPickerFilter: 'image',
+  mediaPickerUploading: false,
+  mediaPickerProgress: 0,
+  mediaLibrary: [
+    { id: 1, name: 'hero-banner.jpg', size: '2.4 MB', res: '1920x1080', ext: 'JPG' },
+    { id: 2, name: 'aqua-park-01.jpg', size: '3.1 MB', res: '2560x1440', ext: 'JPG' },
+    { id: 3, name: 'otel-oda-suite.jpg', size: '1.8 MB', res: '1600x900', ext: 'JPG' },
+    { id: 4, name: 'kampanya-banner.png', size: '920 KB', res: '1200x630', ext: 'PNG' },
+    { id: 5, name: 'tema-park-giris.jpg', size: '2.9 MB', res: '1920x1280', ext: 'JPG' },
+    { id: 6, name: 'slider-bg-02.jpg', size: '4.1 MB', res: '2560x1440', ext: 'JPG' },
+    { id: 7, name: 'logo-legends.svg', size: '48 KB', res: '512x512', ext: 'SVG' },
+    { id: 8, name: 'icon-set.svg', size: '32 KB', res: '256x256', ext: 'SVG' }
+  ],
+  selectedMediaId: null
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Top Bar -->
+      <div class="border-b-2 border-gray-300 bg-white px-6 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="banner-listesi.html" class="text-gray-400 hover:text-gray-600 inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>Bannerlar</span>
+          </a>
+        </div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-lg font-semibold text-gray-900">Hero Banner - Slide 1</h1>
+        </div>
+        <div>
+          <button class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      <!-- Two Column Layout -->
+      <main class="flex-1 flex overflow-hidden">
+
+        <!-- LEFT: Content Fields (%60) -->
+        <div class="flex-1 overflow-y-auto p-6">
+          <div class="max-w-2xl">
+
+            <!-- Language Tabs -->
+            <div class="flex border-2 border-gray-300 rounded-lg overflow-hidden mb-6">
+              <template x-for="lang in [
+                { code: 'tr', label: 'TR', empty: false },
+                { code: 'en', label: 'EN', empty: false },
+                { code: 'de', label: 'DE', empty: true },
+                { code: 'ru', label: 'RU', empty: true }
+              ]" :key="lang.code">
+                <button @click="configLang = lang.code"
+                        :class="configLang === lang.code ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-500 hover:bg-gray-50'"
+                        class="flex-1 py-2.5 text-sm text-center uppercase transition-colors relative">
+                  <span x-text="lang.label"></span>
+                  <template x-if="lang.empty">
+                    <span class="absolute top-1.5 right-2 w-2 h-2 bg-orange-400 rounded-full"></span>
+                  </template>
+                </button>
+              </template>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="space-y-5">
+
+              <!-- Baslik -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Baslik</label>
+                <input type="text" class="wf-v2-input" value="Summer Adventure 2026" x-show="configLang === 'tr'">
+                <input type="text" class="wf-v2-input" value="Summer Adventure 2026" x-show="configLang === 'en'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Baslik giriniz..." x-show="configLang === 'de'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Baslik giriniz..." x-show="configLang === 'ru'" style="display:none">
+              </div>
+
+              <!-- Alt Baslik -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Alt Baslik</label>
+                <input type="text" class="wf-v2-input" value="Eglencenin kalbinde unutulmaz bir yaz" x-show="configLang === 'tr'">
+                <input type="text" class="wf-v2-input" value="An unforgettable summer in the heart of fun" x-show="configLang === 'en'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Alt baslik giriniz..." x-show="configLang === 'de'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Alt baslik giriniz..." x-show="configLang === 'ru'" style="display:none">
+              </div>
+
+              <!-- CTA Metni -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">CTA Metni</label>
+                <input type="text" class="wf-v2-input" value="Bilet Al" x-show="configLang === 'tr'">
+                <input type="text" class="wf-v2-input" value="Buy Tickets" x-show="configLang === 'en'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="CTA metni giriniz..." x-show="configLang === 'de'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="CTA metni giriniz..." x-show="configLang === 'ru'" style="display:none">
+              </div>
+
+              <!-- CTA URL -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">CTA URL</label>
+                <input type="text" class="wf-v2-input" value="/tickets">
+              </div>
+
+              <!-- Badge Metni -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                  Badge Metni
+                  <span class="text-xs text-gray-400 font-normal ml-1">(opsiyonel)</span>
+                </label>
+                <input type="text" class="wf-v2-input" value="Yeni Sezon" x-show="configLang === 'tr'">
+                <input type="text" class="wf-v2-input" value="New Season" x-show="configLang === 'en'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Badge metni giriniz..." x-show="configLang === 'de'" style="display:none">
+                <input type="text" class="wf-v2-input" placeholder="Badge metni giriniz..." x-show="configLang === 'ru'" style="display:none">
+              </div>
+
+              <!-- Badge Stili -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5">Badge Stili</label>
+                <select class="wf-v2-input">
+                  <option selected>Primary</option>
+                  <option>Secondary</option>
+                  <option>Warning</option>
+                </select>
+                <div class="mt-2 flex gap-2">
+                  <span class="wf-v2-badge wf-v2-badge-info">Primary</span>
+                  <span class="wf-v2-badge">Secondary</span>
+                  <span class="wf-v2-badge wf-v2-badge-warning">Warning</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Visual & Settings (%40) -->
+        <div class="border-l-2 border-gray-300 bg-white overflow-y-auto flex-shrink-0" style="width: 40%">
+          <div class="p-6 space-y-6">
+
+            <!-- Gorsel -->
+            <div class="border-2 border-gray-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-3">Gorsel</label>
+              <div class="w-full bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-3" style="height: 300px">
+                <svg class="w-10 h-10 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span class="text-sm text-gray-400">1920 x 800 px</span>
+                <button @click="mediaPickerTarget = 'desktop'; mediaPickerOpen = true; mediaPickerTab = 'library'; mediaPickerSearch = ''; selectedMediaId = null" class="wf-v2-btn wf-v2-btn-primary text-sm inline-flex items-center gap-1.5">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Gorsel Sec
+                </button>
+              </div>
+            </div>
+
+            <!-- Mobil Gorsel -->
+            <div class="border-2 border-gray-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                Mobil Gorsel
+                <span class="text-xs text-gray-400 font-normal ml-1">(opsiyonel)</span>
+              </label>
+              <p class="text-xs text-gray-400 mb-3">Mobil cihazlarda farkli gorsel gostermek icin yukleyin</p>
+              <div class="w-full bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center gap-2" style="height: 160px">
+                <svg class="w-8 h-8 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <rect x="5" y="2" width="14" height="20" rx="2"/>
+                  <line x1="12" y1="18" x2="12" y2="18"/>
+                </svg>
+                <span class="text-xs text-gray-400">750 x 1000 px</span>
+                <button @click="mediaPickerTarget = 'mobile'; mediaPickerOpen = true; mediaPickerTab = 'library'; mediaPickerSearch = ''; selectedMediaId = null" class="wf-v2-btn text-xs inline-flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  Gorsel Sec
+                </button>
+              </div>
+            </div>
+
+            <!-- Gorsel Ayarlari -->
+            <div class="border-2 border-gray-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-3">Gorsel Ayarlari</label>
+              <div class="space-y-4">
+                <!-- Position -->
+                <div>
+                  <label class="block text-xs text-gray-500 mb-1">Pozisyon</label>
+                  <select class="wf-v2-input text-sm">
+                    <option selected>Center</option>
+                    <option>Top</option>
+                    <option>Bottom</option>
+                  </select>
+                </div>
+
+                <!-- Overlay Toggle -->
+                <div class="flex items-center justify-between">
+                  <div>
+                    <label class="text-xs font-medium text-gray-600">Overlay</label>
+                    <p class="text-xs text-gray-400">Gorsel uzerine koyu katman</p>
+                  </div>
+                  <button @click="overlayEnabled = !overlayEnabled"
+                          :class="overlayEnabled ? 'bg-green-500' : 'bg-gray-300'"
+                          class="w-9 h-5 rounded-full relative transition-colors cursor-pointer">
+                    <div :class="overlayEnabled ? 'right-0.5' : 'left-0.5'"
+                         class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Durum -->
+            <div class="border-2 border-gray-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-3">Durum</label>
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-sm text-gray-700" x-text="isActive ? 'Aktif' : 'Pasif'"></span>
+                  <p class="text-xs text-gray-400" x-text="isActive ? 'Slide yayinda gorunur' : 'Slide gizli'"></p>
+                </div>
+                <button @click="isActive = !isActive"
+                        :class="isActive ? 'bg-green-500' : 'bg-gray-300'"
+                        class="w-9 h-5 rounded-full relative transition-colors cursor-pointer">
+                  <div :class="isActive ? 'right-0.5' : 'left-0.5'"
+                       class="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all"></div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Siralama -->
+            <div class="border-2 border-gray-300 rounded-lg p-4">
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Siralama</label>
+              <input type="number" class="wf-v2-input text-sm w-24" value="1" min="1">
+              <p class="text-xs text-gray-400 mt-1">Dusuk sayi = once gosterilir</p>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== MODAL: Medya Picker (Kutuphaneden Sec + Yukle) ====== -->
+  <div x-show="mediaPickerOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="mediaPickerOpen = false"></div>
+    <div class="wf-v2-modal relative z-10 w-full max-w-2xl overflow-hidden" style="max-height: 85vh">
+
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-900">Gorsel Sec</h3>
+        <button @click="mediaPickerOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="flex border-2 border-gray-300 rounded-lg overflow-hidden mb-4">
+        <button @click="mediaPickerTab = 'library'"
+                :class="mediaPickerTab === 'library' ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-500 hover:bg-gray-50'"
+                class="flex-1 py-2.5 text-sm text-center transition-colors inline-flex items-center justify-center gap-1.5">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Kutuphaneden Sec
+        </button>
+        <button @click="mediaPickerTab = 'upload'"
+                :class="mediaPickerTab === 'upload' ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-500 hover:bg-gray-50'"
+                class="flex-1 py-2.5 text-sm text-center transition-colors inline-flex items-center justify-center gap-1.5">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Yeni Yukle
+        </button>
+      </div>
+
+      <!-- TAB: Kutuphaneden Sec -->
+      <div x-show="mediaPickerTab === 'library'">
+        <!-- Search -->
+        <div class="mb-3">
+          <div class="wf-v2-search">
+            <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input type="text" placeholder="Gorsel ara..." class="wf-v2-search-input" x-model="mediaPickerSearch">
+          </div>
+        </div>
+
+        <!-- Media Grid -->
+        <div class="grid grid-cols-4 gap-3 max-h-72 overflow-y-auto pb-2">
+          <template x-for="item in mediaLibrary" :key="item.id">
+            <div @click="selectedMediaId = item.id"
+                 :class="selectedMediaId === item.id ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-gray-200 hover:border-gray-400'"
+                 class="border-2 rounded-lg overflow-hidden cursor-pointer transition-all relative group">
+              <!-- Thumbnail -->
+              <div class="bg-gray-100 flex items-center justify-center" style="height: 90px">
+                <div class="flex flex-col items-center gap-1 text-gray-300">
+                  <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span style="font-size: 9px" x-text="item.ext"></span>
+                </div>
+              </div>
+              <!-- Check overlay -->
+              <div x-show="selectedMediaId === item.id" class="absolute top-1.5 right-1.5 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <!-- Info -->
+              <div class="p-1.5">
+                <p class="text-xs text-gray-700 truncate" x-text="item.name"></p>
+                <p class="text-xs text-gray-400" x-text="item.res"></p>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Selected info -->
+        <div x-show="selectedMediaId" class="mt-3 p-2.5 bg-indigo-50 border border-indigo-200 rounded-lg flex items-center gap-2">
+          <svg class="w-4 h-4 text-indigo-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="text-sm text-indigo-700" x-text="mediaLibrary.find(m => m.id === selectedMediaId)?.name || ''"></span>
+          <span class="text-xs text-indigo-400 ml-auto" x-text="mediaLibrary.find(m => m.id === selectedMediaId)?.res || ''"></span>
+        </div>
+      </div>
+
+      <!-- TAB: Yeni Yukle -->
+      <div x-show="mediaPickerTab === 'upload'" style="display: none;">
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer"
+             :class="mediaPickerUploading ? 'bg-gray-50 pointer-events-none' : 'bg-white'">
+          <template x-if="!mediaPickerUploading">
+            <div>
+              <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p class="text-sm text-gray-600 mb-1">Dosyalari buraya surukleyin</p>
+              <p class="text-sm text-gray-400">
+                veya <button @click="mediaPickerUploading = true; mediaPickerProgress = 0; let interval = setInterval(() => { mediaPickerProgress += 10; if(mediaPickerProgress >= 100) { clearInterval(interval); setTimeout(() => { mediaPickerUploading = false; mediaPickerTab = 'library'; }, 800); } }, 300)" class="text-indigo-600 hover:text-indigo-800 font-medium underline">dosya secin</button>
+              </p>
+              <p class="text-xs text-gray-400 mt-3">Gorsel kutuphanede kaydedilir, sonra icerige eklenir</p>
+            </div>
+          </template>
+          <template x-if="mediaPickerUploading">
+            <div>
+              <svg class="w-10 h-10 mx-auto mb-3 text-indigo-500 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <p class="text-sm text-gray-600 mb-3">Kutuphanye yukleniyor...</p>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div class="bg-indigo-500 h-2 rounded-full transition-all duration-300" :style="'width: ' + mediaPickerProgress + '%'"></div>
+              </div>
+              <p class="text-xs text-gray-400">%<span x-text="mediaPickerProgress"></span> tamamlandi</p>
+            </div>
+          </template>
+        </div>
+        <div class="mt-3 flex items-center gap-2 text-xs text-gray-400">
+          <svg class="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span>JPG, PNG, SVG, WebP (maks. 10MB). Yuklenen gorsel otomatik olarak kutuphanede kaydedilir.</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex gap-3 justify-end mt-5 pt-4 border-t border-gray-200">
+        <button @click="mediaPickerOpen = false" class="wf-v2-btn">Vazgec</button>
+        <button @click="mediaPickerOpen = false" :disabled="!selectedMediaId && mediaPickerTab === 'library'" :class="selectedMediaId || mediaPickerTab === 'upload' ? 'wf-v2-btn-primary' : 'opacity-50 cursor-not-allowed'" class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Sec ve Ekle
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

@@ -19,6 +19,10 @@ const modules = {
   // Sprint 3 - Campaign
   campaigns: { id: 'campaigns', icon: 'discount-percent-bubble', label: 'Kampanyalar', href: '../sprint3/campaign-list.html', sprint: 3 },
   coupons: { id: 'coupons', icon: 'coupon-percent', label: 'Kuponlar', href: '../sprint3/coupon-list.html', sprint: 3 },
+
+  // Sprint A - Golden Circle: Order Management + Iptal/Iade
+  temaParkSiparisleri: { id: 'temaParkSiparisleri', icon: 'shop-cart', label: 'Tema Park Siparisleri', href: '../sprint-a/siparis-listesi.html', sprint: 4 },
+  iptalIade: { id: 'iptalIade', icon: 'remove-delete-sign-bold', label: 'Iptal/Iade Formlari', href: '../sprint-a/iptal-iade-listesi.html', sprint: 4 },
 };
 
 // Sayfa konfigürasyonları
@@ -46,6 +50,11 @@ const pageConfigs = {
   'campaign-wizard': { activeItem: 'campaigns', breadcrumb: ['Anasayfa', 'Kampanyalar', 'Yeni'] },
   'coupon-list': { activeItem: 'coupons', breadcrumb: ['Anasayfa', 'Kuponlar'] },
   'campaign-dashboard': { activeItem: 'campaigns', breadcrumb: ['Anasayfa', 'Kampanyalar', 'Raporlar'] },
+
+  // Sprint A - Golden Circle: Siparis Yonetimi
+  'siparis-listesi': { activeItem: 'temaParkSiparisleri', breadcrumb: ['Anasayfa', 'Tema Park Siparisleri'] },
+  'siparis-detay': { activeItem: 'temaParkSiparisleri', breadcrumb: ['Anasayfa', 'Tema Park Siparisleri', 'Detay'] },
+  'iptal-iade-listesi': { activeItem: 'iptalIade', breadcrumb: ['Anasayfa', 'Iptal/Iade Formlari'] },
 };
 
 // Sprint bazlı sidebar menü oluştur
@@ -77,6 +86,13 @@ function buildSidebar(currentSprint) {
     items.push(modules.coupons);
   }
 
+  // Sprint A (Golden Circle) modülleri
+  if (currentSprint >= 4) {
+    items.push({ type: 'divider' });
+    items.push(modules.temaParkSiparisleri);
+    items.push(modules.iptalIade);
+  }
+
   return items;
 }
 
@@ -104,6 +120,7 @@ class WireframeLayout {
     if (path.includes('/sprint1/')) sprint = 1;
     else if (path.includes('/sprint2/') || path.includes('/admin/')) sprint = 2;
     else if (path.includes('/sprint3/')) sprint = 3;
+    else if (path.includes('/sprint-a/')) sprint = 4;
 
     // URL param override (?sprint=1, ?sprint=2, ?sprint=sprint3)
     const urlParams = new URLSearchParams(window.location.search);

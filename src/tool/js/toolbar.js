@@ -45,6 +45,22 @@ class ToolToolbar {
           }
         ]
       },
+      'siparis-detay': {
+        versions: [
+          {
+            version: 'v1',
+            file: 'siparis-detay.html',
+            label: 'V1 - Gunluk Bilet',
+            isDefault: true
+          },
+          {
+            version: 'v2',
+            file: 'siparis-detay-v2.html',
+            label: 'V2 - Family Card',
+            changeNote: 'Family Card bilet tipi, Ziyaretci Bilgileri, sadece 3 kullanici alani'
+          }
+        ]
+      },
       'user-form': {
         versions: [
           {
@@ -88,6 +104,10 @@ class ToolToolbar {
     } else if (path.includes('/src/pages/sprint2/')) {
       return '../../tool/';
     } else if (path.includes('/src/pages/sprint3/')) {
+      return '../../tool/';
+    } else if (path.includes('/src/pages/sprint-a/')) {
+      return '../../tool/';
+    } else if (path.includes('/src/pages/sprint-c/')) {
       return '../../tool/';
     } else if (path.includes('/src/components/')) {
       return '../tool/';
@@ -198,6 +218,10 @@ class ToolToolbar {
       return '../../../index.html#sprint2';
     } else if (path.includes('/src/pages/sprint3/')) {
       return '../../../index.html#sprint3';
+    } else if (path.includes('/src/pages/sprint-a/')) {
+      return '../../../index.html#sprint-a';
+    } else if (path.includes('/src/pages/sprint-c/')) {
+      return '../../../index.html#sprint-c';
     } else if (path.includes('/src/pages/admin/')) {
       return '../../../index.html';
     } else if (path.includes('/src/pages/public/forms/')) {

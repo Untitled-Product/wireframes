@@ -1,0 +1,280 @@
+<!--
+  Wireframe: sayfa-listesi (V2)
+  Task: C-001, C-003
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  Generic Entity List Pattern - Sayfalar
+  - Durum badge (Taslak/Yayinda)
+  - Sablon tipi kolonu
+  - Son guncelleme tarihi
+  - Arama + filtre
+  - Duzenle -> sayfa-builder.html
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sayfalar - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  filterDrawerOpen: false
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">Sayfalar</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Web sitesi sayfalarini yonetin</p>
+          </div>
+          <button class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yeni Sayfa
+          </button>
+        </div>
+
+        <!-- Search + Filter Bar -->
+        <div class="flex items-center gap-3 mb-5">
+          <div class="flex-1 max-w-md">
+            <div class="wf-v2-search">
+              <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="Sayfa ara..." class="wf-v2-search-input">
+            </div>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+            <select class="wf-v2-input text-sm w-40">
+              <option>Tum Sablonlar</option>
+              <option>Homepage</option>
+              <option>Unit Detail</option>
+              <option>Restaurant</option>
+              <option>Events</option>
+              <option>Hotel</option>
+              <option>Campaign</option>
+              <option>FAQ</option>
+              <option>Contact</option>
+              <option>Static</option>
+            </select>
+            <select class="wf-v2-input text-sm w-32">
+              <option>Tum Durumlar</option>
+              <option>Yayinda</option>
+              <option>Taslak</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pages Table -->
+        <div class="wf-v2-table-wrapper">
+          <table class="wf-v2-table">
+            <thead>
+              <tr>
+                <th class="w-8">
+                  <input type="checkbox" class="rounded border-gray-300">
+                </th>
+                <th>Sayfa Adi</th>
+                <th>Sablon</th>
+                <th>Durum</th>
+                <th>Dil Durumu</th>
+                <th>Son Guncelleme</th>
+                <th class="text-right">Islemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="rounded border-gray-300"></td>
+                <td>
+                  <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Ana Sayfa</a>
+                  <div class="text-xs text-gray-400">/tr</div>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-info">Homepage</span></td>
+                <td><span class="wf-v2-badge wf-v2-badge-success">Yayinda</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">RU</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-500">26.02.2026 14:30</td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="sayfa-builder.html" class="wf-v2-btn wf-v2-btn-sm" title="Duzenle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="onizleme.html" class="wf-v2-btn wf-v2-btn-sm" title="Onizle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="rounded border-gray-300"></td>
+                <td>
+                  <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Aqua Land</a>
+                  <div class="text-xs text-gray-400">/tr/units/aqua-land</div>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-purple">Unit Detail</span></td>
+                <td><span class="wf-v2-badge wf-v2-badge-success">Yayinda</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">RU</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-500">25.02.2026 10:15</td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="sayfa-builder.html" class="wf-v2-btn wf-v2-btn-sm" title="Duzenle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="onizleme.html" class="wf-v2-btn wf-v2-btn-sm" title="Onizle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="rounded border-gray-300"></td>
+                <td>
+                  <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Nickelodeon Hotels</a>
+                  <div class="text-xs text-gray-400">/tr/hotels/nickelodeon</div>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-warning">Hotel</span></td>
+                <td><span class="wf-v2-badge wf-v2-badge-success">Yayinda</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">RU</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-500">24.02.2026 16:45</td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="sayfa-builder.html" class="wf-v2-btn wf-v2-btn-sm" title="Duzenle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="onizleme.html" class="wf-v2-btn wf-v2-btn-sm" title="Onizle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="rounded border-gray-300"></td>
+                <td>
+                  <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">FAQ</a>
+                  <div class="text-xs text-gray-400">/tr/faq</div>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-gray">FAQ</span></td>
+                <td><span class="wf-v2-badge wf-v2-badge-gray">Taslak</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">RU</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-500">23.02.2026 09:00</td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="sayfa-builder.html" class="wf-v2-btn wf-v2-btn-sm" title="Duzenle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="onizleme.html" class="wf-v2-btn wf-v2-btn-sm" title="Onizle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="rounded border-gray-300"></td>
+                <td>
+                  <a href="sayfa-builder.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Accessible Adventure</a>
+                  <div class="text-xs text-gray-400">/tr/accessible-adventure</div>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-gray">Static</span></td>
+                <td><span class="wf-v2-badge wf-v2-badge-success">Yayinda</span></td>
+                <td>
+                  <div class="flex gap-1">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">RU</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-500">20.02.2026 11:20</td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="sayfa-builder.html" class="wf-v2-btn wf-v2-btn-sm" title="Duzenle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <a href="onizleme.html" class="wf-v2-btn wf-v2-btn-sm" title="Onizle">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-4 text-sm text-gray-400">
+          5 sayfa goruntuluyor (3 yayinda, 1 taslak, 1 arsiv)
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

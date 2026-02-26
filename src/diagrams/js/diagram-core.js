@@ -261,7 +261,7 @@ class DiagramRenderer {
       text.setAttribute('x', minX - padding + 16);
       text.setAttribute('y', minY - padding - 5);
       text.setAttribute('class', 'wf-diagram-group__label');
-      text.setAttribute('font-family', 'Indie Flower, cursive');
+      text.setAttribute('font-family', 'Inter, sans-serif');
       text.setAttribute('font-size', '14');
       text.setAttribute('font-weight', '600');
       text.setAttribute('fill', '#0d9488');

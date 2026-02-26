@@ -1,0 +1,398 @@
+<!--
+  Wireframe: menu-yonetimi (V2)
+  Task: C-004
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  Header menu + Footer menu (4 kolon) yonetimi
+  - Header: Flat draggable menu ogesi listesi
+  - Footer: 4 kolon, her kolonda link listesi
+  - Drag & drop sirasi, gorunurluk toggle, CRUD islemleri
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Yonetimi - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeTab: 'header',
+  deleteConfirmOpen: false
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">Menu Yonetimi</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Header ve footer menularini duzenleyin</p>
+          </div>
+          <button class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Kaydet
+          </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex border-b border-gray-200 mb-6">
+          <button
+            @click="activeTab = 'header'"
+            :class="activeTab === 'header' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors"
+          >
+            Header Menu
+          </button>
+          <button
+            @click="activeTab = 'footer'"
+            :class="activeTab === 'footer' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+            class="px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors"
+          >
+            Footer Menu
+          </button>
+        </div>
+
+        <!-- HEADER MENU TAB -->
+        <div x-show="activeTab === 'header'" x-cloak>
+          <div class="border-2 border-gray-200 rounded-lg p-5">
+            <div class="space-y-3">
+
+              <!-- Menu Item 1: Home -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Home</span>
+                <input type="text" value="Ana Sayfa" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+              <!-- Menu Item 2: Theme Park -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Theme Park</span>
+                <input type="text" value="Tema Park" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr/theme-park" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+              <!-- Menu Item 3: Hotels -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Hotels</span>
+                <input type="text" value="Oteller" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr/hotels" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+              <!-- Menu Item 4: Events -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Events</span>
+                <input type="text" value="Etkinlikler" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr/events" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+              <!-- Menu Item 5: Shopping Avenue -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Shopping</span>
+                <input type="text" value="Shopping Avenue" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr/shopping-avenue" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+              <!-- Menu Item 6: Campaigns -->
+              <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <span class="text-xs text-gray-400 font-medium w-16 flex-shrink-0">Campaigns</span>
+                <input type="text" value="Kampanyalar" class="wf-v2-input text-sm flex-1" placeholder="Etiket">
+                <input type="text" value="/tr/campaigns" class="wf-v2-input text-sm flex-1" placeholder="URL">
+                <label class="wf-toggle flex-shrink-0">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+                <button @click="deleteConfirmOpen = true" class="text-gray-400 hover:text-red-500 flex-shrink-0" title="Sil">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Add Menu Item Button -->
+            <button class="mt-4 w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-1.5">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Menu Ogesi Ekle
+            </button>
+          </div>
+        </div>
+
+        <!-- FOOTER MENU TAB -->
+        <div x-show="activeTab === 'footer'" x-cloak>
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+
+            <!-- Column 1: Kesfet -->
+            <div class="border-2 border-gray-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <input type="text" value="Kesfet" class="wf-v2-input text-sm font-semibold flex-1" placeholder="Kolon Basligi">
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Theme Park" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/theme-park" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Hotels" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/hotels" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Shopping Avenue" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/shopping-avenue" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Restaurants" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/restaurants" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Events" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/events" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Attractions" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/attractions" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Bilgi -->
+            <div class="border-2 border-gray-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <input type="text" value="Bilgi" class="wf-v2-input text-sm font-semibold flex-1" placeholder="Kolon Basligi">
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="SSS" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/faq" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Iletisim" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/contact" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Hakkimizda" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/about" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Erisilebilirlik" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/accessibility" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Gizlilik" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/privacy" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 3: Kampanyalar -->
+            <div class="border-2 border-gray-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <input type="text" value="Kampanyalar" class="wf-v2-input text-sm font-semibold flex-1" placeholder="Kolon Basligi">
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Guncel Kampanyalar" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/campaigns" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Erken Rezervasyon" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/early-booking" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Ozel Teklifler" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/special-offers" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 4: Magaza -->
+            <div class="border-2 border-gray-200 rounded-lg p-4">
+              <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-200">
+                <button class="cursor-grab text-gray-400 hover:text-gray-600 flex-shrink-0" title="Surukle">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg>
+                </button>
+                <input type="text" value="Magaza" class="wf-v2-input text-sm font-semibold flex-1" placeholder="Kolon Basligi">
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Legends Store" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/store" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Online Alisveris" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/online-shopping" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button class="cursor-grab text-gray-300 hover:text-gray-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/><circle cx="9" cy="10" r="1.5"/><circle cx="15" cy="10" r="1.5"/><circle cx="9" cy="15" r="1.5"/><circle cx="15" cy="15" r="1.5"/><circle cx="9" cy="20" r="1.5"/><circle cx="15" cy="20" r="1.5"/></svg></button>
+                  <input type="text" value="Hediye Kartlari" class="wf-v2-input text-xs flex-1" placeholder="Etiket">
+                  <input type="text" value="/tr/gift-cards" class="wf-v2-input text-xs flex-1" placeholder="URL">
+                  <button class="text-gray-300 hover:text-red-500 flex-shrink-0"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Add Column Button -->
+          <button class="mt-5 w-full py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 transition-colors flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Kolon Ekle
+          </button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== MODAL: Silme Onay ====== -->
+  <div x-show="deleteConfirmOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="deleteConfirmOpen = false"></div>
+    <div class="wf-v2-modal relative z-10 w-full max-w-sm text-center">
+      <svg class="w-10 h-10 mx-auto mb-3 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <h3 class="text-base font-semibold text-gray-900 mb-1">Silmek istediginize emin misiniz?</h3>
+      <p class="text-sm text-gray-500 mb-5">Bu islem geri alinamaz.</p>
+      <div class="flex gap-3 justify-center">
+        <button @click="deleteConfirmOpen = false" class="wf-v2-btn">Vazgec</button>
+        <button @click="deleteConfirmOpen = false" class="wf-v2-btn bg-red-600 text-white border-red-600 hover:bg-red-700">Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

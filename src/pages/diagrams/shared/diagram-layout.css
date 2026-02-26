@@ -66,7 +66,9 @@
 
 /* Collapsed state */
 body.sidebar-collapsed .sidebar-toggle {
-  left: var(--sidebar-collapsed-width);
+  left: 0;
+  transform: translateX(0);
+  border-radius: 0 6px 6px 0;
 }
 
 body.sidebar-collapsed .sidebar-toggle svg {
@@ -89,64 +91,16 @@ body.sidebar-collapsed .sidebar-toggle svg {
 }
 
 body.sidebar-collapsed .diagram-sidebar {
-  width: var(--sidebar-collapsed-width);
+  width: 0;
+  border-right: none;
+  overflow: hidden;
 }
 
-/* Sidebar content fade */
-.sidebar-header,
-.sidebar-nav,
-.sidebar-footer {
-  opacity: 1;
-  transition: opacity 0.15s;
-}
-
-body.sidebar-collapsed .sidebar-header h1,
-body.sidebar-collapsed .sidebar-header p,
-body.sidebar-collapsed .nav-group-title,
-body.sidebar-collapsed .nav-link span,
-body.sidebar-collapsed .back-link span:last-child {
-  opacity: 0;
-  visibility: hidden;
-}
-
-body.sidebar-collapsed .sidebar-header {
-  padding: 16px 12px;
-}
-
-body.sidebar-collapsed .sidebar-nav {
-  padding: 8px;
-}
-
-body.sidebar-collapsed .nav-link {
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-}
-
-body.sidebar-collapsed .sidebar-footer {
-  padding: 8px;
-}
-
-body.sidebar-collapsed .back-link {
-  padding: 10px;
-  justify-content: center;
-}
-
-/* Nav link icons for collapsed state */
+/* Nav link styling */
 .nav-link {
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.nav-link-icon {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
 }
 
 /* Main content */
@@ -158,36 +112,14 @@ body.sidebar-collapsed .back-link {
 }
 
 body.sidebar-collapsed .diagram-main {
-  margin-left: var(--sidebar-collapsed-width);
+  margin-left: 0;
 }
 
-/* Tooltip for collapsed state */
-body.sidebar-collapsed .nav-link {
-  position: relative;
-}
-
-body.sidebar-collapsed .nav-link::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: calc(100% + 8px);
-  top: 50%;
-  transform: translateY(-50%);
-  background: #333;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.15s;
-  pointer-events: none;
-  z-index: 100;
-}
-
-body.sidebar-collapsed .nav-link:hover::after {
-  opacity: 1;
-  visibility: visible;
+/* Sidebar content hidden when collapsed */
+body.sidebar-collapsed .sidebar-header,
+body.sidebar-collapsed .sidebar-nav,
+body.sidebar-collapsed .sidebar-footer {
+  display: none;
 }
 
 /* Fullscreen diagram modal */

@@ -127,9 +127,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Indie Flower', 'cursive'],
-        mono: ['Indie Flower', 'cursive'],
-        wireframe: ['Indie Flower', 'cursive'],
+        sans: ['Inter', 'sans-serif'],
+        mono: ['Inter', 'sans-serif'],
+        wireframe: ['Inter', 'sans-serif'],
       },
       borderRadius: {
         DEFAULT: '6px',

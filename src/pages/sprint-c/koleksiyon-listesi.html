@@ -1,0 +1,251 @@
+<!--
+  Wireframe: koleksiyon-listesi (V2)
+  Task: C-001
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  Koleksiyon Listeleri - Logo, servis, sertifika
+  - Tab bazli listeleme
+  - Gorsel + label + siralama
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Koleksiyonlar - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeTab: 'logos',
+  deleteConfirmOpen: false
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">Koleksiyonlar</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Logo, hizmet ve sertifika koleksiyonlarini yonetin</p>
+          </div>
+          <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yeni Oge Ekle
+          </a>
+        </div>
+
+        <!-- Collection Tabs -->
+        <div class="flex border-b-2 border-gray-300 mb-5">
+          <button @click="activeTab = 'logos'"
+                  :class="activeTab === 'logos' ? 'border-b-2 border-indigo-500 text-indigo-700 font-medium' : 'text-gray-500'"
+                  class="px-4 py-2.5 text-sm" style="margin-bottom: -2px">
+            Logolar
+            <span class="ml-1 text-xs px-1.5 py-0.5 rounded-full bg-gray-100">5</span>
+          </button>
+          <button @click="activeTab = 'services'"
+                  :class="activeTab === 'services' ? 'border-b-2 border-indigo-500 text-indigo-700 font-medium' : 'text-gray-500'"
+                  class="px-4 py-2.5 text-sm" style="margin-bottom: -2px">
+            Hizmetler / Tesisler
+            <span class="ml-1 text-xs px-1.5 py-0.5 rounded-full bg-gray-100">16</span>
+          </button>
+          <button @click="activeTab = 'certificates'"
+                  :class="activeTab === 'certificates' ? 'border-b-2 border-indigo-500 text-indigo-700 font-medium' : 'text-gray-500'"
+                  class="px-4 py-2.5 text-sm" style="margin-bottom: -2px">
+            Sertifikalar
+            <span class="ml-1 text-xs px-1.5 py-0.5 rounded-full bg-gray-100">7</span>
+          </button>
+        </div>
+
+        <!-- Logos Tab -->
+        <div x-show="activeTab === 'logos'">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center">
+                <span class="text-xs text-gray-400">Logo</span>
+              </div>
+              <div class="text-sm font-medium text-gray-900">TripAdvisor</div>
+              <div class="text-xs text-gray-400 mb-2">tripadvisor.com</div>
+              <div class="flex gap-1 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm text-xs">Duzenle</a>
+                <button @click="deleteConfirmOpen = true" class="wf-v2-btn wf-v2-btn-sm text-xs text-red-500">Sil</button>
+              </div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center"><span class="text-xs text-gray-400">Logo</span></div>
+              <div class="text-sm font-medium text-gray-900">Booking.com</div>
+              <div class="text-xs text-gray-400 mb-2">booking.com</div>
+              <div class="flex gap-1 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm text-xs">Duzenle</a>
+                <button @click="deleteConfirmOpen = true" class="wf-v2-btn wf-v2-btn-sm text-xs text-red-500">Sil</button>
+              </div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center"><span class="text-xs text-gray-400">Logo</span></div>
+              <div class="text-sm font-medium text-gray-900">Hotels.com</div>
+              <div class="text-xs text-gray-400 mb-2">hotels.com</div>
+              <div class="flex gap-1 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm text-xs">Duzenle</a>
+                <button @click="deleteConfirmOpen = true" class="wf-v2-btn wf-v2-btn-sm text-xs text-red-500">Sil</button>
+              </div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center"><span class="text-xs text-gray-400">Logo</span></div>
+              <div class="text-sm font-medium text-gray-900">HolidayCheck</div>
+              <div class="text-xs text-gray-400 mb-2">holidaycheck.de</div>
+              <div class="flex gap-1 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm text-xs">Duzenle</a>
+                <button @click="deleteConfirmOpen = true" class="wf-v2-btn wf-v2-btn-sm text-xs text-red-500">Sil</button>
+              </div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-16 h-16 bg-gray-100 rounded-lg mx-auto mb-3 flex items-center justify-center"><span class="text-xs text-gray-400">Logo</span></div>
+              <div class="text-sm font-medium text-gray-900">Nickelodeon</div>
+              <div class="text-xs text-gray-400 mb-2">nick.com</div>
+              <div class="flex gap-1 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm text-xs">Duzenle</a>
+                <button @click="deleteConfirmOpen = true" class="wf-v2-btn wf-v2-btn-sm text-xs text-red-500">Sil</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div x-show="activeTab === 'services'" style="display: none;">
+          <div class="wf-v2-table-wrapper">
+            <table class="wf-v2-table">
+              <thead>
+                <tr>
+                  <th class="w-8"></th>
+                  <th class="w-12">Ikon</th>
+                  <th>Label (TR)</th>
+                  <th>Label (EN)</th>
+                  <th>Kullanildigi Yer</th>
+                  <th class="text-right">Islemler</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/></svg></td>
+                  <td><div class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs">ATM</div></td>
+                  <td class="text-sm">ATM</td>
+                  <td class="text-sm text-gray-500">ATM</td>
+                  <td><span class="wf-v2-badge wf-v2-badge-purple">Shopping Avenue</span></td>
+                  <td class="text-right">
+                    <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/></svg></td>
+                  <td><div class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs">P</div></td>
+                  <td class="text-sm">Otopark</td>
+                  <td class="text-sm text-gray-500">Parking</td>
+                  <td><span class="wf-v2-badge wf-v2-badge-purple">Shopping Avenue</span></td>
+                  <td class="text-right">
+                    <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/></svg></td>
+                  <td><div class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-xs">Spa</div></td>
+                  <td class="text-sm">Spa</td>
+                  <td class="text-sm text-gray-500">Spa</td>
+                  <td><span class="wf-v2-badge wf-v2-badge-warning">Otel</span></td>
+                  <td class="text-right">
+                    <a href="koleksiyon-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Certificates Tab -->
+        <div x-show="activeTab === 'certificates'" style="display: none;">
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-20 h-20 bg-yellow-50 rounded-lg mx-auto mb-3 flex items-center justify-center text-yellow-500">
+                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </div>
+              <div class="text-sm font-medium text-gray-900">Europe's Best Water Rides</div>
+              <div class="text-xs text-gray-400">2020</div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-20 h-20 bg-yellow-50 rounded-lg mx-auto mb-3 flex items-center justify-center text-yellow-500">
+                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </div>
+              <div class="text-sm font-medium text-gray-900">Best Theme Park</div>
+              <div class="text-xs text-gray-400">2021</div>
+            </div>
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-white text-center group hover:border-gray-400">
+              <div class="w-20 h-20 bg-yellow-50 rounded-lg mx-auto mb-3 flex items-center justify-center text-yellow-500">
+                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </div>
+              <div class="text-sm font-medium text-gray-900">World Travel Awards</div>
+              <div class="text-xs text-gray-400">2022</div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ====== MODAL: Silme Onay ====== -->
+  <div x-show="deleteConfirmOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="deleteConfirmOpen = false"></div>
+    <div class="wf-v2-modal relative z-10 w-full max-w-sm text-center">
+      <svg class="w-10 h-10 mx-auto mb-3 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <h3 class="text-base font-semibold text-gray-900 mb-1">Silmek istediginize emin misiniz?</h3>
+      <p class="text-sm text-gray-500 mb-5">Bu islem geri alinamaz.</p>
+      <div class="flex gap-3 justify-center">
+        <button @click="deleteConfirmOpen = false" class="wf-v2-btn">Vazgec</button>
+        <button @click="deleteConfirmOpen = false" class="wf-v2-btn bg-red-600 text-white border-red-600 hover:bg-red-700">Sil</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

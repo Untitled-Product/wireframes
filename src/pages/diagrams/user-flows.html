@@ -357,14 +357,14 @@ flowchart TD
       <div class="mermaid-container">
         <pre class="mermaid">
 flowchart TB
-    subgraph SUPER["🟣 SUPER ADMIN - System Level"]
+    subgraph SUPER["SUPER ADMIN - System Level"]
         SA_LOGIN(("SA")) --> SA_DASH["Platform Dashboard<br/><small>Tüm tenant'lar</small>"]
         SA_DASH --> TENANT_CRUD["Tenant CRUD<br/><small>Oluştur/Düzenle/Sil</small>"]
         TENANT_CRUD --> CREATE_TA["Tenant Admin Oluştur"]
         CREATE_TA --> SYSTEM_DB[("system_db")]
     end
 
-    subgraph TENANT["🔵 TENANT ADMIN - Project Level"]
+    subgraph TENANT["TENANT ADMIN - Project Level"]
         TA_LOGIN(("TA")) --> TA_DASH["Tenant Dashboard<br/><small>Kendi tenant'ı</small>"]
         TA_DASH --> EDITOR_MGT["Editor Yönetimi"]
         EDITOR_MGT --> CREATE_ED["Editor Oluştur<br/><small>Checkbox yetkiler</small>"]
@@ -372,7 +372,7 @@ flowchart TB
         ASSIGN_PERM --> TENANT_DB[("tenant_xxx_db")]
     end
 
-    subgraph EDITOR["🟢 EDITOR - User Level"]
+    subgraph EDITOR["EDITOR - User Level"]
         ED_LOGIN(("E")) --> ED_DASH["Editor Dashboard<br/><small>Yetki bazlı menü</small>"]
         ED_DASH --> CHECK_PERM{"Yetki?"}
         CHECK_PERM -->|Evet| ACCESS["Modüle Eriş"]

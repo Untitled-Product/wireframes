@@ -1,0 +1,204 @@
+<!--
+  Wireframe: faq-form (V2)
+  Task: C-002
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  FAQ Oge Editoru - Accordion Pattern
+  - 4 dil tab
+  - Soru + Cevap (rich text)
+  - Kategori + Alt Kategori secimi
+  - Varsayilan acik/kapali toggle
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ Duzenle - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  configLang: 'tr'
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <a href="faq-listesi.html" class="text-gray-400 hover:text-gray-600">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </a>
+            <div>
+              <h1 class="text-lg font-semibold text-gray-900">Soru Duzenle</h1>
+              <div class="text-xs text-gray-400">FAQ #1 | Son guncelleme: 26.02.2026</div>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <button class="wf-v2-btn text-sm">Vazgec</button>
+            <button class="wf-v2-btn wf-v2-btn-primary text-sm">Kaydet</button>
+          </div>
+        </div>
+
+        <div class="max-w-3xl">
+          <!-- Language Tabs -->
+          <div class="flex border-2 border-gray-300 rounded-lg overflow-hidden mb-6">
+            <template x-for="lang in ['tr', 'en', 'de', 'ru']" :key="lang">
+              <button @click="configLang = lang"
+                      :class="configLang === lang ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-500 hover:bg-gray-50'"
+                      class="flex-1 py-2.5 text-sm text-center uppercase transition-colors relative">
+                <span x-text="lang"></span>
+                <template x-if="lang === 'de' || lang === 'ru'">
+                  <span class="absolute top-1.5 right-2 w-1.5 h-1.5 bg-orange-400 rounded-full"></span>
+                </template>
+              </button>
+            </template>
+          </div>
+
+          <!-- Kategori Secimi -->
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Kategori</label>
+              <select class="wf-v2-input">
+                <option>Theme Park</option>
+                <option>Hotels</option>
+                <option selected>Shopping Avenue</option>
+                <option>Legends Store</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Alt Kategori</label>
+              <select class="wf-v2-input">
+                <option selected>Genel Bilgi</option>
+                <option>Hizmetler</option>
+                <option>Kingdom Hotel</option>
+                <option>Nickelodeon Hotel</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Soru -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Soru</label>
+            <input type="text" class="wf-v2-input" value="Alisveris merkezinin calisma saatleri?" x-show="configLang === 'tr'">
+            <input type="text" class="wf-v2-input" value="What are the shopping center's working hours?" x-show="configLang === 'en'" style="display:none">
+            <input type="text" class="wf-v2-input" placeholder="Soruyu Almanca girin..." x-show="configLang === 'de'" style="display:none">
+            <input type="text" class="wf-v2-input" placeholder="Soruyu Rusca girin..." x-show="configLang === 'ru'" style="display:none">
+          </div>
+
+          <!-- Cevap (Rich Text) -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Cevap</label>
+            <!-- Mini WYSIWYG Toolbar -->
+            <div class="border-2 border-gray-300 rounded-t-lg bg-gray-50 px-3 py-2 flex items-center gap-1">
+              <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Bold">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+              </button>
+              <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Italic">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+              </button>
+              <div class="w-px h-5 bg-gray-300 mx-1"></div>
+              <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Bullet List">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              </button>
+              <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Link">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </button>
+              <button class="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Gorsel Ekle">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </button>
+            </div>
+            <!-- Editor Content -->
+            <div class="border-2 border-t-0 border-gray-300 rounded-b-lg p-4 bg-white" style="min-height: 200px" x-show="configLang === 'tr'">
+              <p class="text-sm text-gray-700 mb-3">Alisveris merkezimiz her gun <strong>10:00 - 24:00</strong> saatleri arasinda hizmet vermektedir.</p>
+              <p class="text-sm text-gray-700 mb-3">Ozel gunlerde calisma saatleri degisiklik gosterebilir:</p>
+              <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+                <li>Bayram gunleri: 09:00 - 01:00</li>
+                <li>Yilbasi: 10:00 - 02:00</li>
+                <li>Ramazan ayi: 10:00 - 01:00</li>
+              </ul>
+            </div>
+            <div class="border-2 border-t-0 border-gray-300 rounded-b-lg p-4 bg-white" style="min-height: 200px" x-show="configLang === 'en'" style="display:none">
+              <p class="text-sm text-gray-700">Our shopping center is open daily from <strong>10:00 AM to 12:00 AM</strong>.</p>
+            </div>
+            <div class="border-2 border-t-0 border-gray-300 rounded-b-lg p-4 bg-white" style="min-height: 200px" x-show="configLang === 'de'" style="display:none">
+              <p class="text-sm text-gray-400 italic">Cevabi Almanca girin...</p>
+            </div>
+            <div class="border-2 border-t-0 border-gray-300 rounded-b-lg p-4 bg-white" style="min-height: 200px" x-show="configLang === 'ru'" style="display:none">
+              <p class="text-sm text-gray-400 italic">Cevabi Rusca girin...</p>
+            </div>
+          </div>
+
+          <!-- Ayarlar -->
+          <div class="border-2 border-gray-300 rounded-lg p-4 bg-gray-50">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">Gosterim Ayarlari</h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div class="flex items-center justify-between col-span-1">
+                <label class="text-xs text-gray-600">Varsayilan Acik</label>
+                <label class="wf-toggle">
+                  <input type="checkbox" class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+              </div>
+              <div>
+                <label class="block text-xs text-gray-600 mb-1">Sira</label>
+                <input type="number" class="wf-v2-input text-sm" value="3">
+              </div>
+              <div class="flex items-center justify-between col-span-1">
+                <label class="text-xs text-gray-600">Aktif</label>
+                <label class="wf-toggle">
+                  <input type="checkbox" checked class="wf-toggle-input">
+                  <div class="wf-toggle-slider"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

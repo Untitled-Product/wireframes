@@ -1,0 +1,632 @@
+<!--
+  Wireframe: siparis-listesi (V2)
+  Task: A-004, D-A01
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-24
+
+  V2 Figma Kaynak: Yeni ekran goruntuleri (4 adet)
+  - 6 kolonlu tablo (Satis Tarihi, Bilet Giris Tarihi, PNR, Musteri, E Posta, Telefon)
+  - Horizontal scroll (20 veri alani, lazy load asagi)
+  - Kimlik-bazli filtre drawer (10 alan)
+  - PNR 3 durum: PNR kodu + copy, PNR Olustur badge, - (dash)
+  - Satis Kanali filtresi (Web globe / App telefon ikonu)
+  - Inline sort arrows (kolon basliklarinda)
+  - Ulke badge (TR, RU, DE, GB)
+  - Bos durum (empty state)
+  - Pagination YOK - lazy load
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tema Park Siparisleri - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  filterDrawerOpen: false,
+  pnrModalOpen: false,
+  showEmptyState: false
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+
+        <!-- Search + Actions Bar -->
+        <div class="flex items-center gap-3 mb-5">
+          <!-- Search Input -->
+          <div class="flex-1 max-w-md">
+            <div class="wf-v2-search">
+              <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="Ara..." class="wf-v2-search-input">
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 ml-auto">
+            <!-- Satis Kanali Filtresi (Web / App) -->
+            <button class="wf-v2-btn wf-v2-btn-icon active" title="Web Satislari">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </button>
+            <button class="wf-v2-btn wf-v2-btn-icon" title="App Satislari">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </button>
+
+            <!-- Filter Button -->
+            <button @click="filterDrawerOpen = true" class="wf-v2-btn inline-flex items-center gap-2">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filtre
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="wf-v2-table-wrapper overflow-x-auto" x-show="!showEmptyState">
+          <table class="wf-v2-table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Satis Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Bilet Giris Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    PNR Bilgileri
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Musteri Ismi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    E Posta Adresi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Telefon Numarasi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 - PNR var -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-20</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Ahmet Yilmaz</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">ahmet.yilmaz@email.com</td>
+                <td class="text-sm text-gray-600">+90 0532 123 45 67</td>
+              </tr>
+
+              <!-- Row 2 - PNR var -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-15</div>
+                  <div class="text-xs text-gray-400">09:22:31</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-01</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-ABC456</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Merve Kaya</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">merve.kaya@email.com</td>
+                <td class="text-sm text-gray-600">+90 0541 987 65 43</td>
+              </tr>
+
+              <!-- Row 3 - PNR Olustur -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-14</div>
+                  <div class="text-xs text-gray-400">16:55:12</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-15</td>
+                <td>
+                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Burak Can</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">burak.can@email.com</td>
+                <td class="text-sm text-gray-600">+90 0555 444 33 22</td>
+              </tr>
+
+              <!-- Row 4 - PNR var, RU -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-13</div>
+                  <div class="text-xs text-gray-400">11:08:44</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-28</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-RUS102</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge" style="background: #dbeafe; color: #2563eb;">RU</span>
+                    <span class="text-sm font-medium text-gray-900">Vladimir Petrov</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">vladimir@example.com</td>
+                <td class="text-sm text-gray-600">+7 916 123 45 67</td>
+              </tr>
+
+              <!-- Row 5 - PNR yok (dash) -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-12</div>
+                  <div class="text-xs text-gray-400">08:30:55</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-01</td>
+                <td class="text-sm text-gray-400">-</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Elif Demir</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">elif.demir@email.com</td>
+                <td class="text-sm text-gray-600">+90 0533 222 11 00</td>
+              </tr>
+
+              <!-- Row 6 - PNR var -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-11</div>
+                  <div class="text-xs text-gray-400">14:17:03</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-15</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-DEF321</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Zeynep Arslan</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">zeynep.arslan@email.com</td>
+                <td class="text-sm text-gray-600">+90 0542 678 90 12</td>
+              </tr>
+
+              <!-- Row 7 - PNR Olustur, DE -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-10</div>
+                  <div class="text-xs text-gray-400">19:45:28</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-20</td>
+                <td>
+                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge" style="background: #fef3c7; color: #d97706;">DE</span>
+                    <span class="text-sm font-medium text-gray-900">Hans Mueller</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">hans.mueller@web.de</td>
+                <td class="text-sm text-gray-600">+49 176 234 56 78</td>
+              </tr>
+
+              <!-- Row 8 - PNR yok (dash) -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-09</div>
+                  <div class="text-xs text-gray-400">07:12:39</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-25</td>
+                <td class="text-sm text-gray-400">-</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Mehmet Oz</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">mehmet.oz@email.com</td>
+                <td class="text-sm text-gray-600">+90 0544 333 22 11</td>
+              </tr>
+
+              <!-- Row 9 - PNR var, GB -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-08</div>
+                  <div class="text-xs text-gray-400">22:03:17</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-10</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-GBR055</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge" style="background: #ede9fe; color: #7c3aed;">GB</span>
+                    <span class="text-sm font-medium text-gray-900">James Wilson</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">james.wilson@mail.co.uk</td>
+                <td class="text-sm text-gray-600">+44 7700 123 456</td>
+              </tr>
+
+              <!-- Row 10 - PNR Olustur -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-07</div>
+                  <div class="text-xs text-gray-400">13:28:51</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-05</td>
+                <td>
+                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Ayse Celik</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">ayse.celik@email.com</td>
+                <td class="text-sm text-gray-600">+90 0536 111 22 33</td>
+              </tr>
+
+              <!-- Row 11 - PNR var -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-06</div>
+                  <div class="text-xs text-gray-400">10:55:06</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-18</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-TRK890</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Hakan Dogan</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">hakan.dogan@email.com</td>
+                <td class="text-sm text-gray-600">+90 0537 444 55 66</td>
+              </tr>
+
+              <!-- Row 12 - PNR yok (dash) -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-05</div>
+                  <div class="text-xs text-gray-400">15:33:42</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-12</td>
+                <td class="text-sm text-gray-400">-</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Selin Yildiz</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">selin.yildiz@email.com</td>
+                <td class="text-sm text-gray-600">+90 0538 777 88 99</td>
+              </tr>
+
+              <!-- Row 13 - PNR var, RU -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-04</div>
+                  <div class="text-xs text-gray-400">18:21:09</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-05</td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-KZN441</span>
+                    <button class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge" style="background: #dbeafe; color: #2563eb;">RU</span>
+                    <span class="text-sm font-medium text-gray-900">Dmitri Ivanov</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">dmitri.ivanov@yandex.ru</td>
+                <td class="text-sm text-gray-600">+7 926 555 44 33</td>
+              </tr>
+
+              <!-- Row 14 - PNR Olustur -->
+              <tr>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-03</div>
+                  <div class="text-xs text-gray-400">06:47:33</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-22</td>
+                <td>
+                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="wf-v2-country-badge">TR</span>
+                    <span class="text-sm font-medium text-gray-900">Fatma Sahin</span>
+                  </div>
+                </td>
+                <td class="text-sm text-gray-600">fatma.sahin@email.com</td>
+                <td class="text-sm text-gray-600">+90 0539 666 77 88</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty State -->
+        <div class="wf-v2-empty-state" x-show="showEmptyState" style="display: none;">
+          <div class="wf-v2-empty-state-icon">
+            <svg class="w-8 h-8 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+              <text x="12" y="18" text-anchor="middle" font-size="8" fill="currentColor" stroke="none" font-weight="600">31</text>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">Siparis Bulunamadi</h3>
+          <p class="text-sm text-gray-500 max-w-sm">
+            Su anda herhangi bir siparisiniz bulunmuyor. Yeni siparislerinizi bu ekrandan goruntuleyebilirsiniz.
+          </p>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Filter Drawer (Right Side Panel) -->
+  <div x-show="filterDrawerOpen" class="fixed inset-0 z-50" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="filterDrawerOpen = false"></div>
+    <div class="wf-v2-filter-drawer"
+         :class="{ 'open': filterDrawerOpen }">
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h2 class="text-base font-semibold text-gray-900">Filtre</h2>
+        <button @click="filterDrawerOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Drawer Content (Scrollable) -->
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+        <!-- 1. Bilet Tarihi Araligi -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Bilet Tarihi Araligi</label>
+          <div class="flex gap-2 items-center">
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="text-gray-400 text-sm">-</span>
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Bilet Satis Tarihi Araligi -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Bilet Satis Tarihi Araligi</label>
+          <div class="flex gap-2 items-center">
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <span class="text-gray-400 text-sm">-</span>
+            <div class="relative flex-1">
+              <input type="text" class="wf-v2-input pr-8" placeholder="gg.aa.yyyy">
+              <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. E Posta -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">E Posta</label>
+          <input type="email" class="wf-v2-input" placeholder="E-posta adresi girin">
+        </div>
+
+        <!-- 4. Telefon Numarasi -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Telefon Numarasi</label>
+          <div class="flex gap-2">
+            <div class="wf-v2-input w-16 flex items-center justify-center text-sm text-gray-500 bg-gray-50 px-2">+90</div>
+            <input type="tel" class="wf-v2-input flex-1" placeholder="Telefon numarasi girin">
+          </div>
+        </div>
+
+        <!-- 5. Ad Soyad -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Ad Soyad</label>
+          <input type="text" class="wf-v2-input" placeholder="Ad soyad girin">
+        </div>
+
+        <!-- 6. PNR -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">PNR</label>
+          <input type="text" class="wf-v2-input" placeholder="PNR kodu girin">
+        </div>
+
+        <!-- 7. Order ID -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Order ID</label>
+          <input type="text" class="wf-v2-input" placeholder="Order ID girin">
+        </div>
+
+        <!-- 8. Basket ID -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Basket ID</label>
+          <input type="text" class="wf-v2-input" placeholder="Basket ID girin">
+        </div>
+
+        <!-- 9. Vatandaslik / Pasaport No -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Vatandaslik / Pasaport No</label>
+          <input type="text" class="wf-v2-input" placeholder="TC Kimlik No veya Pasaport No girin">
+        </div>
+
+        <!-- 10. Bilet Turu -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Bilet Turu</label>
+          <div class="relative">
+            <select class="wf-v2-input appearance-none pr-8">
+              <option value="">Secin</option>
+              <option>Gunluk Giris Bileti</option>
+              <option>Yillik Bilet</option>
+              <option>VIP Deneyim</option>
+              <option>Family Card</option>
+            </select>
+            <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="flex gap-3 px-6 py-4 border-t border-gray-200">
+        <button @click="filterDrawerOpen = false" class="wf-v2-btn flex-1 justify-center">Vazgec</button>
+        <button @click="filterDrawerOpen = false" class="wf-v2-btn wf-v2-btn-primary flex-1 justify-center">Filtre Uygula</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PNR Olustur Modal -->
+  <div x-show="pnrModalOpen" class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
+    <div class="fixed inset-0 bg-black/30" @click="pnrModalOpen = false"></div>
+    <div class="wf-v2-modal relative z-10">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-gray-900">PNR Olustur</h3>
+        <button @click="pnrModalOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <p class="text-sm text-gray-600 mb-6">
+        Bu islem secili kullanici icin yeni bir PNR kaydi olusturacaktir. Devam etmek istiyor musunuz?
+      </p>
+      <div class="flex gap-3 justify-end">
+        <button @click="pnrModalOpen = false" class="wf-v2-btn">Vazgec</button>
+        <button @click="pnrModalOpen = false" class="wf-v2-btn wf-v2-btn-primary">Olustur</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!--
+  Wireframe: faq-listesi (V2)
+  Task: C-001
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-26
+
+  FAQ Oge Listesi - Generic Entity List Pattern
+  - Kategori filtresi (Theme Park, Hotels, Shopping Avenue, Legends Store)
+  - Soru preview, sira numarasi
+  - Drag-drop siralama
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeCategory: 'all'
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">FAQ Yonetimi</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Sikca sorulan sorulari yonetin</p>
+          </div>
+          <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Yeni Soru Ekle
+          </a>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="flex items-center gap-3 mb-5">
+          <div class="flex-1 max-w-sm">
+            <div class="wf-v2-search">
+              <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" placeholder="Soru ara..." class="wf-v2-search-input">
+            </div>
+          </div>
+          <div class="flex gap-1.5">
+            <button @click="activeCategory = 'all'"
+                    :class="activeCategory === 'all' ? 'wf-v2-btn wf-v2-btn-primary' : 'wf-v2-btn'"
+                    class="text-xs">Tumu (12)</button>
+            <button @click="activeCategory = 'themepark'"
+                    :class="activeCategory === 'themepark' ? 'wf-v2-btn wf-v2-btn-primary' : 'wf-v2-btn'"
+                    class="text-xs">Theme Park (4)</button>
+            <button @click="activeCategory = 'hotels'"
+                    :class="activeCategory === 'hotels' ? 'wf-v2-btn wf-v2-btn-primary' : 'wf-v2-btn'"
+                    class="text-xs">Hotels (3)</button>
+            <button @click="activeCategory = 'shopping'"
+                    :class="activeCategory === 'shopping' ? 'wf-v2-btn wf-v2-btn-primary' : 'wf-v2-btn'"
+                    class="text-xs">Shopping (3)</button>
+            <button @click="activeCategory = 'store'"
+                    :class="activeCategory === 'store' ? 'wf-v2-btn wf-v2-btn-primary' : 'wf-v2-btn'"
+                    class="text-xs">Legends Store (2)</button>
+          </div>
+        </div>
+
+        <!-- FAQ Table -->
+        <div class="wf-v2-table-wrapper">
+          <table class="wf-v2-table">
+            <thead>
+              <tr>
+                <th class="w-8"></th>
+                <th class="w-10">#</th>
+                <th>Soru</th>
+                <th>Kategori</th>
+                <th>Alt Kategori</th>
+                <th>Dil</th>
+                <th class="text-right">Islemler</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>
+                </td>
+                <td class="text-xs text-gray-400">1</td>
+                <td>
+                  <a href="faq-form.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Tema parkina giris saatleri nedir?</a>
+                </td>
+                <td><span class="wf-v2-badge wf-v2-badge-info">Theme Park</span></td>
+                <td class="text-xs text-gray-500">Genel Bilgi</td>
+                <td>
+                  <div class="flex gap-0.5">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">RU</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-sm">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </a>
+                    <button class="wf-v2-btn wf-v2-btn-sm text-red-500">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></td>
+                <td class="text-xs text-gray-400">2</td>
+                <td><a href="faq-form.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Bilet fiyatlari ne kadar?</a></td>
+                <td><span class="wf-v2-badge wf-v2-badge-info">Theme Park</span></td>
+                <td class="text-xs text-gray-500">Biletler</td>
+                <td>
+                  <div class="flex gap-0.5">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">RU</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                    <button class="wf-v2-btn wf-v2-btn-sm text-red-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></td>
+                <td class="text-xs text-gray-400">3</td>
+                <td><a href="faq-form.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Alisveris merkezinin calisma saatleri?</a></td>
+                <td><span class="wf-v2-badge wf-v2-badge-purple">Shopping</span></td>
+                <td class="text-xs text-gray-500">Genel Bilgi</td>
+                <td>
+                  <div class="flex gap-0.5">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-danger">RU</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                    <button class="wf-v2-btn wf-v2-btn-sm text-red-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></td>
+                <td class="text-xs text-gray-400">4</td>
+                <td><a href="faq-form.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Otel check-in saati kacta?</a></td>
+                <td><span class="wf-v2-badge wf-v2-badge-warning">Hotels</span></td>
+                <td class="text-xs text-gray-500">Kingdom Hotel</td>
+                <td>
+                  <div class="flex gap-0.5">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">RU</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                    <button class="wf-v2-btn wf-v2-btn-sm text-red-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><svg class="w-4 h-4 text-gray-300 cursor-grab" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></td>
+                <td class="text-xs text-gray-400">5</td>
+                <td><a href="faq-form.html" class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Emanet dolabi var mi? Ucreti ne kadar?</a></td>
+                <td><span class="wf-v2-badge wf-v2-badge-purple">Shopping</span></td>
+                <td class="text-xs text-gray-500">Hizmetler</td>
+                <td>
+                  <div class="flex gap-0.5">
+                    <span class="wf-v2-badge wf-v2-badge-success">TR</span>
+                    <span class="wf-v2-badge wf-v2-badge-success">EN</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">DE</span>
+                    <span class="wf-v2-badge wf-v2-badge-warning">RU</span>
+                  </div>
+                </td>
+                <td class="text-right">
+                  <div class="flex items-center justify-end gap-1">
+                    <a href="faq-form.html" class="wf-v2-btn wf-v2-btn-sm"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></a>
+                    <button class="wf-v2-btn wf-v2-btn-sm text-red-500"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-4 text-sm text-gray-400">12 soru goruntuluyor</div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

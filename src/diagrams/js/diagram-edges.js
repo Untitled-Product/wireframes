@@ -246,7 +246,7 @@ class DiagramEdges {
     text.setAttribute('y', midY + 4);
     text.setAttribute('text-anchor', 'middle');
     text.setAttribute('class', 'wf-diagram-edge-label');
-    text.setAttribute('font-family', 'Indie Flower, cursive');
+    text.setAttribute('font-family', 'Inter, sans-serif');
     text.setAttribute('font-size', '14');
     text.setAttribute('fill', '#374151');
     text.textContent = label;
@@ -389,7 +389,7 @@ class DiagramEdges {
       text.setAttribute('x', midX);
       text.setAttribute('y', midY);
       text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('font-family', 'Indie Flower, cursive');
+      text.setAttribute('font-family', 'Inter, sans-serif');
       text.setAttribute('font-size', '14');
       text.setAttribute('fill', '#374151');
       text.textContent = edge.label;

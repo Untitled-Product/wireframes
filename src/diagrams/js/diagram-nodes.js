@@ -395,7 +395,7 @@ class DiagramNodes {
     text.setAttribute('y', size.height / 2 + 5);
     text.setAttribute('text-anchor', 'middle');
     text.setAttribute('fill', textColor);
-    text.setAttribute('font-family', 'Indie Flower, cursive');
+    text.setAttribute('font-family', 'Inter, sans-serif');
     text.setAttribute('font-size', '16');
     text.textContent = node.label;
 
@@ -449,7 +449,7 @@ class DiagramNodes {
     nameText.setAttribute('x', width / 2);
     nameText.setAttribute('y', headerHeight / 2 + 6);
     nameText.setAttribute('text-anchor', 'middle');
-    nameText.setAttribute('font-family', 'Indie Flower, cursive');
+    nameText.setAttribute('font-family', 'Inter, sans-serif');
     nameText.setAttribute('font-size', '16');
     nameText.setAttribute('font-weight', '600');
     nameText.textContent = entity.label;
@@ -464,7 +464,7 @@ class DiagramNodes {
         const fieldText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         fieldText.setAttribute('x', '10');
         fieldText.setAttribute('y', y + 15);
-        fieldText.setAttribute('font-family', 'Indie Flower, cursive');
+        fieldText.setAttribute('font-family', 'Inter, sans-serif');
         fieldText.setAttribute('font-size', '14');
         if (field.pk) fieldText.setAttribute('font-weight', '600');
         fieldText.textContent = (field.pk ? 'PK ' : field.fk ? 'FK ' : '') + field.name;
@@ -475,7 +475,7 @@ class DiagramNodes {
         typeText.setAttribute('x', width - 10);
         typeText.setAttribute('y', y + 15);
         typeText.setAttribute('text-anchor', 'end');
-        typeText.setAttribute('font-family', 'Indie Flower, cursive');
+        typeText.setAttribute('font-family', 'Inter, sans-serif');
         typeText.setAttribute('font-size', '12');
         typeText.setAttribute('fill', '#9ca3af');
         typeText.textContent = field.type;
