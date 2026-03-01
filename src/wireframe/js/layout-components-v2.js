@@ -17,7 +17,7 @@ const menuItems = [
     type: 'group',
     children: [
       { id: 'kampanyaListesi', label: 'Kampanya Listesi', href: 'kampanya-listesi.html', folder: 'sprint-d' },
-      { id: 'kampanyaDashboard', label: 'Kampanya Dashboard', href: 'kampanya-dashboard.html', folder: 'sprint-d' },
+      { id: 'kampanyaDashboard', label: 'Kampanya Dashboard', href: 'kampanya-dashboard.html', folder: 'sprint-d', badge: 'Faz-2' },
     ]
   },
   {
@@ -53,8 +53,8 @@ const menuItems = [
     label: 'Raporlama',
     type: 'group',
     children: [
-      { id: 'satisRaporlari', label: 'Satis Raporlari', href: 'satis-raporlari.html', folder: 'sprint-d' },
-      { id: 'gelirAnalizi', label: 'Gelir Analizi', href: 'gelir-analizi.html', folder: 'sprint-d' },
+      { id: 'satisRaporlari', label: 'Satis Raporlari', href: 'satis-raporlari.html', folder: 'sprint-d', badge: 'Faz-2' },
+      { id: 'gelirAnalizi', label: 'Gelir Analizi', href: 'gelir-analizi.html', folder: 'sprint-d', badge: 'Faz-2' },
     ]
   },
   { type: 'divider' },
@@ -338,10 +338,12 @@ class WireframeLayoutV2 {
           const resolvedHref = this.resolveHref(child.href, child.folder);
           const isDisabled = !child.href || child.href === '#';
           const disabledStyle = isDisabled ? ' style="opacity: 0.35; pointer-events: none; cursor: default;"' : '';
+          const badgeHtml = child.badge ? `<span style="margin-left:auto;font-size:10px;padding:1px 6px;border-radius:4px;background:#fef3c7;color:#92400e;font-weight:600;white-space:nowrap;">${child.badge}</span>` : '';
           navItems += `
-              <a href="${resolvedHref}" class="wf-v2-sidebar-item wf-v2-sidebar-nested${isActive ? ' active' : ''}"${disabledStyle}>
+              <a href="${resolvedHref}" class="wf-v2-sidebar-item wf-v2-sidebar-nested${isActive ? ' active' : ''}"${disabledStyle} style="display:flex;align-items:center;gap:6px;">
                 <span class="w-[18px]"></span>
                 <span>${child.label}</span>
+                ${badgeHtml}
               </a>
           `;
         });
