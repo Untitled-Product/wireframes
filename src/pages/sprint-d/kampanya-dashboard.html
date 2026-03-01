@@ -1,0 +1,414 @@
+<!--
+  Wireframe: kampanya-dashboard (V2)
+  Task: D-004
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-28
+
+  Kampanya performans dashboard
+  - Tarih secici (Son 7/30/90 gun + custom)
+  - 4 KPI karti (trend gostergeli)
+  - Grafik placeholder'lari
+  - En basarili kampanyalar tablosu
+  - Son kullanimlar feed
+  - CSV/PDF export
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kampanya Dashboard - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  dateRange: '30',
+  exportOpen: false
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">Kampanya Dashboard</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Performans analizi ve raporlar</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <!-- Date Range Selector -->
+            <div class="wf-v2-btn-group">
+              <button @click="dateRange = '7'" :class="dateRange === '7' ? 'active' : ''">Son 7 Gun</button>
+              <button @click="dateRange = '30'" :class="dateRange === '30' ? 'active' : ''">Son 30 Gun</button>
+              <button @click="dateRange = '90'" :class="dateRange === '90' ? 'active' : ''">Son 90 Gun</button>
+              <button @click="dateRange = 'custom'" :class="dateRange === 'custom' ? 'active' : ''">Ozel</button>
+            </div>
+
+            <!-- Export Dropdown -->
+            <div class="relative" @click.away="exportOpen = false">
+              <button @click="exportOpen = !exportOpen" class="wf-v2-btn wf-v2-btn-secondary inline-flex items-center gap-1.5 text-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div x-show="exportOpen" x-transition class="absolute right-0 mt-1 w-36 bg-white border-2 border-gray-200 rounded-lg shadow-lg z-10">
+                <button class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg">CSV Indir</button>
+                <button class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-b-lg border-t border-gray-100">PDF Indir</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <!-- Toplam Indirim -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <span class="text-sm text-gray-500">Toplam Indirim</span>
+            <div class="flex items-end justify-between mt-1">
+              <span class="text-2xl font-bold text-gray-900">&#8378;45,230</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                12.5%
+              </span>
+            </div>
+            <span class="text-xs text-gray-400 mt-1 block">vs onceki donem</span>
+          </div>
+
+          <!-- Kullanim Sayisi -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <span class="text-sm text-gray-500">Kullanim Sayisi</span>
+            <div class="flex items-end justify-between mt-1">
+              <span class="text-2xl font-bold text-gray-900">4,521</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                8.3%
+              </span>
+            </div>
+            <span class="text-xs text-gray-400 mt-1 block">vs onceki donem</span>
+          </div>
+
+          <!-- Donusum Orani -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <span class="text-sm text-gray-500">Donusum Orani</span>
+            <div class="flex items-end justify-between mt-1">
+              <span class="text-2xl font-bold text-gray-900">%23.4</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-red-600 bg-red-50 px-1.5 py-0.5 rounded-full">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                2.1%
+              </span>
+            </div>
+            <span class="text-xs text-gray-400 mt-1 block">vs onceki donem</span>
+          </div>
+
+          <!-- Ort. Siparis Degeri -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white p-5">
+            <span class="text-sm text-gray-500">Ort. Siparis Degeri</span>
+            <div class="flex items-end justify-between mt-1">
+              <span class="text-2xl font-bold text-gray-900">&#8378;385</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-medium text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+                5.7%
+              </span>
+            </div>
+            <span class="text-xs text-gray-400 mt-1 block">vs onceki donem</span>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Kullanim Trendi -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white">
+            <div class="p-5 border-b border-gray-200">
+              <h2 class="text-base font-semibold text-gray-900">Kullanim Trendi</h2>
+            </div>
+            <div class="p-5">
+              <div class="h-64 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 flex flex-col items-center justify-center">
+                <svg class="w-10 h-10 text-gray-300 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <span class="text-sm font-medium text-gray-400">Line Chart</span>
+                <span class="text-xs text-gray-400 mt-0.5">Gunluk kullanim sayisi</span>
+              </div>
+              <div class="flex items-center justify-between mt-3 px-1">
+                <span class="text-xs text-gray-400">29 Oca</span>
+                <span class="text-xs text-gray-400">05 Sub</span>
+                <span class="text-xs text-gray-400">12 Sub</span>
+                <span class="text-xs text-gray-400">19 Sub</span>
+                <span class="text-xs text-gray-400">28 Sub</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indirim Tipi Dagilimi -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white">
+            <div class="p-5 border-b border-gray-200">
+              <h2 class="text-base font-semibold text-gray-900">Indirim Tipi Dagilimi</h2>
+            </div>
+            <div class="p-5">
+              <div class="h-64 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 flex flex-col items-center justify-center">
+                <svg class="w-10 h-10 text-gray-300 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                <span class="text-sm font-medium text-gray-400">Pie Chart</span>
+                <span class="text-xs text-gray-400 mt-0.5">%, Sabit, Bundle dagilimi</span>
+              </div>
+              <div class="flex items-center justify-center gap-5 mt-3">
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                  <span class="text-xs text-gray-500">% Indirim</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                  <span class="text-xs text-gray-500">Sabit Tutar</span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                  <span class="text-xs text-gray-500">Bundle</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lokasyon Bazli Performans -->
+        <div class="border-2 border-gray-300 rounded-lg bg-white mb-6">
+          <div class="p-5 border-b border-gray-200">
+            <h2 class="text-base font-semibold text-gray-900">Lokasyon Bazli Performans</h2>
+          </div>
+          <div class="p-5 space-y-4">
+            <!-- Tema Park -->
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-700 w-28 flex-shrink-0 text-right">Tema Park</span>
+              <div class="flex-1 flex items-center gap-3">
+                <div class="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-500 rounded-full" style="width: 100%"></div>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 w-12 text-right">2,100</span>
+              </div>
+            </div>
+
+            <!-- Aqua Park -->
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-700 w-28 flex-shrink-0 text-right">Aqua Park</span>
+              <div class="flex-1 flex items-center gap-3">
+                <div class="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-500 rounded-full" style="width: 67%"></div>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 w-12 text-right">1,400</span>
+              </div>
+            </div>
+
+            <!-- Hotel -->
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-700 w-28 flex-shrink-0 text-right">Hotel</span>
+              <div class="flex-1 flex items-center gap-3">
+                <div class="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-500 rounded-full" style="width: 38%"></div>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 w-12 text-right">800</span>
+              </div>
+            </div>
+
+            <!-- All Areas -->
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-gray-700 w-28 flex-shrink-0 text-right">All Areas</span>
+              <div class="flex-1 flex items-center gap-3">
+                <div class="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-500 rounded-full" style="width: 11%"></div>
+                </div>
+                <span class="text-sm font-semibold text-gray-700 w-12 text-right">221</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+          <!-- En Basarili Kampanyalar -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white">
+            <div class="p-5 border-b border-gray-200">
+              <h2 class="text-base font-semibold text-gray-900">En Basarili Kampanyalar</h2>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="wf-v2-table">
+                <thead>
+                  <tr>
+                    <th>Kampanya Adi</th>
+                    <th>Tip</th>
+                    <th class="cursor-pointer">
+                      <span class="inline-flex items-center gap-1">
+                        Kullanim
+                        <svg class="w-3.5 h-3.5 text-gray-900" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                      </span>
+                    </th>
+                    <th>Indirim &#8378;</th>
+                    <th>Donusum %</th>
+                    <th>ROI</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="text-sm font-medium text-gray-900">Yaz Firsatlari</td>
+                    <td><span class="wf-v2-badge wf-v2-badge-info">% Indirim</span></td>
+                    <td class="text-sm text-gray-700">1,245</td>
+                    <td class="text-sm text-gray-700">&#8378;18,420</td>
+                    <td class="text-sm text-gray-700">%32.1</td>
+                    <td class="text-sm font-medium text-green-600">4.2x</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm font-medium text-gray-900">Erken Rezervasyon</td>
+                    <td><span class="wf-v2-badge wf-v2-badge-success">Sabit</span></td>
+                    <td class="text-sm text-gray-700">980</td>
+                    <td class="text-sm text-gray-700">&#8378;12,300</td>
+                    <td class="text-sm text-gray-700">%28.5</td>
+                    <td class="text-sm font-medium text-green-600">3.8x</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm font-medium text-gray-900">Aile Paketi</td>
+                    <td><span class="wf-v2-badge wf-v2-badge-warning">Bundle</span></td>
+                    <td class="text-sm text-gray-700">856</td>
+                    <td class="text-sm text-gray-700">&#8378;8,950</td>
+                    <td class="text-sm text-gray-700">%25.3</td>
+                    <td class="text-sm font-medium text-green-600">3.1x</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm font-medium text-gray-900">Hosgeldin Kuponu</td>
+                    <td><span class="wf-v2-badge wf-v2-badge-info">% Indirim</span></td>
+                    <td class="text-sm text-gray-700">742</td>
+                    <td class="text-sm text-gray-700">&#8378;3,710</td>
+                    <td class="text-sm text-gray-700">%18.7</td>
+                    <td class="text-sm font-medium text-green-600">2.5x</td>
+                  </tr>
+                  <tr>
+                    <td class="text-sm font-medium text-gray-900">Hafta Sonu Ozel</td>
+                    <td><span class="wf-v2-badge wf-v2-badge-success">Sabit</span></td>
+                    <td class="text-sm text-gray-700">698</td>
+                    <td class="text-sm text-gray-700">&#8378;1,850</td>
+                    <td class="text-sm text-gray-700">%15.2</td>
+                    <td class="text-sm font-medium text-yellow-600">1.9x</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Son Kullanimlar -->
+          <div class="border-2 border-gray-300 rounded-lg bg-white">
+            <div class="p-5 border-b border-gray-200 flex items-center justify-between">
+              <h2 class="text-base font-semibold text-gray-900">Son Kullanimlar</h2>
+              <span class="wf-v2-badge wf-v2-badge-success">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                Canli
+              </span>
+            </div>
+            <div class="divide-y divide-gray-100">
+              <!-- Item 1 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">5dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-info flex-shrink-0">Kupon Kodu</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;75</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-AKT</span>
+              </div>
+
+              <!-- Item 2 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">12dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-purple flex-shrink-0">Otomatik</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;120</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-BMX</span>
+              </div>
+
+              <!-- Item 3 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">18dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-info flex-shrink-0">Kupon Kodu</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;50</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-CNZ</span>
+              </div>
+
+              <!-- Item 4 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">25dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-purple flex-shrink-0">Otomatik</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;200</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-DYL</span>
+              </div>
+
+              <!-- Item 5 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">32dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-info flex-shrink-0">Kupon Kodu</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;90</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-EFG</span>
+              </div>
+
+              <!-- Item 6 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">41dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-purple flex-shrink-0">Otomatik</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;150</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-HJK</span>
+              </div>
+
+              <!-- Item 7 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">55dk once</span>
+                <span class="wf-v2-badge wf-v2-badge-info flex-shrink-0">Kupon Kodu</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;60</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-LMN</span>
+              </div>
+
+              <!-- Item 8 -->
+              <div class="p-4 flex items-center gap-3 hover:bg-gray-50 transition-colors">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded font-medium w-20 text-center flex-shrink-0">1sa once</span>
+                <span class="wf-v2-badge wf-v2-badge-info flex-shrink-0">Kupon Kodu</span>
+                <span class="text-sm font-medium text-gray-900 flex-shrink-0">-&#8378;45</span>
+                <span class="text-xs text-gray-400 ml-auto">PNR-2026-PRS</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

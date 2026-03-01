@@ -8,10 +8,18 @@
 // V2 Menu yapisi - Figma'dan birebir
 const menuItems = [
   { id: 'dashboard', icon: 'home', label: 'Dashboard', href: '#' },
-  { id: 'kullanicilar', icon: 'app-window-user', label: 'Kullanicilar', href: '#' },
-  { id: 'temaParkUrunleri', icon: 'coupon-cut', label: 'Tema Park Urunleri', href: '#', hasChevron: true },
-  { id: 'kampanyalar', icon: 'discount-percent-bubble', label: 'Kampanyalar', href: '#', hasChevron: true },
-  { id: 'eklentiler', icon: 'add-sign-bold', label: 'Eklentiler', href: '#', hasChevron: true },
+  { id: 'kullanicilar', icon: 'app-window-user', label: 'Kullanicilar', href: 'kullanici-davet.html', folder: 'sprint-b' },
+  { id: 'temaParkUrunleri', icon: 'coupon-cut', label: 'Tema Park Urunleri', href: 'urun-listesi.html', folder: 'sprint-b' },
+  {
+    id: 'kampanyalar',
+    icon: 'discount-percent-bubble',
+    label: 'Kampanyalar',
+    type: 'group',
+    children: [
+      { id: 'kampanyaListesi', label: 'Kampanya Listesi', href: 'kampanya-listesi.html', folder: 'sprint-d' },
+      { id: 'kampanyaDashboard', label: 'Kampanya Dashboard', href: 'kampanya-dashboard.html', folder: 'sprint-d' },
+    ]
+  },
   {
     id: 'siparisler',
     icon: 'shop-cart',
@@ -37,6 +45,16 @@ const menuItems = [
       { id: 'cmsKoleksiyonlar', label: 'Koleksiyonlar', href: 'koleksiyon-listesi.html', folder: 'sprint-c' },
       { id: 'cmsEtkinlikTakvimi', label: 'Etkinlik Takvimi', href: 'etkinlik-takvimi.html', folder: 'sprint-c' },
       { id: 'cmsSiteAyarlari', label: 'Site Ayarlari', href: 'site-ayarlari.html', folder: 'sprint-c' }
+    ]
+  },
+  {
+    id: 'raporlama',
+    icon: 'analytics-graph-bar',
+    label: 'Raporlama',
+    type: 'group',
+    children: [
+      { id: 'satisRaporlari', label: 'Satis Raporlari', href: 'satis-raporlari.html', folder: 'sprint-d' },
+      { id: 'gelirAnalizi', label: 'Gelir Analizi', href: 'gelir-analizi.html', folder: 'sprint-d' },
     ]
   },
   { type: 'divider' },
@@ -143,6 +161,16 @@ const pageConfigsV2 = {
     parentGroup: 'cms',
     breadcrumb: ['Content Management', 'Onizleme']
   },
+  'blok-katalogu': {
+    activeItem: 'cmsSayfalar',
+    parentGroup: 'cms',
+    breadcrumb: ['Content Management', 'Block Katalogu']
+  },
+  'blok-detay': {
+    activeItem: 'cmsSayfalar',
+    parentGroup: 'cms',
+    breadcrumb: ['Content Management', 'Block Katalogu', 'Block Detay']
+  },
   'koleksiyon-listesi': {
     activeItem: 'cmsKoleksiyonlar',
     parentGroup: 'cms',
@@ -152,7 +180,76 @@ const pageConfigsV2 = {
     activeItem: 'cmsKoleksiyonlar',
     parentGroup: 'cms',
     breadcrumb: ['Content Management', 'Koleksiyonlar', 'Koleksiyon Duzenle']
-  }
+  },
+  // Sprint B - Tema Park Urun Yonetimi
+  'urun-listesi': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri']
+  },
+  'bilet-form': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri', 'Gunluk Bilet (Web) (TKT-007)']
+  },
+  'fiyat-takvimi': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri', 'Fiyatlandirma & Kapasite']
+  },
+  'eklenti-form': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri', 'Otopark (ADD-004)']
+  },
+  'fnb-form': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri', 'Burger Stop (FNB-001)']
+  },
+  'experience-form': {
+    activeItem: 'temaParkUrunleri',
+    parentGroup: null,
+    breadcrumb: ['Tema Park Urunleri', 'Yunus Gosterisi (EXP-001)']
+  },
+  // Sprint B - Kullanici Yonetimi
+  'kullanici-davet': {
+    activeItem: 'kullanicilar',
+    parentGroup: null,
+    breadcrumb: ['Kullanicilar', 'Davet Et']
+  },
+  // Sprint D - Kampanya Yonetimi
+  'kampanya-listesi': {
+    activeItem: 'kampanyaListesi',
+    parentGroup: 'kampanyalar',
+    breadcrumb: ['Kampanyalar', 'Kampanya Listesi']
+  },
+  'kampanya-form': {
+    activeItem: 'kampanyaListesi',
+    parentGroup: 'kampanyalar',
+    breadcrumb: ['Kampanyalar', 'Kampanya Listesi', 'Yeni Kampanya']
+  },
+  'kampanya-form-v3': {
+    activeItem: 'kampanyaListesi',
+    parentGroup: 'kampanyalar',
+    breadcrumb: ['Kampanyalar', 'Kampanya Listesi', 'Yeni Kampanya']
+  },
+  'kampanya-dashboard': {
+    activeItem: 'kampanyaDashboard',
+    parentGroup: 'kampanyalar',
+    breadcrumb: ['Kampanyalar', 'Kampanya Dashboard']
+  },
+  // Sprint D - Raporlama
+  'satis-raporlari': {
+    activeItem: 'satisRaporlari',
+    parentGroup: 'raporlama',
+    breadcrumb: ['Raporlama', 'Satis Raporlari']
+  },
+  'gelir-analizi': {
+    activeItem: 'gelirAnalizi',
+    parentGroup: 'raporlama',
+    breadcrumb: ['Raporlama', 'Gelir Analizi']
+  },
 };
 
 class WireframeLayoutV2 {
@@ -239,8 +336,10 @@ class WireframeLayoutV2 {
         item.children.forEach(child => {
           const isActive = child.id === activeItem;
           const resolvedHref = this.resolveHref(child.href, child.folder);
+          const isDisabled = !child.href || child.href === '#';
+          const disabledStyle = isDisabled ? ' style="opacity: 0.35; pointer-events: none; cursor: default;"' : '';
           navItems += `
-              <a href="${resolvedHref}" class="wf-v2-sidebar-item wf-v2-sidebar-nested${isActive ? ' active' : ''}">
+              <a href="${resolvedHref}" class="wf-v2-sidebar-item wf-v2-sidebar-nested${isActive ? ' active' : ''}"${disabledStyle}>
                 <span class="w-[18px]"></span>
                 <span>${child.label}</span>
               </a>
@@ -257,8 +356,10 @@ class WireframeLayoutV2 {
       // Regular item
       const isActive = item.id === activeItem;
       const resolvedHref = this.resolveHref(item.href, item.folder);
+      const isDisabled = !item.href || item.href === '#';
+      const disabledStyle = isDisabled ? ' style="opacity: 0.35; pointer-events: none; cursor: default;"' : '';
       navItems += `
-        <a href="${resolvedHref}" class="wf-v2-sidebar-item${isActive ? ' active' : ''}">
+        <a href="${resolvedHref}" class="wf-v2-sidebar-item${isActive ? ' active' : ''}"${disabledStyle}>
           <span class="wf-icon" data-icon="${item.icon}" data-size="18"></span>
           <span x-show="sidebarOpen">${item.label}</span>
           ${item.hasChevron ? '<svg x-show="sidebarOpen" class="w-4 h-4 ml-auto opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' : ''}

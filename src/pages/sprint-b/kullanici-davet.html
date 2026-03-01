@@ -1,0 +1,296 @@
+<!--
+  Wireframe: kullanici-davet
+  Task: D-B01 (#10), D-B02, B-008
+  Karar Versiyonu: K-002, K-003
+  Son Guncelleme: 2026-02-27
+
+  Kullanici davet modali
+  - Slide panel (sag taraftan)
+  - Form: Ad Soyad, Email, Telefon (+90), Proje (disabled), Durum toggle
+  - 2 kolonlu yetki matrisi: Duzenle + Goruntule
+  - Kategori bazli gruplama
+  - Quick actions: Sadece Goruntuleme / Tumunu Kaldir / Tumunu Sec
+  - "Davet Et" butonu
+  - Arka plan: basitletirilmis kullanici listesi
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kullanici Davet Et - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  panelOpen: true,
+  durumAktif: true,
+  permissions: [
+    { category: 'Urun Yonetimi', items: [
+      { name: 'Bilet Yonetimi', edit: true, view: true },
+      { name: 'Eklenti Yonetimi', edit: true, view: true },
+      { name: 'F&amp;B Yonetimi', edit: false, view: true },
+      { name: 'Experience Yonetimi', edit: false, view: true }
+    ]},
+    { category: 'Siparis Yonetimi', items: [
+      { name: 'Siparis Goruntuleme', edit: false, view: true },
+      { name: 'Siparis Iptal/Iade', edit: true, view: true },
+      { name: 'PNR Olusturma', edit: true, view: true }
+    ]},
+    { category: 'Kampanya &amp; Pazarlama', items: [
+      { name: 'Kampanya Yonetimi', edit: true, view: true },
+      { name: 'Kupon Yonetimi', edit: false, view: true },
+      { name: 'Raporlama', edit: false, view: true }
+    ]},
+    { category: 'Sistem', items: [
+      { name: 'Kullanici Yonetimi', edit: false, view: true },
+      { name: 'CMS Yonetimi', edit: true, view: true },
+      { name: 'Entegrasyon Ayarlari', edit: false, view: false },
+      { name: 'Sistem Ayarlari', edit: false, view: false }
+    ]}
+  ],
+  setViewOnly() {
+    this.permissions.forEach(cat => cat.items.forEach(item => { item.edit = false; item.view = true; }));
+  },
+  clearAll() {
+    this.permissions.forEach(cat => cat.items.forEach(item => { item.edit = false; item.view = false; }));
+  },
+  selectAll() {
+    this.permissions.forEach(cat => cat.items.forEach(item => { item.edit = true; item.view = true; }));
+  }
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1 relative">
+
+        <!-- Background: Simplified User List (dimmed) -->
+        <div class="opacity-50 pointer-events-none">
+
+          <!-- Search + Actions Bar -->
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex-1 max-w-md">
+              <div class="wf-v2-search">
+                <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" placeholder="Ara..." class="wf-v2-search-input">
+              </div>
+            </div>
+            <button class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-2">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Davet Et
+            </button>
+          </div>
+
+          <!-- User Table -->
+          <div class="wf-v2-table-wrapper">
+            <table class="wf-v2-table">
+              <thead>
+                <tr>
+                  <th>Ad Soyad</th>
+                  <th>E-posta</th>
+                  <th>Rol</th>
+                  <th>Yetki Sayisi</th>
+                  <th>Son Giris</th>
+                  <th>Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-sm font-medium text-gray-900">Elif Kaya</td>
+                  <td class="text-sm text-gray-600">elif@legends.com</td>
+                  <td class="text-sm text-gray-600">Tenant Admin</td>
+                  <td><span class="wf-v2-badge" style="background: #ede9fe; color: #7c3aed;">14</span></td>
+                  <td class="text-sm text-gray-500">2 saat once</td>
+                  <td><span class="wf-v2-badge wf-v2-badge-success">Aktif</span></td>
+                </tr>
+                <tr>
+                  <td class="text-sm font-medium text-gray-900">Ahmet Demir</td>
+                  <td class="text-sm text-gray-600">ahmet@legends.com</td>
+                  <td class="text-sm text-gray-600">Editor</td>
+                  <td><span class="wf-v2-badge" style="background: #ede9fe; color: #7c3aed;">8</span></td>
+                  <td class="text-sm text-gray-500">1 gun once</td>
+                  <td><span class="wf-v2-badge wf-v2-badge-success">Aktif</span></td>
+                </tr>
+                <tr>
+                  <td class="text-sm font-medium text-gray-900">Zeynep Yilmaz</td>
+                  <td class="text-sm text-gray-600">zeynep@legends.com</td>
+                  <td class="text-sm text-gray-600">Editor</td>
+                  <td><span class="wf-v2-badge" style="background: #ede9fe; color: #7c3aed;">5</span></td>
+                  <td class="text-sm text-gray-500">3 gun once</td>
+                  <td><span class="wf-v2-badge" style="background: #fee2e2; color: #dc2626;">Devre Disi</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Slide Panel (Right Side) -->
+  <div x-show="panelOpen" class="fixed inset-0 z-50">
+    <!-- Backdrop -->
+    <div class="fixed inset-0" style="background: rgba(0,0,0,0.3);" @click="panelOpen = false"></div>
+
+    <!-- Panel -->
+    <div class="fixed right-0 top-0 h-full bg-white shadow-xl flex flex-col" style="width: 520px;">
+
+      <!-- Panel Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Kullanici Davet Et</h2>
+        <button @click="panelOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Panel Content (Scrollable) -->
+      <div class="flex-1 overflow-y-auto px-6 py-5 space-y-5">
+
+        <!-- Ad Soyad -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Ad Soyad</label>
+          <input type="text" class="wf-v2-input" placeholder="Ad soyad girin">
+        </div>
+
+        <!-- E-posta -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">E-posta</label>
+          <input type="email" class="wf-v2-input" placeholder="E-posta adresi girin">
+        </div>
+
+        <!-- Telefon -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Telefon</label>
+          <div class="flex gap-2">
+            <div class="wf-v2-input flex items-center justify-center text-sm text-gray-500 bg-gray-50 px-3" style="width: 64px;">+90</div>
+            <input type="tel" class="wf-v2-input flex-1" placeholder="5XX XXX XX XX">
+          </div>
+        </div>
+
+        <!-- Proje (disabled for Tenant Admin) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5">Proje</label>
+          <input type="text" class="wf-v2-input bg-gray-100 cursor-not-allowed" value="The Land of Legends" disabled>
+          <p class="text-xs text-gray-500 mt-1">Tenant Admin icin proje otomatik atanir</p>
+        </div>
+
+        <!-- Durum Toggle -->
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-700">Durum</span>
+          <div class="flex items-center gap-2">
+            <span class="text-sm" :class="durumAktif ? 'text-green-600' : 'text-gray-500'" x-text="durumAktif ? 'Aktif' : 'Pasif'"></span>
+            <label class="wf-toggle">
+              <input type="checkbox" class="wf-toggle-input" :checked="durumAktif" @change="durumAktif = $event.target.checked">
+              <div class="wf-toggle-slider"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <hr class="border-gray-200">
+
+        <!-- Yetki Matrisi Header -->
+        <div>
+          <h3 class="text-sm font-semibold text-gray-900 mb-3">Yetki Matrisi</h3>
+
+          <!-- Quick Actions -->
+          <div class="flex gap-2 mb-4">
+            <button @click="setViewOnly()" class="wf-v2-btn text-xs px-3 py-1.5">Sadece Goruntuleme</button>
+            <button @click="clearAll()" class="wf-v2-btn text-xs px-3 py-1.5">Tumunu Kaldir</button>
+            <button @click="selectAll()" class="wf-v2-btn text-xs px-3 py-1.5">Tumunu Sec</button>
+          </div>
+
+          <!-- Permission Table -->
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <!-- Table Header -->
+            <div class="grid grid-cols-3 bg-gray-50 border-b border-gray-200">
+              <div class="px-4 py-2 text-xs font-semibold text-gray-600">Yetki</div>
+              <div class="px-4 py-2 text-xs font-semibold text-gray-600 text-center">Duzenle</div>
+              <div class="px-4 py-2 text-xs font-semibold text-gray-600 text-center">Goruntule</div>
+            </div>
+
+            <!-- Permission Rows grouped by category -->
+            <template x-for="(cat, ci) in permissions" :key="ci">
+              <div>
+                <!-- Category Header -->
+                <div class="px-4 py-2 bg-gray-50 border-b border-t border-gray-200">
+                  <span class="text-xs font-semibold text-gray-500 uppercase" x-text="cat.category"></span>
+                </div>
+                <!-- Permission Items -->
+                <template x-for="(item, ii) in cat.items" :key="ii">
+                  <div class="grid grid-cols-3 border-b border-gray-100 hover:bg-gray-50">
+                    <div class="px-4 py-2.5">
+                      <span class="text-sm text-gray-700" x-text="item.name"></span>
+                    </div>
+                    <div class="px-4 py-2.5 flex justify-center">
+                      <input type="checkbox" :checked="item.edit" @change="item.edit = $event.target.checked" class="wf-checkbox">
+                    </div>
+                    <div class="px-4 py-2.5 flex justify-center">
+                      <input type="checkbox" :checked="item.view" @change="item.view = $event.target.checked" class="wf-checkbox">
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Panel Footer -->
+      <div class="flex gap-3 px-6 py-4 border-t border-gray-200">
+        <button @click="panelOpen = false" class="wf-v2-btn flex-1 justify-center">Iptal</button>
+        <button class="wf-v2-btn wf-v2-btn-primary flex-1 justify-center">Davet Et</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

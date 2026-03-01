@@ -1,0 +1,1096 @@
+<!--
+  Wireframe: kampanya-form (V3)
+  Task: D-002, D-003
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-03-01
+
+  Shopify Esitlemesi:
+  - Modal: Indirim TIPI secimi (Urun Indirimi / Sepet Indirimi / X Al Y Ode / Ucretsiz Urun)
+  - Method (Kupon/Otomatik): Form icinde tab toggle olarak
+  - Tip bazli kart dizilimi: Her tip icin farkli form yapisi
+  - Ortak kartlar: Musteri Hedeflemesi, Min Satin Alma, Kullanim Limitleri, Birlestirme, Kurallar
+  - Cakisma: Dropdown yerine Shopify-tarz checkbox (Birlestirme karti)
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kampanya Formu - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+
+  /* Modal */
+  showTypeModal: new URLSearchParams(window.location.search).has('new'),
+  isNewCampaign: new URLSearchParams(window.location.search).has('new'),
+
+  /* Core: Tip (modal'dan) + Method (form'dan) */
+  discountType: new URLSearchParams(window.location.search).has('new') ? '' : 'product',
+  campaignType: new URLSearchParams(window.location.search).has('new') ? '' : 'kupon',
+
+  /* Kupon ayarlari */
+  couponType: 'generic',
+
+  /* Indirim degeri (Urun/Sepet icin) */
+  discountValueType: 'percentage',
+
+  /* Kademeli */
+  tieredDiscount: false,
+  tiers: [{qty: 1, value: 10}, {qty: 3, value: 15}, {qty: 5, value: 20}],
+
+  /* Urun hedefleme (Urun Indirimi icin) */
+  targetProducts: 'all',
+
+  /* BOGO */
+  buyConditionType: 'quantity',
+  buyQty: 2,
+  buyAmount: 500,
+  getQty: 1,
+  bogoDiscountType: 'free',
+  bogoMaxUseEnabled: false,
+  bogoMaxUseCount: 1,
+
+  /* Ortak kartlar */
+  targetCustomers: 'all',
+  minPurchaseType: 'none',
+  limitTotal: true,
+  limitPerUser: true,
+  combineProduct: false,
+  combineOrder: false,
+
+  /* Kampanya kurallari */
+  selectedDays: ['pzt', 'sal', 'per', 'cum'],
+  campaignStatus: 'active',
+  publishDropdown: false,
+  scheduledDate: '',
+
+  /* Sidebar: Satis Kanallari + Dil */
+  selectedChannels: ['web', 'app'],
+  selectedLangs: ['tr', 'en'],
+
+  toggleDay(day) {
+    if (this.selectedDays.includes(day)) {
+      this.selectedDays = this.selectedDays.filter(d => d !== day);
+    } else {
+      this.selectedDays = [...this.selectedDays, day];
+    }
+  },
+
+  toggleItem(list, item) {
+    if (this[list].includes(item)) {
+      this[list] = this[list].filter(i => i !== item);
+    } else {
+      this[list] = [...this[list], item];
+    }
+  },
+
+  /* Tip label helper */
+  get typeLabel() {
+    const labels = { product: 'Urun Indirimi', order: 'Sepet Indirimi', bogo: 'X Al Y Ode', freebie: 'Ucretsiz Urun' };
+    return labels[this.discountType] || '';
+  }
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Top Bar (sticky between header and main) -->
+      <div class="border-b border-gray-200 bg-white px-6 py-3 flex items-center justify-between sticky top-0 z-10">
+        <a href="kampanya-listesi.html" class="text-sm text-gray-500 hover:text-gray-700 inline-flex items-center gap-1.5">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Kampanyalar
+        </a>
+        <div class="flex items-center gap-3">
+          <button class="wf-v2-btn border-red-300 text-red-600 hover:bg-red-50 inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            Sil
+          </button>
+          <button @click="campaignStatus = 'draft'; publishDropdown = false; scheduledDate = ''" class="wf-v2-btn wf-v2-btn-secondary inline-flex items-center gap-1.5 text-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Taslak Kaydet
+          </button>
+          <!-- Yayinla button with dropdown -->
+          <div class="relative">
+            <button @click="publishDropdown = !publishDropdown" style="background-color: #16a34a; border-color: #16a34a; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 2px solid #16a34a; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+              Yayinla
+              <span style="border-left: 1px solid rgba(255,255,255,0.35); padding-left: 8px; display: inline-flex; align-items: center;">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </span>
+            </button>
+            <!-- Dropdown menu -->
+            <div x-show="publishDropdown" @click.outside="publishDropdown = false" style="display: none;" class="absolute right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden" :style="'width: 340px;'">
+              <button @click="campaignStatus = 'active'; publishDropdown = false; scheduledDate = ''" class="w-full text-left px-5 py-4 hover:bg-gray-50 border-b border-gray-100 flex items-center gap-4">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                  <div class="text-sm font-semibold" style="color: #111827;">Simdi Yayinla</div>
+                  <div class="text-xs mt-0.5" style="color: #6b7280;">Kampanya hemen aktif olur</div>
+                </div>
+              </button>
+              <div class="px-5 py-4">
+                <div class="flex items-center gap-4 mb-4">
+                  <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <div>
+                    <div class="text-sm font-semibold" style="color: #111827;">Ileri Tarihte Planla</div>
+                    <div class="text-xs mt-0.5" style="color: #6b7280;">Belirli bir tarihte otomatik yayinla</div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="relative flex-1">
+                    <input type="text" x-model="scheduledDate" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" placeholder="GG/AA/YYYY" value="15/03/2026">
+                    <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <button @click="campaignStatus = 'scheduled'; publishDropdown = false" style="background-color: #3b82f6; border-color: #3b82f6; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; border: 2px solid #3b82f6; cursor: pointer; white-space: nowrap;">
+                    Planla
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <main class="p-6 flex-1">
+
+        <!-- ====== TYPE SELECTION MODAL (4 Indirim Tipi) ====== -->
+        <div x-show="showTypeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none;">
+          <div class="fixed inset-0 bg-black/30" @click="if(!isNewCampaign || discountType) showTypeModal = false"></div>
+          <div class="wf-v2-modal relative z-10 w-full max-w-xl">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-lg font-semibold text-gray-900">Indirim Turu Secin</h3>
+              <button x-show="!isNewCampaign || discountType" @click="showTypeModal = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+            <p class="text-sm text-gray-500 mb-5">Olusturmak istediginiz indirim turunu secin. Bu secim formun yapisini belirler.</p>
+            <div class="space-y-3">
+
+              <!-- Urun Indirimi -->
+              <button @click="discountType = 'product'; campaignType = campaignType || 'kupon'; showTypeModal = false"
+                      :class="discountType === 'product' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'"
+                      class="w-full text-left border-2 rounded-lg p-4 flex items-start gap-4 transition-colors">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900">Urun Indirimi</div>
+                  <div class="text-xs text-gray-500 mt-0.5">Belirli urunlerde yuzde veya sabit tutar indirimi</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              <!-- Sepet Indirimi -->
+              <button @click="discountType = 'order'; campaignType = campaignType || 'kupon'; showTypeModal = false"
+                      :class="discountType === 'order' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'"
+                      class="w-full text-left border-2 rounded-lg p-4 flex items-start gap-4 transition-colors">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900">Sepet Indirimi</div>
+                  <div class="text-xs text-gray-500 mt-0.5">Tum sepette yuzde veya sabit tutar indirimi</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              <!-- X Al Y Ode -->
+              <button @click="discountType = 'bogo'; campaignType = campaignType || 'kupon'; showTypeModal = false"
+                      :class="discountType === 'bogo' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'"
+                      class="w-full text-left border-2 rounded-lg p-4 flex items-start gap-4 transition-colors">
+                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900">X Al Y Ode</div>
+                  <div class="text-xs text-gray-500 mt-0.5">Miktar bazli al/kazan kampanyasi</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+              <!-- Ucretsiz Urun -->
+              <button @click="discountType = 'freebie'; campaignType = campaignType || 'kupon'; showTypeModal = false"
+                      :class="discountType === 'freebie' ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-gray-300'"
+                      class="w-full text-left border-2 rounded-lg p-4 flex items-start gap-4 transition-colors">
+                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                </div>
+                <div class="flex-1">
+                  <div class="text-sm font-medium text-gray-900">Ucretsiz Urun</div>
+                  <div class="text-xs text-gray-500 mt-0.5">Kosul karsilaninca hediye urun verilir</div>
+                </div>
+                <svg class="w-5 h-5 text-gray-300 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== 3-COLUMN GRID LAYOUT ====== -->
+        <div x-show="discountType" class="grid grid-cols-3 gap-6">
+
+          <!-- ============================================ -->
+          <!-- LEFT COLUMN (col-span-2) - Form Cards       -->
+          <!-- ============================================ -->
+          <div class="col-span-2 space-y-6">
+
+            <!-- ================================================ -->
+            <!-- Card 1: Tip Basligi + Method + Kampanya Bilgileri -->
+            <!-- ================================================ -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <!-- Dynamic type title -->
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                     :class="discountType === 'product' ? 'bg-blue-100' : discountType === 'order' ? 'bg-green-100' : discountType === 'bogo' ? 'bg-purple-100' : 'bg-amber-100'">
+                  <!-- Product icon -->
+                  <svg x-show="discountType === 'product'" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                  <!-- Order icon -->
+                  <svg x-show="discountType === 'order'" class="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                  <!-- BOGO icon -->
+                  <svg x-show="discountType === 'bogo'" class="w-4 h-4 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                  <!-- Freebie icon -->
+                  <svg x-show="discountType === 'freebie'" class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/></svg>
+                </div>
+                <h2 class="text-sm font-semibold text-gray-900" x-text="typeLabel"></h2>
+              </div>
+
+              <div class="space-y-4">
+                <!-- Method: Tab Toggle (Kupon Kodu / Otomatik) -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Dagitim Yontemi</label>
+                  <div class="wf-v2-btn-group">
+                    <button @click="campaignType = 'kupon'"
+                            :class="campaignType === 'kupon' ? 'active' : ''">
+                      Kupon Kodu
+                    </button>
+                    <button @click="campaignType = 'otomatik'"
+                            :class="campaignType === 'otomatik' ? 'active' : ''">
+                      Otomatik
+                    </button>
+                  </div>
+                  <p class="text-xs text-gray-400 mt-1.5" x-text="campaignType === 'kupon' ? 'Musteri odeme sirasinda kupon kodu girer' : 'Kosullar saglandiginda sepette otomatik uygulanir'"></p>
+                </div>
+
+                <!-- Kupon Kodu Alani (if kupon) -->
+                <div x-show="campaignType === 'kupon'" class="space-y-3">
+                  <div class="border-t border-gray-100 pt-4">
+                    <!-- Radio: Jenerik / Unique -->
+                    <div class="flex items-center gap-6 mb-3">
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="couponType" value="generic" x-model="couponType" class="text-indigo-600">
+                        <span class="text-sm text-gray-700">Jenerik Kod</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="radio" name="couponType" value="unique" x-model="couponType" class="text-indigo-600">
+                        <span class="text-sm text-gray-700">Unique Kod</span>
+                      </label>
+                    </div>
+
+                    <!-- Jenerik Section -->
+                    <div x-show="couponType === 'generic'" class="space-y-3">
+                      <div class="flex items-end gap-3">
+                        <div class="flex-1">
+                          <label class="block text-sm font-medium text-gray-700 mb-1.5">Kupon Kodu</label>
+                          <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono uppercase" value="WELCOME10">
+                        </div>
+                        <button class="wf-v2-btn wf-v2-btn-secondary inline-flex items-center gap-1.5 text-sm whitespace-nowrap">
+                          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+                          Olustur
+                        </button>
+                      </div>
+                      <p class="text-xs text-gray-400">Tum musteriler ayni kodu kullanir</p>
+                    </div>
+
+                    <!-- Unique Section -->
+                    <div x-show="couponType === 'unique'" style="display: none;" class="space-y-3">
+                      <div class="flex items-end gap-3">
+                        <div class="flex-1">
+                          <label class="block text-sm font-medium text-gray-700 mb-1.5">Prefix</label>
+                          <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm font-mono uppercase" value="VIP">
+                        </div>
+                        <div class="w-32">
+                          <label class="block text-sm font-medium text-gray-700 mb-1.5">Adet</label>
+                          <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" value="1000">
+                        </div>
+                        <button class="wf-v2-btn wf-v2-btn-secondary inline-flex items-center gap-1.5 text-sm whitespace-nowrap">
+                          Toplu Olustur
+                        </button>
+                      </div>
+                      <div class="flex items-center gap-3">
+                        <button class="wf-v2-btn inline-flex items-center gap-1.5 text-sm">
+                          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                          CSV Indir
+                        </button>
+                        <span class="text-xs text-gray-400">Uretilen kodlari indirin</span>
+                      </div>
+                      <!-- CSV Import -->
+                      <div class="mt-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1.5">CSV Import</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-gray-400 transition-colors cursor-pointer">
+                          <svg class="w-6 h-6 text-gray-400 mx-auto mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                          <p class="text-sm text-gray-500">Dosya Yukle</p>
+                          <p class="text-xs text-gray-400 mt-0.5">CSV formatinda kupon kodlari</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Kampanya Adi -->
+                <div class="border-t border-gray-100 pt-4">
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Kampanya Adi</label>
+                  <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" value="WELCOME10">
+                </div>
+                <!-- Aciklama -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Aciklama</label>
+                  <textarea class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" rows="2" placeholder="Kampanya aciklamasi yaziniz...">Yeni kullanicilara ozel %20 hosgeldin indirimi</textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- CARD 2: Indirim Degeri (product + order)         -->
+            <!-- ================================================ -->
+            <div x-show="discountType === 'product' || discountType === 'order'" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Indirim Degeri</h2>
+              <div class="space-y-4">
+
+                <!-- % / Sabit Toggle -->
+                <div class="wf-v2-btn-group">
+                  <button @click="discountValueType = 'percentage'"
+                          :class="discountValueType === 'percentage' ? 'active' : ''">
+                    Yuzde (%)
+                  </button>
+                  <button @click="discountValueType = 'fixed'"
+                          :class="discountValueType === 'fixed' ? 'active' : ''">
+                    Sabit Tutar
+                  </button>
+                </div>
+
+                <!-- Kademeli toggle (sadece otomatik) -->
+                <div x-show="campaignType !== 'kupon'" class="flex items-center gap-2">
+                  <button @click="tieredDiscount = !tieredDiscount"
+                          :class="tieredDiscount ? 'bg-indigo-600' : 'bg-gray-200'"
+                          class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200">
+                    <span :class="tieredDiscount ? 'translate-x-4' : 'translate-x-0'"
+                          class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-1 ring-gray-300 transition duration-200"></span>
+                  </button>
+                  <span class="text-sm font-medium text-gray-700">Kademeli Indirim</span>
+                  <span class="text-xs text-gray-400">(miktar bazli farkli oranlar)</span>
+                </div>
+
+                <!-- Tek oran -->
+                <div x-show="!tieredDiscount || campaignType === 'kupon'" class="flex items-end gap-3">
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5" x-text="discountValueType === 'percentage' ? 'Indirim Orani (%)' : 'Indirim Tutari (TL)'"></label>
+                    <div class="relative">
+                      <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-10" value="20">
+                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400" x-text="discountValueType === 'percentage' ? '%' : '&#8378;'">%</span>
+                    </div>
+                  </div>
+                  <div class="flex-1" x-show="discountValueType === 'percentage'">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Maks. indirim tutari</label>
+                    <div class="relative">
+                      <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="500">
+                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">&#8378;</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Kademeli tablo -->
+                <div x-show="tieredDiscount && campaignType !== 'kupon'" style="display: none;" class="space-y-3">
+                  <div class="border border-gray-200 rounded-lg overflow-hidden">
+                    <table class="w-full text-sm">
+                      <thead>
+                        <tr class="bg-gray-50">
+                          <th class="text-left px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide">Min. Adet</th>
+                          <th class="text-left px-3 py-2 text-xs font-medium text-gray-500 uppercase tracking-wide" x-text="discountValueType === 'percentage' ? 'Indirim (%)' : 'Indirim (TL)'"></th>
+                          <th class="w-10"></th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-gray-100">
+                        <template x-for="(tier, index) in tiers" :key="index">
+                          <tr>
+                            <td class="px-3 py-2">
+                              <div class="flex items-center gap-1.5">
+                                <input type="number" class="w-20 border border-gray-300 rounded-md px-2 py-1.5 text-sm text-center" :value="tier.qty" min="1">
+                                <span class="text-xs text-gray-400">ve ustu</span>
+                              </div>
+                            </td>
+                            <td class="px-3 py-2">
+                              <div class="relative w-28">
+                                <input type="number" class="w-full border border-gray-300 rounded-md px-2 py-1.5 text-sm pr-7 text-center" :value="tier.value">
+                                <span class="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-400" x-text="discountValueType === 'percentage' ? '%' : '&#8378;'"></span>
+                              </div>
+                            </td>
+                            <td class="px-2 py-2 text-center">
+                              <button x-show="tiers.length > 1" @click="tiers = tiers.filter((_, i) => i !== index)" class="p-1 text-gray-400 hover:text-red-500 transition-colors">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                              </button>
+                            </td>
+                          </tr>
+                        </template>
+                      </tbody>
+                    </table>
+                  </div>
+                  <button @click="tiers = [...tiers, {qty: tiers[tiers.length-1].qty + 2, value: tiers[tiers.length-1].value + 5}]" class="w-full border-2 border-dashed border-gray-300 rounded-lg py-2 text-sm text-gray-500 hover:border-gray-400 hover:text-gray-600 transition-colors flex items-center justify-center gap-1.5">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Kademe Ekle
+                  </button>
+                  <p class="text-xs text-gray-400">Musteri sepetindeki adet en yuksek esigi karsilarsa o kademenin indirimi uygulanir</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- CARD 3a: Uygulanacak Urunler (SADECE product)   -->
+            <!-- ================================================ -->
+            <div x-show="discountType === 'product'" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Uygulanacak Urunler</h2>
+              <div class="space-y-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="targetProducts" value="all" x-model="targetProducts" class="text-indigo-600">
+                  <span class="text-sm text-gray-700">Tum urunler</span>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="targetProducts" value="ticket_types" x-model="targetProducts" class="text-indigo-600 mt-0.5">
+                  <div class="flex-1">
+                    <span class="text-sm text-gray-700">Belirli bilet tipleri</span>
+                    <div x-show="targetProducts === 'ticket_types'" class="mt-2" style="display: none;">
+                      <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" multiple>
+                        <option>Gunluk Giris Bileti</option>
+                        <option>VIP Bilet</option>
+                        <option>Aile Paketi</option>
+                        <option>Yillik Pase</option>
+                      </select>
+                      <p class="text-xs text-gray-400 mt-1">Ctrl/Cmd ile coklu secim yapabilirsiniz</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- CARD 3b: Musteri Satin Alir + Kazanir (BOGO)    -->
+            <!-- ================================================ -->
+            <div x-show="discountType === 'bogo'" style="display: none;" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Musteri Satin Alir</h2>
+              <div class="bg-gray-50 rounded-lg p-4 space-y-4">
+                <!-- Kosul Tipi: Adet / Tutar -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kosul Tipi</label>
+                  <div class="wf-v2-btn-group">
+                    <button @click="buyConditionType = 'quantity'"
+                            :class="buyConditionType === 'quantity' ? 'active' : ''">
+                      Minimum Adet
+                    </button>
+                    <button @click="buyConditionType = 'amount'"
+                            :class="buyConditionType === 'amount' ? 'active' : ''">
+                      Minimum Tutar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Adet secili -->
+                <div x-show="buyConditionType === 'quantity'" class="flex items-end gap-3">
+                  <div class="w-24">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Adet</label>
+                    <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" x-model="buyQty" min="1">
+                  </div>
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Urun / Kategori</label>
+                    <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                      <option>Herhangi bir urun</option>
+                      <option>Gunluk Giris Bileti</option>
+                      <option>VIP Bilet</option>
+                      <option>Aile Paketi</option>
+                      <option>Tema Park kategorisi</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Tutar secili -->
+                <div x-show="buyConditionType === 'amount'" style="display: none;" class="flex items-end gap-3">
+                  <div class="w-32">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Minimum Tutar</label>
+                    <div class="relative">
+                      <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" x-model="buyAmount" min="0">
+                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">&#8378;</span>
+                    </div>
+                  </div>
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Urun / Kategori</label>
+                    <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                      <option>Herhangi bir urun</option>
+                      <option>Gunluk Giris Bileti</option>
+                      <option>VIP Bilet</option>
+                      <option>Aile Paketi</option>
+                      <option>Tema Park kategorisi</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div x-show="discountType === 'bogo'" style="display: none;" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Musteri Kazanir</h2>
+              <div class="bg-green-50 rounded-lg p-4">
+                <div class="flex items-end gap-3">
+                  <div class="w-24">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Adet</label>
+                    <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" x-model="getQty" min="1">
+                  </div>
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Urun / Kategori</label>
+                    <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                      <option>Ayni urun</option>
+                      <option>Gunluk Giris Bileti</option>
+                      <option>VIP Bilet</option>
+                      <option>Aqua Park Bileti</option>
+                      <option>Kids World Bileti</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Indirimli Deger</label>
+                  <div class="flex items-center gap-3">
+                    <label class="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="bogoDiscount" value="free" x-model="bogoDiscountType" class="text-indigo-600">
+                      <span class="text-sm text-gray-700">Ucretsiz</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="bogoDiscount" value="percent" x-model="bogoDiscountType" class="text-indigo-600">
+                      <span class="text-sm text-gray-700">% Indirim</span>
+                    </label>
+                    <label class="flex items-center gap-1.5 cursor-pointer">
+                      <input type="radio" name="bogoDiscount" value="fixed" x-model="bogoDiscountType" class="text-indigo-600">
+                      <span class="text-sm text-gray-700">Sabit Tutar</span>
+                    </label>
+                  </div>
+                  <!-- % Indirim input -->
+                  <div x-show="bogoDiscountType === 'percent'" class="mt-2" style="display: none;">
+                    <div class="relative w-32">
+                      <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="50" min="1" max="100">
+                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">%</span>
+                    </div>
+                  </div>
+                  <!-- Sabit Tutar input -->
+                  <div x-show="bogoDiscountType === 'fixed'" class="mt-2" style="display: none;">
+                    <div class="relative w-32">
+                      <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="100">
+                      <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">&#8378;</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Siparis basina maks kullanim -->
+              <div class="mt-4 border-t border-gray-200 pt-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" x-model="bogoMaxUseEnabled" class="rounded text-indigo-600">
+                  <span class="text-sm text-gray-700">Siparis basina maksimum kullanim sayisi</span>
+                </label>
+                <div x-show="bogoMaxUseEnabled" class="mt-2 ml-6" style="display: none;">
+                  <div class="flex items-center gap-2">
+                    <input type="number" class="w-24 border border-gray-300 rounded-md px-3 py-2 text-sm" x-model="bogoMaxUseCount" min="1">
+                    <span class="text-sm text-gray-500">kez uygulanabilir</span>
+                  </div>
+                  <p class="text-xs text-gray-400 mt-1">Bir sipariste bu kampanya en fazla bu kadar kez gecerli olur</p>
+                </div>
+              </div>
+
+              <p class="text-xs text-gray-400 mt-3">Ornek: <span x-text="buyQty"></span> al <span x-text="getQty"></span> ode — musteri <span x-text="parseInt(buyQty) + parseInt(getQty)"></span> urun alir, <span x-text="getQty"></span> tanesi ucretsiz</p>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- CARD 3c: Hediye Urun (freebie)                   -->
+            <!-- ================================================ -->
+            <div x-show="discountType === 'freebie'" style="display: none;" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Hediye Urun</h2>
+              <div class="bg-green-50 rounded-lg p-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Urun Secin</label>
+                  <select class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                    <option>Kids World Bileti</option>
+                    <option>Aqua Park Bileti</option>
+                    <option>F&B Kuponu (50 TL)</option>
+                    <option>Hatira Fotografi</option>
+                    <option>Fast Pass</option>
+                  </select>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Adet</label>
+                  <input type="number" class="w-24 border border-gray-300 rounded-md px-3 py-2 text-sm" value="1" min="1">
+                </div>
+              </div>
+            </div>
+
+            <!-- ================================================ -->
+            <!-- ORTAK KARTLAR — Tum tipler icin                  -->
+            <!-- ================================================ -->
+
+            <!-- Card: Musteri Hedeflemesi (Eligibility) -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Musteri Hedeflemesi</h2>
+              <div class="space-y-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="targetCustomers" value="all" x-model="targetCustomers" class="text-indigo-600">
+                  <span class="text-sm text-gray-700">Tum musteriler</span>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="targetCustomers" value="specific" x-model="targetCustomers" class="text-indigo-600 mt-0.5">
+                  <div class="flex-1">
+                    <span class="text-sm text-gray-700">Belirli musteriler (e-posta ile hedefleme)</span>
+                    <div x-show="targetCustomers === 'specific'" class="mt-2" style="display: none;">
+                      <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm" placeholder="E-posta veya telefon ile ara...">
+                      <p class="text-xs text-gray-400 mt-1">Birden fazla musteri icin CSV yukleyebilirsiniz</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Card: Min Satin Alma Kosulu (BOGO haric) -->
+            <div x-show="discountType !== 'bogo'" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Minimum Satin Alma Kosulu</h2>
+              <div class="space-y-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="minPurchase" value="none" x-model="minPurchaseType" class="text-indigo-600">
+                  <span class="text-sm text-gray-700">Kosul yok</span>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="minPurchase" value="amount" x-model="minPurchaseType" class="text-indigo-600 mt-0.5">
+                  <div class="flex-1">
+                    <span class="text-sm text-gray-700">Minimum tutar</span>
+                    <div x-show="minPurchaseType === 'amount'" class="mt-2" style="display: none;">
+                      <div class="relative w-48">
+                        <input type="number" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" placeholder="0">
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">&#8378;</span>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+                <label class="flex items-start gap-2 cursor-pointer">
+                  <input type="radio" name="minPurchase" value="quantity" x-model="minPurchaseType" class="text-indigo-600 mt-0.5">
+                  <div class="flex-1">
+                    <span class="text-sm text-gray-700">Minimum adet</span>
+                    <div x-show="minPurchaseType === 'quantity'" class="mt-2" style="display: none;">
+                      <input type="number" class="w-32 border border-gray-300 rounded-md px-3 py-2 text-sm" placeholder="1" min="1">
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Card: Kullanim Limitleri (sadece kupon modunda) -->
+            <div x-show="campaignType === 'kupon'" class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Kullanim Limitleri</h2>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" x-model="limitTotal" class="rounded text-indigo-600">
+                  <div class="flex items-center gap-3 flex-1">
+                    <span class="text-sm text-gray-700">Toplam kullanim limiti</span>
+                    <input type="number" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm w-28" value="1000" :disabled="!limitTotal" :class="!limitTotal ? 'bg-gray-50 opacity-50' : ''">
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input type="checkbox" x-model="limitPerUser" class="rounded text-indigo-600">
+                  <div class="flex items-center gap-3 flex-1">
+                    <span class="text-sm text-gray-700">Kisi basi kullanim</span>
+                    <input type="number" class="border border-gray-300 rounded-md px-3 py-1.5 text-sm w-28" value="1" :disabled="!limitPerUser" :class="!limitPerUser ? 'bg-gray-50 opacity-50' : ''">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card: Birlestirme (Combinations) — Shopify pattern -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Birlestirme</h2>
+              <p class="text-xs text-gray-400 mb-3">Bu indirim baska indirimlerle birlikte kullanilabilir mi?</p>
+              <div class="space-y-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" x-model="combineProduct" class="rounded text-indigo-600">
+                  <span class="text-sm text-gray-700">Urun indirimleri ile birlestirilebilir</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" x-model="combineOrder" class="rounded text-indigo-600">
+                  <span class="text-sm text-gray-700">Sepet indirimleri ile birlestirilebilir</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Card: Kampanya Kurallari -->
+            <div class="bg-white border border-gray-200 rounded-lg p-5">
+              <h2 class="text-sm font-semibold text-gray-900 mb-4">Kampanya Kurallari</h2>
+              <div class="space-y-5">
+
+                <!-- Satin Alma Donemi -->
+                <div>
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    <label class="block text-sm font-medium text-gray-700">Satin Alma Donemi</label>
+                  </div>
+                  <p class="text-xs text-gray-400 mb-2">Kampanya bu tarihler arasinda satin alimlarda gecerlidir</p>
+                  <div class="flex items-center gap-3">
+                    <div class="relative flex-1">
+                      <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="01/03/2026">
+                      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <span class="text-gray-400 text-sm">-</span>
+                    <div class="relative flex-1">
+                      <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="31/03/2026">
+                      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border-t border-gray-100"></div>
+
+                <!-- Kullanim/Ziyaret Donemi -->
+                <div>
+                  <div class="flex items-center gap-2 mb-1.5">
+                    <svg class="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    <label class="block text-sm font-medium text-gray-700">Kullanim / Ziyaret Donemi</label>
+                  </div>
+                  <p class="text-xs text-gray-400 mb-2">Biletin hangi ziyaret tarihleri icin gecerli oldugunu belirler</p>
+                  <div class="flex items-center gap-3">
+                    <div class="relative flex-1">
+                      <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="01/03/2026">
+                      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                    <span class="text-gray-400 text-sm">-</span>
+                    <div class="relative flex-1">
+                      <input type="text" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8" value="30/09/2026">
+                      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Donem Timeline Gorseli -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-medium text-gray-500">Yillik Gorunum</span>
+                    <span class="text-xs text-gray-400">2026</span>
+                  </div>
+                  <!-- Ay etiketleri -->
+                  <div class="flex text-center mb-1" style="font-size: 10px; color: #9ca3af;">
+                    <span class="flex-1">Oca</span>
+                    <span class="flex-1">Sub</span>
+                    <span class="flex-1 font-semibold text-gray-600">Mar</span>
+                    <span class="flex-1">Nis</span>
+                    <span class="flex-1">May</span>
+                    <span class="flex-1">Haz</span>
+                    <span class="flex-1">Tem</span>
+                    <span class="flex-1">Agu</span>
+                    <span class="flex-1 font-semibold text-gray-600">Eyl</span>
+                    <span class="flex-1">Eki</span>
+                    <span class="flex-1">Kas</span>
+                    <span class="flex-1">Ara</span>
+                  </div>
+                  <!-- Satis bar -->
+                  <div class="relative">
+                    <div class="flex h-6 mb-1 rounded overflow-hidden bg-white border border-gray-200">
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1"></div>
+                    </div>
+                    <div class="absolute top-0 h-6 rounded flex items-center justify-center" style="left: 16.67%; width: 8.33%; background: rgba(59, 130, 246, 0.25); border: 1.5px solid #3b82f6;">
+                      <span style="font-size: 9px; color: #2563eb; font-weight: 600; white-space: nowrap;">Satis</span>
+                    </div>
+                  </div>
+                  <!-- Ziyaret bar -->
+                  <div class="relative">
+                    <div class="flex h-6 mb-1 rounded overflow-hidden bg-white border border-gray-200">
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1"></div>
+                    </div>
+                    <div class="absolute top-0 h-6 rounded flex items-center justify-center" style="left: 16.67%; width: 58.33%; background: rgba(34, 197, 94, 0.2); border: 1.5px solid #22c55e;">
+                      <span style="font-size: 9px; color: #16a34a; font-weight: 600; white-space: nowrap;">Ziyaret</span>
+                    </div>
+                  </div>
+                  <!-- Kesisim bar -->
+                  <div class="relative">
+                    <div class="flex h-4 rounded overflow-hidden bg-white border border-gray-200">
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1 border-r border-gray-100"></div>
+                      <div class="flex-1"></div>
+                    </div>
+                    <div class="absolute top-0 h-4 rounded flex items-center justify-center" style="left: 16.67%; width: 8.33%; background: repeating-linear-gradient(45deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.15) 3px, rgba(34, 197, 94, 0.15) 3px, rgba(34, 197, 94, 0.15) 6px); border: 1.5px dashed #6366f1;">
+                    </div>
+                  </div>
+                  <!-- Lejand -->
+                  <div class="flex items-center gap-4 mt-3">
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-3 h-2 rounded-sm" style="background: rgba(59, 130, 246, 0.3); border: 1px solid #3b82f6;"></div>
+                      <span style="font-size: 10px; color: #6b7280;">Satin alma (31 gun)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-3 h-2 rounded-sm" style="background: rgba(34, 197, 94, 0.25); border: 1px solid #22c55e;"></div>
+                      <span style="font-size: 10px; color: #6b7280;">Ziyaret (214 gun)</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div class="w-3 h-2 rounded-sm" style="background: repeating-linear-gradient(45deg, rgba(99,102,241,0.2), rgba(99,102,241,0.2) 2px, rgba(34,197,94,0.2) 2px, rgba(34,197,94,0.2) 4px); border: 1px dashed #6366f1;"></div>
+                      <span style="font-size: 10px; color: #6b7280;">Kesisim (31 gun)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Kullanim Gunleri -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Kullanim Gunleri</label>
+                  <p class="text-xs text-gray-400 mb-2">Hangi ziyaret gunlerinde gecerli</p>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <template x-for="day in [{key:'pzt',label:'Pzt'},{key:'sal',label:'Sal'},{key:'car',label:'Car'},{key:'per',label:'Per'},{key:'cum',label:'Cum'},{key:'cmt',label:'Cmt'},{key:'paz',label:'Paz'}]" :key="day.key">
+                      <button @click="toggleDay(day.key)"
+                              :style="selectedDays.includes(day.key) ? 'background:#4f46e5;color:#fff;' : 'background:#f3f4f6;color:#374151;'"
+                              class="w-10 h-10 rounded-lg text-xs font-medium transition-colors"
+                              x-text="day.label"></button>
+                    </template>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ============================================ -->
+          <!-- RIGHT COLUMN (col-span-1) - Sticky Sidebar  -->
+          <!-- ============================================ -->
+          <div class="col-span-1">
+
+              <!-- Sticky wrapper: Ozet + Kanallar + Dil -->
+              <div style="position: sticky; top: 56px;">
+                <div class="border-2 border-gray-200 rounded-lg">
+                  <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+                    <h3 class="text-sm font-semibold text-gray-900">Kampanya Ozeti</h3>
+                    <!-- Durum badge (read-only) -->
+                    <span x-show="campaignStatus === 'active'" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style="background: #dcfce7; color: #166534;">
+                      <span class="w-1.5 h-1.5 rounded-full" style="background: #16a34a;"></span>
+                      Aktif
+                    </span>
+                    <span x-show="campaignStatus === 'draft'" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style="background: #f3f4f6; color: #374151;">
+                      <span class="w-1.5 h-1.5 rounded-full" style="background: #9ca3af;"></span>
+                      Taslak
+                    </span>
+                    <div x-show="campaignStatus === 'scheduled'" class="flex items-center gap-1.5">
+                      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium" style="background: #dbeafe; color: #1e40af;">
+                        <span class="w-1.5 h-1.5 rounded-full" style="background: #3b82f6;"></span>
+                        Planlanmis
+                      </span>
+                      <span x-show="scheduledDate" class="text-xs" style="color: #6b7280;" x-text="scheduledDate"></span>
+                    </div>
+                  </div>
+                  <div class="p-4 space-y-2">
+                    <!-- Tip badge -->
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Indirim Turu</span>
+                      <span class="wf-v2-badge"
+                            :class="discountType === 'product' ? 'wf-v2-badge-info' : discountType === 'order' ? 'wf-v2-badge-success' : discountType === 'bogo' ? 'wf-v2-badge-warning' : 'wf-v2-badge-danger'"
+                            x-text="typeLabel"></span>
+                    </div>
+                    <!-- Method badge -->
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Dagitim</span>
+                      <span class="wf-v2-badge" :class="campaignType === 'otomatik' ? 'wf-v2-badge-success' : 'wf-v2-badge-info'" x-text="campaignType === 'otomatik' ? 'Otomatik' : 'Kupon Kodu'"></span>
+                    </div>
+                    <!-- Kupon kodu -->
+                    <div x-show="campaignType === 'kupon'" class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Kod</span>
+                      <span class="text-sm font-mono font-medium text-gray-900">WELCOME10</span>
+                    </div>
+                    <!-- Indirim degeri (product/order) -->
+                    <div x-show="(discountType === 'product' || discountType === 'order') && (!tieredDiscount || campaignType === 'kupon')" class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Indirim</span>
+                      <span class="text-sm font-semibold text-green-600" x-text="discountValueType === 'percentage' ? '%20' : '&#8378;50'"></span>
+                    </div>
+                    <!-- Kademeler (product/order) -->
+                    <div x-show="(discountType === 'product' || discountType === 'order') && tieredDiscount && campaignType !== 'kupon'" class="mt-1">
+                      <span class="text-xs text-gray-500">Kademeler</span>
+                      <div class="mt-1 space-y-0.5">
+                        <template x-for="tier in tiers" :key="tier.qty">
+                          <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-500" x-text="tier.qty + '+ adet'"></span>
+                            <span class="font-semibold text-green-600" x-text="discountValueType === 'percentage' ? '%' + tier.value : '&#8378;' + tier.value"></span>
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                    <!-- BOGO -->
+                    <div x-show="discountType === 'bogo'" class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Kural</span>
+                      <span class="text-xs font-medium text-gray-700" x-text="buyQty + ' Al ' + getQty + ' Ode'"></span>
+                    </div>
+                    <!-- Freebie -->
+                    <div x-show="discountType === 'freebie'" class="flex items-center justify-between">
+                      <span class="text-xs text-gray-500">Hediye</span>
+                      <span class="text-xs font-medium text-green-600">Kids World Bileti</span>
+                    </div>
+                  </div>
+
+                  <!-- Detaylar -->
+                  <div class="border-t border-gray-200 px-4 py-3">
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wide">Detaylar</span>
+                    <ul class="mt-1.5 space-y-1">
+                      <li x-show="discountType === 'product'" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span x-text="targetProducts === 'all' ? 'Tum urunlerde gecerli' : 'Belirli bilet tiplerinde gecerli'"></span>
+                      </li>
+                      <li x-show="discountType === 'order'" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Tum sepette gecerli
+                      </li>
+                      <li x-show="discountValueType === 'percentage' && (discountType === 'product' || discountType === 'order')" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Maks 500&#8378; indirim
+                      </li>
+                      <li x-show="minPurchaseType !== 'none'" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span x-text="minPurchaseType === 'amount' ? 'Min. tutar kosulu var' : 'Min. adet kosulu var'"></span>
+                      </li>
+                      <li x-show="campaignType === 'kupon'" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Kisi basi 1 kullanim
+                      </li>
+                      <li class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span x-text="targetCustomers === 'all' ? 'Tum musteriler' : 'Belirli musteriler'"></span>
+                      </li>
+                      <li x-show="combineProduct || combineOrder" class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span x-text="(combineProduct && combineOrder) ? 'Diger indirimlerle birlesir' : combineProduct ? 'Urun indirimleri ile birlesir' : 'Sepet indirimleri ile birlesir'"></span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Kurallar -->
+                  <div class="border-t border-gray-200 px-4 py-3">
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wide">Kurallar</span>
+                    <ul class="mt-1.5 space-y-1">
+                      <li class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-blue-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <span>Satis: 1 Mar - 31 Mar</span>
+                      </li>
+                      <li class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-green-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                        <span>Ziyaret: 1 Mar - 30 Eyl</span>
+                      </li>
+                      <li class="flex items-center gap-1.5 text-xs text-gray-600">
+                        <svg class="w-3 h-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Pzt-Cum
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Satis Kanallari -->
+                  <div class="border-t border-gray-200 px-4 py-3">
+                    <h3 class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Satis Kanallari</h3>
+                    <div class="flex items-center gap-2">
+                      <template x-for="ch in [{key:'web',label:'Web'},{key:'app',label:'App'},{key:'kiosk',label:'Kiosk'}]" :key="ch.key">
+                        <button @click="toggleItem('selectedChannels', ch.key)"
+                                :style="selectedChannels.includes(ch.key) ? 'background:#4f46e5;color:#fff;' : 'background:#f3f4f6;color:#374151;'"
+                                class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                                x-text="ch.label"></button>
+                      </template>
+                    </div>
+                  </div>
+
+                  <!-- Dil -->
+                  <div class="border-t border-gray-200 px-4 py-3">
+                    <h3 class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-2">Dil</h3>
+                    <div class="flex items-center gap-2">
+                      <template x-for="lang in [{key:'tr',label:'TR'},{key:'en',label:'EN'},{key:'de',label:'DE'},{key:'ru',label:'RU'}]" :key="lang.key">
+                        <button @click="toggleItem('selectedLangs', lang.key)"
+                                :style="selectedLangs.includes(lang.key) ? 'background:#4f46e5;color:#fff;' : 'background:#f3f4f6;color:#374151;'"
+                                class="w-10 h-8 rounded-lg text-xs font-medium transition-colors"
+                                x-text="lang.label"></button>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- /sticky wrapper -->
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

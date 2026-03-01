@@ -1319,17 +1319,17 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 10px;
-  font-size: 12px;
+  padding: 2px 8px;
+  font-size: 11px;
   font-weight: 500;
-  border-radius: 12px !important;
+  border-radius: 10px !important;
+  border: none;
 }
 
 .wf-v2-badge-green,
 .wf-v2-badge-success {
   background: #dcfce7;
   color: #16a34a;
-  border: 2px solid #22c55e;
 }
 
 .wf-v2-badge-gray {
@@ -1345,19 +1345,16 @@
 .wf-v2-badge-info {
   background: #dbeafe;
   color: #2563eb;
-  border: 2px solid #3b82f6;
 }
 
 .wf-v2-badge-warning {
   background: #fef3c7;
   color: #d97706;
-  border: 2px solid #f59e0b;
 }
 
 .wf-v2-badge-danger {
   background: #fee2e2;
   color: #dc2626;
-  border: 2px solid #ef4444;
 }
 
 /* V2 Filter Drawer */
@@ -1477,10 +1474,53 @@ select.wf-v2-input {
   border-color: #4f46e5;
 }
 
+.wf-v2-btn-secondary {
+  background: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.wf-v2-btn-secondary:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+}
+
 .wf-v2-btn-outline {
   background: transparent;
   border: 2px solid #d1d5db;
   color: #374151;
+}
+
+/* V2 Button Group (segmented toggle) */
+.wf-v2-btn-group {
+  display: inline-flex;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wf-v2-btn-group button {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: none;
+  background: #ffffff;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.wf-v2-btn-group button:not(:last-child) {
+  border-right: 1px solid #e5e7eb;
+}
+
+.wf-v2-btn-group button:hover {
+  background: #f9fafb;
+}
+
+.wf-v2-btn-group button.active {
+  background: #1f2937;
+  color: #ffffff;
 }
 
 /* V2 Search Input */

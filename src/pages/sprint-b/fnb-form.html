@@ -1,0 +1,663 @@
+<!--
+  Wireframe: fnb-form
+  Task: D-B01 (#8), B-005
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-27
+
+  F&B (Yemek) urunu olusturma/duzenleme formu
+  - Eklenti sablonu bazli + Servis Noktasi dropdown + Gunluk Kapasite
+  - Uyumluluk Modu (bilet checkbox + Otomatik Oner + Zorunlu)
+  - Coklu gorsel galeri (drag-sort + birincil secim)
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>F&amp;B Detaylari - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeTab: 'temel',
+  saveMenuOpen: false,
+  listelemeTipi: 'tum_yil',
+  selectedDays: ['pzt', 'sal', 'car', 'per', 'cum', 'cmt', 'paz'],
+  allDays: true,
+  ileriTarih: true,
+  fnbDurumu: true,
+  appFiyat1: false,
+  appFiyat2: false,
+  configLang: 'tr',
+  langData: { tr: true, en: false, ru: false, de: false },
+  servisNoktasi: 'restoran-a',
+  uyumlulukModu: 'otomatik',
+  uyumluBiletler: [
+    { id: 'gunluk', name: 'Gunluk Giris Bileti', checked: true },
+    { id: 'vip', name: 'VIP Bilet', checked: false },
+    { id: 'aile', name: 'Aile Paketi', checked: true },
+    { id: 'yillik', name: 'Yillik Kart', checked: false },
+    { id: 'grup', name: 'Grup Bileti', checked: true }
+  ],
+  primaryImage: 0,
+  galleryImages: [
+    { id: 1, name: 'burger-1.jpg', size: '1.2MB', isPrimary: true },
+    { id: 2, name: 'burger-2.jpg', size: '890KB', isPrimary: false },
+    { id: 3, name: 'burger-3.jpg', size: '1.1MB', isPrimary: false }
+  ],
+  setPrimary(index) {
+    this.galleryImages = this.galleryImages.map((img, i) => ({
+      ...img,
+      isPrimary: i === index
+    }));
+    this.primaryImage = index;
+  },
+  removeImage(index) {
+    const wasPrimary = this.galleryImages[index].isPrimary;
+    this.galleryImages = this.galleryImages.filter((_, i) => i !== index);
+    if (wasPrimary && this.galleryImages.length > 0) {
+      this.galleryImages = this.galleryImages.map((img, i) => ({
+        ...img,
+        isPrimary: i === 0
+      }));
+      this.primaryImage = 0;
+    }
+  },
+  toggleDay(day) {
+    if (this.selectedDays.includes(day)) {
+      this.selectedDays = this.selectedDays.filter(d => d !== day);
+    } else {
+      this.selectedDays = [...this.selectedDays, day];
+    }
+    this.allDays = this.selectedDays.length === 7;
+  },
+  toggleAllDays() {
+    if (this.allDays) {
+      this.selectedDays = ['pzt', 'sal', 'car', 'per', 'cum', 'cmt', 'paz'];
+    } else {
+      this.selectedDays = [];
+    }
+  }
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+
+        <!-- Header Actions Bar -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center gap-3">
+            <a href="urun-listesi.html" class="text-gray-400 hover:text-gray-600 inline-flex items-center gap-1.5 text-sm">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>Urunler</span>
+            </a>
+          </div>
+          <div class="flex items-center gap-3">
+            <button class="wf-v2-btn">iptal</button>
+            <!-- Kaydet Dropdown -->
+            <div class="relative" @click.outside="saveMenuOpen = false">
+              <button @click="saveMenuOpen = !saveMenuOpen" class="wf-v2-btn wf-v2-btn-primary inline-flex items-center gap-2">
+                Kaydet
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div x-show="saveMenuOpen" x-transition class="absolute right-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20" style="display: none;">
+                <button class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                  <div class="font-medium">Taslak olarak kaydet</div>
+                  <div class="text-xs text-gray-400 mt-0.5">Yayinlanmadan kaydedilir</div>
+                </button>
+                <button class="block w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                  <div class="font-medium">Degisiklikleri yayinla</div>
+                  <div class="text-xs text-gray-400 mt-0.5">Canli ortama yansitilir</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Tab Bar -->
+        <div class="border-b border-gray-200 mb-6">
+          <div class="flex gap-0">
+            <button @click="activeTab = 'temel'" :class="activeTab === 'temel' ? 'border-b-2 border-purple-600 text-purple-600 font-medium' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-2.5 text-sm transition-colors">Temel Bilgiler</button>
+            <a href="fiyat-takvimi.html" :class="activeTab === 'fiyat' ? 'border-b-2 border-purple-600 text-purple-600 font-medium' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-2.5 text-sm transition-colors inline-flex items-center gap-1.5">
+              Fiyatlandirma &amp; Kapasite
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+            <button @click="activeTab = 'cms'" :class="activeTab === 'cms' ? 'border-b-2 border-purple-600 text-purple-600 font-medium' : 'text-gray-500 hover:text-gray-700'" class="px-4 py-2.5 text-sm transition-colors">Musteri Gorunumu</button>
+          </div>
+        </div>
+
+        <!-- ==================== TAB 1: Temel Bilgiler ==================== -->
+        <div x-show="activeTab === 'temel'">
+          <div class="max-w-4xl space-y-6">
+
+            <!-- 1. Tur ID (readonly) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Tur ID</label>
+              <input type="text" class="wf-v2-input bg-gray-50" value="FNB-001" readonly>
+              <p class="text-xs text-gray-400 mt-1">Otomatik olusturulur, degistirilemez</p>
+            </div>
+
+            <!-- 2. Panel Adi -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Panel Adi</label>
+              <input type="text" class="wf-v2-input" value="Burger Stop">
+            </div>
+
+            <!-- 3. Ayni Gun Kurali -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Ayni Gun Kurali</label>
+              <select class="wf-v2-input">
+                <option selected>1 saat oncesine kadar</option>
+                <option>2 saat oncesine kadar</option>
+                <option>Ayni gun alis yok</option>
+              </select>
+              <p class="text-xs text-gray-400 mt-1">Kullanim gununde satin alimin ne zamana kadar acik olacagi</p>
+            </div>
+
+            <!-- 4. Servis Noktasi -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Servis Noktasi</label>
+              <div class="relative">
+                <select class="wf-v2-input appearance-none pr-8" x-model="servisNoktasi">
+                  <option value="restoran-a">Restoran A - Ana Bina</option>
+                  <option value="restoran-b">Restoran B - Su Parki</option>
+                  <option value="kafe-1">Kafe 1 - Giris</option>
+                  <option value="kafe-2">Kafe 2 - Tema Park</option>
+                  <option value="food-court">Food Court</option>
+                </select>
+                <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Bu F&amp;B urunun sunuldugu servis noktasi</p>
+            </div>
+
+            <!-- 5. Gunluk Kapasite -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Gunluk Kapasite</label>
+              <input type="number" class="wf-v2-input w-48" value="200">
+              <p class="text-xs text-gray-500 mt-1">Bir gunde satilabilecek maksimum adet</p>
+            </div>
+
+            <!-- 6. Uyumluluk Modu -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">Uyumluluk Modu</label>
+
+              <!-- Mod secimi (radio) -->
+              <div class="space-y-2 mb-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="uyumluluk" value="otomatik" x-model="uyumlulukModu" class="text-purple-600">
+                  <span class="text-sm text-gray-700">Otomatik Oner</span>
+                  <span class="text-xs text-gray-400">- Secilen biletlerde otomatik onerilir</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="uyumluluk" value="zorunlu" x-model="uyumlulukModu" class="text-purple-600">
+                  <span class="text-sm text-gray-700">Zorunlu</span>
+                  <span class="text-xs text-gray-400">- Secilen biletlerde zorunlu olarak eklenir</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="uyumluluk" value="yok" x-model="uyumlulukModu" class="text-purple-600">
+                  <span class="text-sm text-gray-700">Yok</span>
+                  <span class="text-xs text-gray-400">- Biletlerle iliskilendirilmez</span>
+                </label>
+              </div>
+
+              <!-- Bilet checkbox listesi (shown when otomatik or zorunlu) -->
+              <div x-show="uyumlulukModu !== 'yok'" x-transition>
+                <label class="block text-xs text-gray-500 mb-2 font-medium">Uyumlu Biletler</label>
+                <div class="bg-gray-50 rounded-lg p-4">
+                  <div class="space-y-2">
+                    <template x-for="bilet in uyumluBiletler" :key="bilet.id">
+                      <label class="flex items-center gap-2 p-2 rounded hover:bg-white cursor-pointer transition-colors">
+                        <input type="checkbox" :checked="bilet.checked" class="rounded text-purple-600">
+                        <span class="text-sm text-gray-700" x-text="bilet.name"></span>
+                      </label>
+                    </template>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-1">Bu F&amp;B urunun hangi bilet turlerinde onerilecegi/zorunlu olacagi</p>
+              </div>
+            </div>
+
+            <!-- 7. Listeleme Donemi (radio) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Listeleme Donemi</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="listeleme" value="tum_yil" x-model="listelemeTipi" class="text-purple-600">
+                  <span class="text-sm text-gray-700">Tum yil satista</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="radio" name="listeleme" value="belirli_gun" x-model="listelemeTipi" class="text-purple-600">
+                  <span class="text-sm text-gray-700">Belirli gun ve saatlerde satista</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 8. Satis Donemi (shown when belirli_gun) -->
+            <div x-show="listelemeTipi === 'belirli_gun'" x-transition style="display: none;">
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Satis Donemi</label>
+              <div class="flex gap-2 items-center">
+                <div class="relative flex-1">
+                  <input type="text" class="wf-v2-input pr-8" value="12/01/2026">
+                  <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <span class="text-gray-400 text-sm">-</span>
+                <div class="relative flex-1">
+                  <input type="text" class="wf-v2-input pr-8" value="08/02/2026">
+                  <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">Urunun satisa acik olacagi tarih ve saat araligi</p>
+            </div>
+
+            <!-- 9. Kullanim Donemleri (repeatable cards) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">Kullanim Donemleri</label>
+
+              <div class="space-y-4">
+                <!-- Donem Karti 1 -->
+                <div class="border border-gray-200 rounded-lg p-4 space-y-4">
+                  <div class="flex items-start justify-between">
+                    <div class="flex gap-6 flex-1">
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Kullanim Donemi</label>
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                          <span class="text-sm text-gray-700">12/01/2026 - 08/02/2026</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Kullanim Saati</label>
+                        <span class="text-sm text-gray-700">10:30 - 21:00</span>
+                      </div>
+                    </div>
+                    <button class="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    </button>
+                  </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <label class="text-sm font-medium text-gray-700">Fiyat</label>
+                      <label class="flex items-center gap-2 text-sm text-gray-600">
+                        <input type="checkbox" x-model="appFiyat1" class="rounded text-purple-600">
+                        App Fiyatlarini duzenle
+                      </label>
+                    </div>
+                    <div class="grid grid-cols-4 gap-3">
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+                        <input type="text" class="wf-v2-input" value="750&#8378;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+                        <input type="text" class="wf-v2-input" value="100&#8378;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+                        <input type="text" class="wf-v2-input" value="500&euro;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+                        <input type="text" class="wf-v2-input" value="20&euro;">
+                      </div>
+                    </div>
+                    <!-- App Fiyatlari (gorunur when appFiyat1) -->
+                    <div x-show="appFiyat1" x-transition class="mt-3" style="display: none;">
+                      <label class="text-xs text-gray-500 mb-2 block font-medium">App Fiyatlari</label>
+                      <div class="grid grid-cols-4 gap-3">
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+                          <input type="text" class="wf-v2-input" value="700&#8378;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+                          <input type="text" class="wf-v2-input" value="90&#8378;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+                          <input type="text" class="wf-v2-input" value="470&euro;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+                          <input type="text" class="wf-v2-input" value="18&euro;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Donem Karti 2 -->
+                <div class="border border-gray-200 rounded-lg p-4 space-y-4">
+                  <div class="flex items-start justify-between">
+                    <div class="flex gap-6 flex-1">
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Kullanim Donemi</label>
+                        <div class="flex items-center gap-2">
+                          <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                          <span class="text-sm text-gray-700">03/01/2026 - 30/06/2026</span>
+                        </div>
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Kullanim Saati</label>
+                        <span class="text-sm text-gray-700">09:00 - 22:00</span>
+                      </div>
+                    </div>
+                    <button class="p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-500">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    </button>
+                  </div>
+
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <label class="text-sm font-medium text-gray-700">Fiyat</label>
+                      <label class="flex items-center gap-2 text-sm text-gray-600">
+                        <input type="checkbox" x-model="appFiyat2" class="rounded text-purple-600">
+                        App Fiyatlarini duzenle
+                      </label>
+                    </div>
+                    <div class="grid grid-cols-4 gap-3">
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+                        <input type="text" class="wf-v2-input" value="900&#8378;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+                        <input type="text" class="wf-v2-input" value="150&#8378;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+                        <input type="text" class="wf-v2-input" value="600&euro;">
+                      </div>
+                      <div>
+                        <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+                        <input type="text" class="wf-v2-input" value="30&euro;">
+                      </div>
+                    </div>
+                    <!-- App Fiyatlari (gorunur when appFiyat2) -->
+                    <div x-show="appFiyat2" x-transition class="mt-3" style="display: none;">
+                      <label class="text-xs text-gray-500 mb-2 block font-medium">App Fiyatlari</label>
+                      <div class="grid grid-cols-4 gap-3">
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+                          <input type="text" class="wf-v2-input" value="850&#8378;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+                          <input type="text" class="wf-v2-input" value="130&#8378;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+                          <input type="text" class="wf-v2-input" value="560&euro;">
+                        </div>
+                        <div>
+                          <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+                          <input type="text" class="wf-v2-input" value="25&euro;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- + Kullanim Donemi Ekle -->
+              <button class="wf-v2-btn inline-flex items-center gap-2 mt-3 text-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Kullanim Donemi Ekle
+              </button>
+              <p class="text-xs text-gray-400 mt-2">Urunun kullanilabilecegi tarih ve saat araligi</p>
+            </div>
+
+            <!-- 10. Kullanim Gunleri (day selector) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-3">Kullanim Gunleri</label>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button @click="toggleDay('pzt')" :class="selectedDays.includes('pzt') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Pzt</button>
+                <button @click="toggleDay('sal')" :class="selectedDays.includes('sal') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Sal</button>
+                <button @click="toggleDay('car')" :class="selectedDays.includes('car') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Car</button>
+                <button @click="toggleDay('per')" :class="selectedDays.includes('per') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Per</button>
+                <button @click="toggleDay('cum')" :class="selectedDays.includes('cum') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Cum</button>
+                <button @click="toggleDay('cmt')" :class="selectedDays.includes('cmt') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Cmt</button>
+                <button @click="toggleDay('paz')" :class="selectedDays.includes('paz') ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-700'" class="w-10 h-10 rounded-lg text-sm font-medium transition-colors">Paz</button>
+
+                <label class="flex items-center gap-2 ml-4 cursor-pointer">
+                  <input type="checkbox" class="rounded text-purple-600" x-model="allDays" @change="toggleAllDays()">
+                  <span class="text-sm text-gray-700">Tum Gunleri Sec</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">Isaretli olmayan gunlerde urun kullanilamaz</p>
+            </div>
+
+            <!-- 11. Ileri Tarihte Secilebilir -->
+            <div class="flex items-center gap-3">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" x-model="ileriTarih" class="rounded text-purple-600">
+                <span class="text-sm font-medium text-gray-700">Ileri Tarihte Secilebilir</span>
+              </label>
+              <p class="text-xs text-gray-400">Musteriler ileriki tarihler icin siparis verebilir</p>
+            </div>
+
+            <!-- 12. F&B Durumu (toggle) -->
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-sm font-medium text-gray-700">F&amp;B Durumu</span>
+                <p class="text-xs text-gray-400 mt-0.5" x-text="fnbDurumu ? 'Aktif - Satisa acik' : 'Pasif - Satis kapatildi'"></p>
+              </div>
+              <button @click="fnbDurumu = !fnbDurumu"
+                :class="fnbDurumu ? 'bg-purple-600' : 'bg-gray-300'"
+                class="relative w-11 h-6 rounded-full transition-colors cursor-pointer">
+                <span :class="fnbDurumu ? 'translate-x-5' : 'translate-x-0.5'"
+                  class="inline-block w-5 h-5 bg-white rounded-full transition-transform shadow"></span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== TAB 3: Musteri Gorunumu ==================== -->
+        <div x-show="activeTab === 'cms'" style="display: none;">
+          <div class="max-w-4xl space-y-6">
+
+            <!-- 1. Gorsel Galeri (multi-image with drag-sort + birincil secim) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Gorseller</label>
+              <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors cursor-pointer">
+                <svg class="w-8 h-8 text-gray-400 mx-auto mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p class="text-sm text-gray-500">PNG, JPG, max 2MB, 800x600 - Birden fazla gorsel yukleyebilirsiniz</p>
+              </div>
+
+              <!-- Gallery Items -->
+              <div class="space-y-2 mt-3">
+                <template x-for="(img, index) in galleryImages" :key="img.id">
+                  <div class="flex items-center gap-3 p-2 bg-gray-50 rounded-lg" :class="img.isPrimary ? 'ring-2 ring-purple-300 bg-purple-50' : ''">
+                    <!-- Drag Handle -->
+                    <button class="text-gray-300 hover:text-gray-500 cursor-grab flex-shrink-0">
+                      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+                    </button>
+                    <!-- Image Thumbnail -->
+                    <div class="w-10 h-10 bg-gray-200 rounded flex-shrink-0 flex items-center justify-center">
+                      <svg class="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <!-- File Info -->
+                    <div class="flex-1 min-w-0">
+                      <span class="text-sm text-gray-700 block truncate" x-text="img.name"></span>
+                      <span class="text-xs text-gray-400" x-text="img.size"></span>
+                    </div>
+                    <!-- Primary Badge / Set Primary Button -->
+                    <template x-if="img.isPrimary">
+                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 flex-shrink-0">
+                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                        Birincil
+                      </span>
+                    </template>
+                    <template x-if="!img.isPrimary">
+                      <button @click="setPrimary(index)" class="text-xs text-gray-500 hover:text-purple-600 flex-shrink-0 px-2 py-0.5 rounded border border-gray-200 hover:border-purple-300 transition-colors">
+                        Birincil yap
+                      </button>
+                    </template>
+                    <!-- Delete Button -->
+                    <button @click="removeImage(index)" class="text-red-500 hover:text-red-700 flex-shrink-0">
+                      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                    </button>
+                  </div>
+                </template>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">Gorselleri surukleyerek siralayin. Birincil gorsel musteri ekraninda ana gorsel olarak gosterilir.</p>
+            </div>
+
+            <!-- 2. Dil Tab'lari (4 languages) -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Icerik (Dil Bazli)</label>
+              <div class="flex gap-1 mb-4 border-b border-gray-200">
+                <!-- TR - filled (has content) -->
+                <button @click="configLang = 'tr'" :class="configLang === 'tr' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-sm flex items-center gap-1.5 transition-colors">
+                  <span class="text-base">&#x1F1F9;&#x1F1F7;</span> Turkish
+                </button>
+                <!-- EN - empty (orange dot) -->
+                <button @click="configLang = 'en'" :class="configLang === 'en' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-sm flex items-center gap-1.5 transition-colors">
+                  <span class="w-2 h-2 rounded-full flex-shrink-0" style="background: #f97316;"></span> English
+                </button>
+                <!-- RU -->
+                <button @click="configLang = 'ru'" :class="configLang === 'ru' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-sm flex items-center gap-1.5 transition-colors">
+                  <span class="text-base">&#x1F1F7;&#x1F1FA;</span> Russia
+                </button>
+                <!-- DE - empty (orange dot) -->
+                <button @click="configLang = 'de'" :class="configLang === 'de' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-gray-700'" class="px-3 py-2 text-sm flex items-center gap-1.5 transition-colors">
+                  <span class="w-2 h-2 rounded-full flex-shrink-0" style="background: #f97316;"></span> German
+                </button>
+              </div>
+
+              <!-- 3. Per-language fields -->
+              <div class="space-y-4">
+                <!-- Urun Adi -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Urun Adi</label>
+                  <input type="text" class="wf-v2-input" value="Burger Stop" x-show="configLang === 'tr'">
+                  <input type="text" class="wf-v2-input" placeholder="Product name..." x-show="configLang === 'en'" style="display:none">
+                  <input type="text" class="wf-v2-input" placeholder="Nazvanie produkta..." x-show="configLang === 'ru'" style="display:none">
+                  <input type="text" class="wf-v2-input" placeholder="Produktname..." x-show="configLang === 'de'" style="display:none">
+                </div>
+
+                <!-- Aciklama -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Aciklama</label>
+                  <textarea class="wf-v2-input" rows="3" x-show="configLang === 'tr'">Hamburger ve fast food menusu</textarea>
+                  <textarea class="wf-v2-input" rows="3" placeholder="Description..." x-show="configLang === 'en'" style="display:none"></textarea>
+                  <textarea class="wf-v2-input" rows="3" placeholder="Opisanie..." x-show="configLang === 'ru'" style="display:none"></textarea>
+                  <textarea class="wf-v2-input" rows="3" placeholder="Beschreibung..." x-show="configLang === 'de'" style="display:none"></textarea>
+                </div>
+
+                <!-- Bilgilendirme Badge -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1.5">Bilgilendirme Badge</label>
+                  <input type="text" class="wf-v2-input" value="Yeni" x-show="configLang === 'tr'">
+                  <input type="text" class="wf-v2-input" placeholder="Info badge..." x-show="configLang === 'en'" style="display:none">
+                  <input type="text" class="wf-v2-input" placeholder="Informatsionnyy badge..." x-show="configLang === 'ru'" style="display:none">
+                  <input type="text" class="wf-v2-input" placeholder="Info-Badge..." x-show="configLang === 'de'" style="display:none">
+                  <p class="text-xs text-gray-400 mt-1">Web/App'te urun kartinda gorunecek badge metni</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Web Uyarilari (repeatable) -->
+            <div>
+              <label class="text-sm font-medium text-gray-700 mb-2 block">Web Uyarilari</label>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <span class="text-base flex-shrink-0">&#9200;</span>
+                  <span class="text-sm text-gray-700 flex-1">Mobile ozel %20 indirim</span>
+                  <button class="text-red-500 hover:text-red-700 flex-shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <span class="text-base flex-shrink-0">&#9200;</span>
+                  <span class="text-sm text-gray-700 flex-1">Web'e ozel %30 indirim</span>
+                  <button class="text-red-500 hover:text-red-700 flex-shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
+              </div>
+              <button class="wf-v2-btn inline-flex items-center gap-2 mt-2 text-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Ekle
+              </button>
+            </div>
+
+            <!-- 4. Mobil Uyarilari (same pattern as Web) -->
+            <div>
+              <label class="text-sm font-medium text-gray-700 mb-2 block">Mobil Uyarilari</label>
+              <div class="space-y-2">
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <span class="text-base flex-shrink-0">&#128241;</span>
+                  <span class="text-sm text-gray-700 flex-1">App'ten alanlara ozel erken giris hakki</span>
+                  <button class="text-red-500 hover:text-red-700 flex-shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
+                <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+                  <span class="text-base flex-shrink-0">&#128241;</span>
+                  <span class="text-sm text-gray-700 flex-1">QR kod ile hizli giris</span>
+                  <button class="text-red-500 hover:text-red-700 flex-shrink-0">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                  </button>
+                </div>
+              </div>
+              <button class="wf-v2-btn inline-flex items-center gap-2 mt-2 text-sm">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Ekle
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

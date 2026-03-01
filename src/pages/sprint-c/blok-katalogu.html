@@ -1,0 +1,286 @@
+<!--
+  Wireframe: blok-katalogu
+  Task: C-001, C-003
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-27
+
+  CMS Block Katalogu — 32 Generic Block
+  - 6 kategori (A-F)
+  - Her block: ad, tip badge, varyasyon sayisi, CMS alan sayisi, kullanim yerleri
+  - Kategori bazli filtreleme
+  - Arama
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Block Katalogu - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  search: '',
+  activeCategory: 'all',
+  blocks: [
+    { id: 1, name: 'HeroBanner', slug: 'hero-banner', category: 'A', type: 'Pure CMS + API', fields: 8, variations: null, pages: 'Web Anasayfa', note: 'Slider, badge, 2 CTA, hava durumu widget' },
+    { id: 2, name: 'FeatureBannerSlider', slug: 'feature-banner-slider', category: 'A', type: 'Hybrid', fields: 7, variations: null, pages: 'Anasayfa, Listeleme', note: 'Full-width, saat/ikon' },
+    { id: 3, name: 'DetailHeroSlider', slug: 'detail-hero-slider', category: 'A', type: 'Hybrid', fields: 3, variations: null, pages: 'Tum detay sayfalari', note: 'Gorsel slider + calisma saati' },
+    { id: 4, name: 'EventPromoBanner', slug: 'event-promo-banner', category: 'A', type: 'Hybrid', fields: 5, variations: null, pages: 'Events', note: 'Countdown, kapatilabilir' },
+    { id: 5, name: 'PromoBanner', slug: 'promo-banner', category: 'A', type: 'Pure CMS', fields: 4, variations: null, pages: 'Otel, cesitli', note: 'Inline tanitim' },
+    { id: 6, name: 'AppDownloadBanner', slug: 'app-download-banner', category: 'A', type: 'Pure CMS', fields: 5, variations: null, pages: 'Cesitli', note: 'App Store + Google Play' },
+    { id: 7, name: 'CardCarousel', slug: 'card-carousel', category: 'B', type: 'Hybrid', fields: 4, variations: 3, pages: 'Events, Experiences, Privileges', note: null },
+    { id: 8, name: 'DualCardGrid', slug: 'dual-card-grid', category: 'B', type: 'Hybrid', fields: 4, variations: 7, pages: 'Lands, Hotels, Restoranlar', note: null },
+    { id: 9, name: 'FilterableCardGrid', slug: 'filterable-card-grid', category: 'B', type: 'Hybrid', fields: 4, variations: null, pages: 'Restoran, Events, Kampanya listeleme', note: null },
+    { id: 10, name: 'CertificateGrid', slug: 'certificate-grid', category: 'B', type: 'Pure CMS', fields: 2, variations: null, pages: 'Sertifikalar', note: null },
+    { id: 11, name: 'ServiceGrid', slug: 'service-grid', category: 'B', type: 'Pure CMS', fields: 2, variations: null, pages: 'Otel bilgi, Shopping Avenue', note: null },
+    { id: 12, name: 'LogoStrip', slug: 'logo-strip', category: 'B', type: 'Pure CMS', fields: 3, variations: null, pages: 'Markalar, Yardim kuruluslari', note: null },
+    { id: 13, name: 'DetailInfoSection', slug: 'detail-info-section', category: 'C', type: 'Hybrid', fields: 7, variations: 5, pages: 'Unite, Restoran, Event detay', note: null },
+    { id: 14, name: 'HotelInfoSection', slug: 'hotel-info-section', category: 'C', type: 'Hybrid', fields: 5, variations: null, pages: 'Otel detay', note: null },
+    { id: 15, name: 'SpecGrid', slug: 'spec-grid', category: 'C', type: 'Hybrid', fields: 3, variations: null, pages: 'Unite detay', note: null },
+    { id: 16, name: 'FeatureChips', slug: 'feature-chips', category: 'C', type: 'CMS', fields: 1, variations: null, pages: 'Event detay', note: null },
+    { id: 17, name: 'CampaignDetailSection', slug: 'campaign-detail-section', category: 'C', type: 'Pure CMS', fields: 6, variations: null, pages: 'Kampanya detay', note: null },
+    { id: 18, name: 'PackageComparisonCard', slug: 'package-comparison-card', category: 'C', type: 'Pure CMS', fields: 4, variations: null, pages: 'Extra paid event', note: null },
+    { id: 19, name: 'RichContentBlock', slug: 'rich-content-block', category: 'D', type: 'Pure CMS', fields: 1, variations: null, pages: 'Statik sayfalar', note: null },
+    { id: 20, name: 'AccordionBlock', slug: 'accordion-block', category: 'D', type: 'Pure CMS', fields: 3, variations: 3, pages: 'FAQ, otel bilgi, app tanitim', note: null },
+    { id: 21, name: 'ContactBanner', slug: 'contact-banner', category: 'D', type: 'Pure CMS', fields: 3, variations: null, pages: 'Cesitli sayfalar', note: null },
+    { id: 22, name: 'MusicPlatformBanner', slug: 'music-platform-banner', category: 'D', type: 'Pure CMS', fields: 2, variations: null, pages: 'Event detay', note: null },
+    { id: 23, name: 'TicketSelector', slug: 'ticket-selector', category: 'E', type: 'Hybrid', fields: 4, variations: null, pages: 'Anasayfa, otel', note: null },
+    { id: 24, name: 'StoreShowcase', slug: 'store-showcase', category: 'E', type: 'Hybrid', fields: 4, variations: null, pages: 'Anasayfa, event detay', note: null },
+    { id: 25, name: 'CampaignShowcase', slug: 'campaign-showcase', category: 'E', type: 'Hybrid', fields: 4, variations: null, pages: 'Anasayfa, otel tab', note: null },
+    { id: 26, name: 'EventTimeline', slug: 'event-timeline', category: 'E', type: 'Hybrid', fields: 2, variations: null, pages: 'Events listeleme', note: null },
+    { id: 27, name: 'LocationMap', slug: 'location-map', category: 'E', type: 'Hybrid', fields: 6, variations: null, pages: 'Restoran/unite detay', note: null },
+    { id: 28, name: 'FilterModal', slug: 'filter-modal', category: 'E', type: 'Hybrid', fields: 4, variations: null, pages: 'Land detay unite listesi', note: null },
+    { id: 29, name: 'ContactFormPage', slug: 'contact-form-page', category: 'F', type: 'CMS + API', fields: 5, variations: null, pages: 'Contact, Guarantee Theme', note: null },
+    { id: 30, name: 'TabbedContentSection', slug: 'tabbed-content-section', category: 'F', type: 'CMS', fields: 2, variations: null, pages: 'Otel detay (6 tab)', note: null },
+    { id: 31, name: 'ThemeFilterChips', slug: 'theme-filter-chips', category: 'F', type: 'Hybrid', fields: 1, variations: null, pages: 'Otel oda filtreleme', note: null },
+    { id: 32, name: 'RoomCard', slug: 'room-card', category: 'F', type: 'Hybrid', fields: 6, variations: null, pages: 'Otel oda listeleme', note: null }
+  ],
+  get filteredBlocks() {
+    return this.blocks.filter(b => {
+      const matchCategory = this.activeCategory === 'all' || b.category === this.activeCategory;
+      const matchSearch = this.search === '' || b.name.toLowerCase().includes(this.search.toLowerCase()) || b.pages.toLowerCase().includes(this.search.toLowerCase());
+      return matchCategory && matchSearch;
+    });
+  },
+  get filteredCount() {
+    return this.filteredBlocks.length;
+  },
+  categoryLabel(cat) {
+    const labels = { 'A': 'Hero / Banner', 'B': 'Kart Grid', 'C': 'Detay / Bilgi', 'D': 'Icerik', 'E': 'Ozel Amacli', 'F': 'Form / Nav' };
+    return labels[cat] || cat;
+  },
+  borderColor(cat) {
+    const colors = { 'A': 'border-l-blue-500', 'B': 'border-l-emerald-500', 'C': 'border-l-amber-500', 'D': 'border-l-rose-500', 'E': 'border-l-violet-500', 'F': 'border-l-cyan-500' };
+    return colors[cat] || 'border-l-gray-300';
+  },
+  typeBadgeClasses(type) {
+    const map = {
+      'Pure CMS': 'bg-blue-50 text-blue-700',
+      'Pure CMS + API': 'bg-blue-50 text-blue-700',
+      'Hybrid': 'bg-purple-50 text-purple-700',
+      'CMS + API': 'bg-teal-50 text-teal-700',
+      'CMS': 'bg-indigo-50 text-indigo-700'
+    };
+    return map[type] || 'bg-gray-50 text-gray-700';
+  }
+}">
+
+  <div class="flex min-h-screen">
+    <div data-component="sidebar"></div>
+    <div class="flex-1 flex flex-col min-w-0">
+      <div data-component="header"></div>
+
+      <main class="p-6 flex-1">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h1 class="text-xl font-semibold text-gray-900">CMS Block Katalogu</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Tum generic block'larin referans katalogu</p>
+          </div>
+        </div>
+
+        <!-- Summary Bar -->
+        <div class="flex items-center gap-4 mb-5 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            <span class="text-sm font-medium text-gray-700">32 Block</span>
+          </div>
+          <span class="text-gray-300">|</span>
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-sm font-medium text-gray-700">6 Kategori</span>
+          </div>
+          <span class="text-gray-300">|</span>
+          <div class="flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span class="text-sm font-medium text-gray-700">4 Dil Destegi (TR/EN/DE/RU)</span>
+          </div>
+        </div>
+
+        <!-- Search + Category Filter -->
+        <div class="flex flex-col gap-4 mb-6">
+          <!-- Search -->
+          <div class="max-w-md">
+            <div class="wf-v2-search">
+              <svg class="wf-v2-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" x-model="search" placeholder="Block ara (isim veya sayfa)..." class="wf-v2-search-input">
+            </div>
+          </div>
+
+          <!-- Category Tabs -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              @click="activeCategory = 'all'"
+              :class="activeCategory === 'all' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              Tumu
+              <span class="ml-1 text-xs opacity-70">(32)</span>
+            </button>
+            <button
+              @click="activeCategory = 'A'"
+              :class="activeCategory === 'A' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              A: Hero / Banner
+              <span class="ml-1 text-xs opacity-70">(6)</span>
+            </button>
+            <button
+              @click="activeCategory = 'B'"
+              :class="activeCategory === 'B' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              B: Kart Grid
+              <span class="ml-1 text-xs opacity-70">(6)</span>
+            </button>
+            <button
+              @click="activeCategory = 'C'"
+              :class="activeCategory === 'C' ? 'bg-amber-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              C: Detay / Bilgi
+              <span class="ml-1 text-xs opacity-70">(6)</span>
+            </button>
+            <button
+              @click="activeCategory = 'D'"
+              :class="activeCategory === 'D' ? 'bg-rose-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              D: Icerik
+              <span class="ml-1 text-xs opacity-70">(4)</span>
+            </button>
+            <button
+              @click="activeCategory = 'E'"
+              :class="activeCategory === 'E' ? 'bg-violet-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              E: Ozel Amacli
+              <span class="ml-1 text-xs opacity-70">(6)</span>
+            </button>
+            <button
+              @click="activeCategory = 'F'"
+              :class="activeCategory === 'F' ? 'bg-cyan-600 text-white' : 'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'"
+              class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+              F: Form / Nav
+              <span class="ml-1 text-xs opacity-70">(4)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtered Count -->
+        <div class="mb-4 text-sm text-gray-400" x-show="search !== '' || activeCategory !== 'all'">
+          <span x-text="filteredCount"></span> block goruntuluyor
+        </div>
+
+        <!-- Block Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+
+          <!-- ==================== A) Hero / Banner ==================== -->
+
+          <!-- #1 HeroBanner -->
+          <template x-for="block in filteredBlocks" :key="block.id">
+            <a
+              :href="'blok-detay.html?block=' + block.slug + '&theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')"
+              class="block bg-white rounded-lg border border-gray-200 p-4 hover:shadow-lg hover:border-gray-300 transition-all border-l-4 group"
+              :class="borderColor(block.category)">
+              <div class="flex items-start justify-between mb-2">
+                <div>
+                  <span class="text-xs text-gray-400 font-mono" x-text="'#' + block.id"></span>
+                  <h3 class="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors" x-text="block.name"></h3>
+                </div>
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap"
+                  :class="typeBadgeClasses(block.type)"
+                  x-text="block.type">
+                </span>
+              </div>
+              <div class="flex items-center gap-3 text-xs text-gray-500 mb-2">
+                <span x-text="block.fields + ' CMS alan'"></span>
+                <template x-if="block.variations">
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded text-xs bg-gray-100 text-gray-600" x-text="block.variations + ' varyasyon'"></span>
+                </template>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-gray-400">
+                <svg class="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span x-text="block.pages"></span>
+              </div>
+              <template x-if="block.note">
+                <p class="text-xs text-gray-400 mt-1.5 italic" x-text="block.note"></p>
+              </template>
+              <div class="mt-2 flex items-center gap-1 text-xs text-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>Gorsel sablon</span>
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </div>
+            </a>
+          </template>
+
+        </div>
+
+        <!-- Empty State -->
+        <div x-show="filteredCount === 0" class="text-center py-12">
+          <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <p class="text-sm text-gray-500">Aramanizla eslesen block bulunamadi.</p>
+          <button @click="search = ''; activeCategory = 'all'" class="mt-2 text-sm text-indigo-600 hover:text-indigo-800">Filtreleri temizle</button>
+        </div>
+
+        <!-- Bottom Stats -->
+        <div class="mt-6 text-sm text-gray-400">
+          32 block | 6 kategori (A-F) | Toplam ~118 CMS alan
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>

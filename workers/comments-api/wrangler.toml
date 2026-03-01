@@ -11,6 +11,9 @@ database_id = "12e0b035-85c4-469f-982f-383f48e7bb25"
 # CORS settings for local development
 [vars]
 ALLOWED_ORIGINS = "*"
+CLICKUP_WORKSPACE_ID = "9018891584"
+CLICKUP_CHANNEL_ID = "8ct2qa0-12378"
+WIREFRAME_BASE_URL = "https://wireframes.untitledproduct.com/legends"
 
 # Development settings
 [dev]

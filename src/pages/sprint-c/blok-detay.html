@@ -1,0 +1,804 @@
+<!--
+  Wireframe: blok-detay
+  Task: C-001, C-003
+  Son Guncelleme: 2026-02-27
+  CMS Block Detay — Gorsel HTML Sablonlari (32 Block)
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Block Detay - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading{opacity:0}.fonts-loaded{opacity:1;transition:opacity .1s ease-in}
+    [x-cloak]{display:none!important}
+    .wf-img{background:#e5e7eb;border-radius:0.5rem;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:0.7rem;text-align:center}
+    .wf-btn{background:#1f2937;color:#fff;padding:0.4rem 1rem;border-radius:0.375rem;font-size:0.75rem;display:inline-block}
+    .wf-btn-s{border:1px solid #d1d5db;padding:0.4rem 1rem;border-radius:0.375rem;font-size:0.75rem;display:inline-block;color:#374151}
+    .wf-badge{display:inline-block;padding:0.125rem 0.5rem;border-radius:0.25rem;font-size:0.65rem;font-weight:500}
+    .wf-card{background:#fff;border:1px solid #e5e7eb;border-radius:0.5rem;overflow:hidden}
+    .wf-dots{display:flex;gap:0.25rem;justify-content:center;margin-top:0.5rem}
+    .wf-dots span{width:8px;height:8px;border-radius:50%;background:#d1d5db}
+    .wf-dots span:first-child{background:#6b7280}
+    .wf-section{font-size:0.9rem;font-weight:600;color:#111827}
+    .wf-link{font-size:0.75rem;color:#6366f1}
+    .wf-chip{display:inline-flex;align-items:center;gap:0.25rem;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.7rem;border:1px solid #d1d5db;background:#fff}
+    .wf-chip.active{background:#1f2937;color:#fff;border-color:#1f2937}
+    .wf-arrow{width:24px;height:24px;border-radius:50%;border:1px solid #d1d5db;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:0.7rem}
+    .wf-preview{border:2px dashed #d1d5db;border-radius:0.75rem;padding:1rem;background:#fff}
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if(document.fonts&&document.fonts.ready){document.fonts.ready.then(()=>{document.documentElement.classList.remove('fonts-loading');document.documentElement.classList.add('fonts-loaded')})}
+    else{window.addEventListener('load',()=>{document.documentElement.classList.remove('fonts-loading');document.documentElement.classList.add('fonts-loaded')})}
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams=new URLSearchParams(window.location.search);
+    const theme=urlParams.get('theme')||'teal';
+    document.documentElement.classList.add('theme-'+theme);
+  </script>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen:true, mobileMenu:false,
+  slug: new URLSearchParams(window.location.search).get('block')||'hero-banner',
+  av:0,
+  B:{
+    'hero-banner':{id:1,n:'HeroBanner',c:'A',t:'Pure CMS + API',p:'Web Anasayfa',v:null,f:[{n:'Arkaplan gorseli',t:'Image',l:false},{n:'Badge dizisi',t:'Tag Array',l:true},{n:'Baslik',t:'Text',l:true},{n:'Alt baslik',t:'Text',l:true},{n:'CTA Buton 1',t:'Button',l:true},{n:'CTA Buton 2',t:'Button',l:true},{n:'Slide sirasi',t:'Number',l:false},{n:'Aktif/Pasif',t:'Toggle',l:false}]},
+    'feature-banner-slider':{id:2,n:'FeatureBannerSlider',c:'A',t:'Hybrid',p:'Anasayfa, Listeleme',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Banner gorseli',t:'Image',l:false},{n:'Banner baslik',t:'Text',l:true},{n:'Alt baslik/tarih',t:'Text',l:true},{n:'CTA buton',t:'Button',l:true},{n:'Calisma saati',t:'Text/API',l:false},{n:'Hizmet ikonlari',t:'Array',l:true}]},
+    'detail-hero-slider':{id:3,n:'DetailHeroSlider',c:'A',t:'Hybrid',p:'Tum detay sayfalari',v:null,f:[{n:'Gorseller',t:'Image Array',l:false},{n:'Calisma saati',t:'Text/API',l:false},{n:'Geri butonu metni',t:'Text',l:true}]},
+    'event-promo-banner':{id:4,n:'EventPromoBanner',c:'A',t:'Hybrid',p:'Events',v:['Countdown','Multi-CTA'],f:[{n:'Baslik',t:'Text',l:true},{n:'Aciklama',t:'Text',l:true},{n:'Countdown bitis',t:'DateTime',l:false},{n:'CTA butonlari',t:'Array',l:true},{n:'Kapatilabilir',t:'Boolean',l:false}]},
+    'promo-banner':{id:5,n:'PromoBanner',c:'A',t:'Pure CMS',p:'Otel, cesitli',v:null,f:[{n:'Mesaj',t:'Text',l:true},{n:'Dekoratif gorseller',t:'Image Array',l:false},{n:'Badge',t:'Text',l:true},{n:'Link',t:'URL',l:false}]},
+    'app-download-banner':{id:6,n:'AppDownloadBanner',c:'A',t:'Pure CMS',p:'Cesitli',v:null,f:[{n:'Baslik',t:'Text',l:true},{n:'Alt baslik',t:'Text',l:true},{n:'App Store URL',t:'URL',l:false},{n:'Google Play URL',t:'URL',l:false},{n:'Mockup gorselleri',t:'Image Array',l:false}]},
+    'card-carousel':{id:7,n:'CardCarousel',c:'B',t:'Hybrid',p:'Events, Experiences, Privileges',v:['Today at Legends','More Fun','Hotel Privileges'],f:[{n:'Section baslik',t:'Text',l:true},{n:'Alt baslik',t:'Text',l:true},{n:'See All link',t:'URL+Text',l:true},{n:'Veri kaynagi filtresi',t:'Config',l:false}]},
+    'dual-card-grid':{id:8,n:'DualCardGrid',c:'B',t:'Hybrid',p:'Lands, Hotels, Restoranlar',v:['Lands','Hotels (Book Now)','A La Carte','Similar Activities','Other Restaurants','Your Privileges','What can you do'],f:[{n:'Section baslik',t:'Text',l:true},{n:'See All link',t:'URL+Text',l:true},{n:'Oneri badge metni',t:'Text',l:true},{n:'Veri kaynagi',t:'Config',l:false}]},
+    'filterable-card-grid':{id:9,n:'FilterableCardGrid',c:'B',t:'Hybrid',p:'Restoran, Events, Kampanya',v:null,f:[{n:'Tab kategorileri',t:'Array',l:true},{n:'Dropdown filtre',t:'Array',l:true},{n:'See More butonu',t:'Text',l:true},{n:'Sayfa basi kart',t:'Number',l:false}]},
+    'certificate-grid':{id:10,n:'CertificateGrid',c:'B',t:'Pure CMS',p:'Sertifikalar',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Sertifika dizisi',t:'Array',l:true}]},
+    'service-grid':{id:11,n:'ServiceGrid',c:'B',t:'Pure CMS',p:'Otel bilgi, Shopping Avenue',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Servis dizisi',t:'Array (ikon+label)',l:true}]},
+    'logo-strip':{id:12,n:'LogoStrip',c:'B',t:'Pure CMS',p:'Markalar, Yardim kuruluslari',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Alt metin',t:'Text',l:true},{n:'Logo dizisi',t:'Array (image+text+link)',l:false}]},
+    'detail-info-section':{id:13,n:'DetailInfoSection',c:'C',t:'Hybrid',p:'Unite, Restoran, Event detay',v:['Unite (ucretsiz)','Unite (ucretli)','Restoran (centered)','Event (centered)','Event (extra paid)'],f:[{n:'Isim',t:'Text',l:true},{n:'Logo gorseli',t:'Image',l:false},{n:'Fiyat durumu',t:'Enum',l:true},{n:'Konum adresi',t:'Text',l:true},{n:'Aciklama',t:'RichText',l:true},{n:'CTA buton',t:'Button',l:true},{n:'Layout',t:'Enum (left/center)',l:false}]},
+    'hotel-info-section':{id:14,n:'HotelInfoSection',c:'C',t:'Hybrid',p:'Otel detay',v:null,f:[{n:'Otel adi',t:'Text',l:true},{n:'Adres',t:'Text',l:true},{n:'Aciklama',t:'RichText',l:true},{n:'Review platformlari',t:'Array',l:false},{n:'Dekoratif gorsel',t:'Image',l:false}]},
+    'spec-grid':{id:15,n:'SpecGrid',c:'C',t:'Hybrid',p:'Unite detay',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Bilgi notu',t:'Text',l:true},{n:'Spec dizisi',t:'Array (ikon+label+deger+birim)',l:false}]},
+    'feature-chips':{id:16,n:'FeatureChips',c:'C',t:'CMS',p:'Event detay',v:null,f:[{n:'Chip dizisi',t:'Array (ikon+label)',l:true}]},
+    'campaign-detail-section':{id:17,n:'CampaignDetailSection',c:'C',t:'Pure CMS',p:'Kampanya detay',v:null,f:[{n:'Baslik',t:'Text',l:true},{n:'Gecerlilik tarihi',t:'Date',l:false},{n:'Alt baslik',t:'Text',l:true},{n:'Aciklama',t:'RichText',l:true},{n:'CTA butonlari',t:'Array',l:true},{n:'Dekoratif gorsel',t:'Image',l:false}]},
+    'package-comparison-card':{id:18,n:'PackageComparisonCard',c:'C',t:'Pure CMS',p:'Extra paid event',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Paket dizisi',t:'Array',l:true},{n:'Ozellik dizisi',t:'Array',l:true},{n:'Sure etiketi',t:'Text',l:true}]},
+    'rich-content-block':{id:19,n:'RichContentBlock',c:'D',t:'Pure CMS',p:'Statik sayfalar',v:null,f:[{n:'Icerik',t:'RichText',l:true}]},
+    'accordion-block':{id:20,n:'AccordionBlock',c:'D',t:'Pure CMS',p:'FAQ, otel bilgi, app tanitim',v:['Otel Information','FAQ (Tab Filtreli)','App Tanitim'],f:[{n:'Oge dizisi',t:'Array',l:false},{n:'Baslik',t:'Text',l:true},{n:'Icerik',t:'RichText',l:true}]},
+    'contact-banner':{id:21,n:'ContactBanner',c:'D',t:'Pure CMS',p:'Cesitli sayfalar',v:null,f:[{n:'Baslik',t:'Text',l:true},{n:'Email',t:'Text',l:false},{n:'CTA buton',t:'Button',l:true}]},
+    'music-platform-banner':{id:22,n:'MusicPlatformBanner',c:'D',t:'Pure CMS',p:'Event detay',v:null,f:[{n:'Baslik',t:'Text',l:true},{n:'Platform dizisi',t:'Array (logo+isim+link)',l:true}]},
+    'ticket-selector':{id:23,n:'TicketSelector',c:'E',t:'Hybrid',p:'Anasayfa, otel',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Tablar',t:'Array',l:true},{n:'CTA buton metni',t:'Text',l:true},{n:'Urun filtresi',t:'Config',l:false}]},
+    'store-showcase':{id:24,n:'StoreShowcase',c:'E',t:'Hybrid',p:'Anasayfa, event detay',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Discover Now link',t:'URL+Text',l:true},{n:'Sol dekoratif gorsel',t:'Image',l:false},{n:'Urun filtresi',t:'Config',l:false}]},
+    'campaign-showcase':{id:25,n:'CampaignShowcase',c:'E',t:'Hybrid',p:'Anasayfa, otel tab',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'See All link',t:'URL+Text',l:true},{n:'Dekoratif gorsel',t:'Image',l:false},{n:'Tab kategorileri',t:'Array',l:true}]},
+    'event-timeline':{id:26,n:'EventTimeline',c:'E',t:'Hybrid',p:'Events listeleme',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Timeline ogeleri',t:'API',l:false}]},
+    'location-map':{id:27,n:'LocationMap',c:'E',t:'Hybrid',p:'Restoran/unite detay',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Konum tag',t:'Text',l:true},{n:'Tesvik metni',t:'Text',l:true},{n:'Harita gorseli',t:'Image',l:false},{n:'Pin etiketi+koordinat',t:'Object',l:false},{n:'CTA',t:'Button',l:true}]},
+    'filter-modal':{id:28,n:'FilterModal',c:'E',t:'Hybrid',p:'Land detay unite listesi',v:null,f:[{n:'Slider filtreleri',t:'Array',l:true},{n:'Checkbox filtreleri',t:'Array',l:true},{n:'Bilgi bannerlari',t:'Array',l:true},{n:'Apply/Clear buton',t:'Text',l:true}]},
+    'contact-form-page':{id:29,n:'ContactFormPage',c:'F',t:'CMS + API',p:'Contact, Guarantee Theme',v:null,f:[{n:'Dekoratif gorsel',t:'Image',l:false},{n:'Baslik',t:'Text',l:true},{n:'Aciklama',t:'RichText',l:true},{n:'Form alanlari',t:'Array',l:true},{n:'Submit buton metni',t:'Text',l:true}]},
+    'tabbed-content-section':{id:30,n:'TabbedContentSection',c:'F',t:'CMS',p:'Otel detay (6 tab)',v:null,f:[{n:'Section baslik',t:'Text',l:true},{n:'Tab dizisi',t:'Array (label+hedef)',l:true}]},
+    'theme-filter-chips':{id:31,n:'ThemeFilterChips',c:'F',t:'Hybrid',p:'Otel oda filtreleme',v:null,f:[{n:'Chip dizisi',t:'Array (ikon+label+filtre)',l:true}]},
+    'room-card':{id:32,n:'RoomCard',c:'F',t:'Hybrid',p:'Otel oda listeleme',v:null,f:[{n:'Oda adi',t:'Text',l:true},{n:'Aciklama',t:'RichText',l:true},{n:'Gorseller',t:'Image Array',l:false},{n:'Features',t:'Array (ikon+label)',l:true},{n:'Fiyat',t:'Currency (API)',l:false},{n:'360 tur linki',t:'URL',l:false}]}
+  },
+  get b(){return this.B[this.slug]||this.B['hero-banner']},
+  get th(){return new URLSearchParams(window.location.search).get('theme')||'teal'},
+  catL(c){return{'A':'Hero / Banner','B':'Kart Grid','C':'Detay / Bilgi','D':'Icerik','E':'Ozel Amacli','F':'Form / Nav'}[c]||c},
+  catC(c){return{'A':'bg-blue-100 text-blue-700','B':'bg-emerald-100 text-emerald-700','C':'bg-amber-100 text-amber-700','D':'bg-rose-100 text-rose-700','E':'bg-violet-100 text-violet-700','F':'bg-cyan-100 text-cyan-700'}[c]||'bg-gray-100 text-gray-700'},
+  tBC(t){return{'Pure CMS':'bg-blue-50 text-blue-700','Pure CMS + API':'bg-blue-50 text-blue-700','Hybrid':'bg-purple-50 text-purple-700','CMS + API':'bg-teal-50 text-teal-700','CMS':'bg-indigo-50 text-indigo-700'}[t]||'bg-gray-50 text-gray-700'}
+}">
+
+<div class="flex min-h-screen">
+  <div data-component="sidebar"></div>
+  <div class="flex-1 flex flex-col min-w-0">
+    <div data-component="header"></div>
+
+    <main class="p-6 flex-1">
+      <!-- Back -->
+      <a :href="'blok-katalogu.html?theme='+th" class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-4">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Block Katalogu
+      </a>
+
+      <!-- Header -->
+      <div class="mb-6">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-mono text-gray-400" x-text="'#'+b.id"></span>
+          <span class="wf-badge" :class="catC(b.c)" x-text="catL(b.c)"></span>
+          <span class="wf-badge" :class="tBC(b.t)" x-text="b.t"></span>
+        </div>
+        <h1 class="text-2xl font-bold text-gray-900" x-text="b.n"></h1>
+        <p class="text-sm text-gray-500 mt-1" x-text="'Kullanim: '+b.p"></p>
+      </div>
+
+      <!-- Variation Tabs -->
+      <div x-show="b.v" class="flex flex-wrap gap-2 mb-4">
+        <template x-for="(vr,i) in (b.v||[])" :key="i">
+          <button @click="av=i" :class="av===i?'bg-gray-900 text-white':'bg-white text-gray-600 border border-gray-300 hover:bg-gray-50'" class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors" x-text="vr"></button>
+        </template>
+      </div>
+
+      <!-- ====== GORSEL SABLON ====== -->
+      <div class="mb-8">
+        <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Gorsel Sablon</h2>
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+
+          <!-- #1 HeroBanner -->
+          <div x-show="slug==='hero-banner'" x-cloak class="wf-preview">
+            <div class="relative bg-gray-200 rounded-lg overflow-hidden" style="height:280px">
+              <div class="absolute top-3 left-3 bg-white/90 rounded px-2 py-1 text-xs text-gray-600">Antalya 33°C</div>
+              <div class="absolute bottom-16 left-6">
+                <div class="flex gap-1 mb-2"><span class="wf-badge bg-yellow-100 text-yellow-800">New</span><span class="wf-badge bg-indigo-100 text-indigo-700">Now in Stores!</span></div>
+                <div class="text-xl font-bold text-gray-700">The Land of Legends</div>
+                <div class="text-sm text-gray-500 mb-3">Theme Park</div>
+                <div class="flex gap-2"><span class="wf-btn">Buy Ticket</span><span class="wf-btn-s">Campaigns</span></div>
+              </div>
+              <div class="absolute bottom-3 left-1/2 -translate-x-1/2 wf-dots"><span></span><span></span><span></span><span></span></div>
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">HERO GORSEL</div>
+            </div>
+          </div>
+
+          <!-- #2 FeatureBannerSlider -->
+          <div x-show="slug==='feature-banner-slider'" x-cloak class="wf-preview">
+            <div class="wf-section mb-2">Theme Park</div>
+            <div class="relative bg-gray-200 rounded-lg overflow-hidden" style="height:220px">
+              <div class="absolute top-3 left-1/2 -translate-x-1/2 bg-white/90 rounded px-2 py-1 text-xs">10:00 - 18:30</div>
+              <div class="absolute bottom-12 left-5">
+                <div class="text-sm font-semibold text-gray-700">Nickelodeon is Becoming a Part of the Legends!</div>
+                <div class="text-xs text-gray-500 mb-2">November 29</div>
+                <span class="wf-btn text-xs">Discover Now</span>
+              </div>
+              <div class="absolute bottom-3 right-4 flex gap-2 text-gray-400 text-xs">
+                <span>map</span><span>+</span><span>wifi</span><span>18</span>
+              </div>
+              <div class="absolute bottom-3 left-1/2 -translate-x-1/2 wf-dots"><span></span><span></span><span></span></div>
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">BANNER GORSEL</div>
+            </div>
+          </div>
+
+          <!-- #3 DetailHeroSlider -->
+          <div x-show="slug==='detail-hero-slider'" x-cloak class="wf-preview">
+            <div class="relative bg-gray-200 rounded-lg overflow-hidden" style="height:200px">
+              <div class="absolute top-3 left-4 text-xs text-gray-500 flex items-center gap-1"><span>&larr;</span> Back to page</div>
+              <div class="absolute top-3 right-4 bg-white/90 rounded px-2 py-1 text-xs">10:00 - 18:30</div>
+              <div class="absolute bottom-3 left-1/2 -translate-x-1/2 wf-dots"><span></span><span></span><span></span><span></span></div>
+              <div class="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">FULL-WIDTH GORSEL SLIDER</div>
+            </div>
+          </div>
+
+          <!-- #4 EventPromoBanner -->
+          <div x-show="slug==='event-promo-banner'" x-cloak class="wf-preview">
+            <template x-if="av===0">
+              <div class="relative bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <button class="absolute top-2 right-2 text-gray-400 text-xs">&times;</button>
+                <div class="font-semibold text-sm text-gray-800">Masha & Bear Live Show!</div>
+                <div class="text-xs text-gray-500 mb-2">Come and join the fun...</div>
+                <div class="text-2xl font-bold text-indigo-700 tracking-widest mb-2">02 : 32 : 56</div>
+                <span class="wf-btn">Discover Now &rarr;</span>
+              </div>
+            </template>
+            <template x-if="av===1">
+              <div class="relative bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                <button class="absolute top-2 right-2 text-gray-400 text-xs">&times;</button>
+                <div class="font-semibold text-sm text-gray-800">Summer Festival 2025!</div>
+                <div class="text-xs text-gray-500 mb-3">Don't miss the biggest event of the year</div>
+                <div class="flex gap-2"><span class="wf-btn">Buy Tickets</span><span class="wf-btn-s">Learn More</span></div>
+              </div>
+            </template>
+          </div>
+
+          <!-- #5 PromoBanner -->
+          <div x-show="slug==='promo-banner'" x-cloak class="wf-preview">
+            <div class="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg px-4 py-3">
+              <div class="wf-img w-10 h-10 rounded-full flex-shrink-0">IMG</div>
+              <div class="text-sm font-medium text-gray-700 text-center flex-1">Grands full access to the Theme Park!</div>
+              <div class="wf-img w-10 h-10 rounded-full flex-shrink-0">IMG</div>
+            </div>
+          </div>
+
+          <!-- #6 AppDownloadBanner -->
+          <div x-show="slug==='app-download-banner'" x-cloak class="wf-preview">
+            <div class="flex items-center gap-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-5">
+              <div class="flex-1">
+                <div class="text-xs font-bold text-gray-400 uppercase mb-1">Legendary App is Now on the Stores!</div>
+                <div class="text-sm font-semibold text-gray-800 mb-3">Download the app and discover the flavour spots!</div>
+                <div class="flex gap-2">
+                  <span class="wf-btn text-xs">App Store</span>
+                  <span class="wf-btn text-xs">Google Play</span>
+                </div>
+              </div>
+              <div class="wf-img w-24 h-40 flex-shrink-0">Phone Mockup</div>
+            </div>
+          </div>
+
+          <!-- #7 CardCarousel -->
+          <div x-show="slug==='card-carousel'" x-cloak class="wf-preview">
+            <!-- V0: Today at Legends -->
+            <template x-if="av===0">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="wf-section">Today at The Land of Legends</span>
+                  <span class="wf-link">Discover Now &rarr;</span>
+                </div>
+                <div class="flex gap-2 mb-3">
+                  <span class="wf-chip active">Theme Park</span><span class="wf-chip">Shopping Avenue</span><span class="wf-chip">Hotels</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="wf-card p-2">
+                    <div class="flex gap-1 mb-1"><span class="wf-badge bg-red-100 text-red-700">NEW</span></div>
+                    <div class="wf-img h-24 mb-2">Gorsel</div>
+                    <div class="text-lg font-bold text-indigo-600 mb-1">02:32:56</div>
+                    <div class="text-xs text-gray-500">Theme Park</div>
+                    <div class="text-xs font-medium text-gray-800">Masha & Bear Show</div>
+                    <span class="wf-btn mt-2 text-xs">Discover</span>
+                  </div>
+                  <div class="wf-card p-2">
+                    <div class="flex gap-1 mb-1"><span class="wf-badge bg-gray-100 text-gray-600">Badge</span></div>
+                    <div class="wf-img h-24 mb-2">Gorsel</div>
+                    <div class="text-xs text-gray-500">Theme Park</div>
+                    <div class="text-xs font-medium text-gray-800">Dolphin Swim</div>
+                    <span class="wf-btn mt-2 text-xs">Discover</span>
+                  </div>
+                  <div class="wf-card p-2">
+                    <div class="flex gap-1 mb-1"><span class="wf-badge bg-gray-100 text-gray-600">Badge</span></div>
+                    <div class="wf-img h-24 mb-2">Gorsel</div>
+                    <div class="text-xs text-gray-500">Shopping Avenue</div>
+                    <div class="text-xs font-medium text-gray-800">Night Shopping</div>
+                    <span class="wf-btn mt-2 text-xs">Discover</span>
+                  </div>
+                </div>
+                <div class="wf-dots mt-2"><span></span><span></span><span></span></div>
+              </div>
+            </template>
+            <!-- V1: More Fun -->
+            <template x-if="av===1">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="wf-section">More Fun</span><span class="wf-link">See All &rarr;</span>
+                </div>
+                <div class="text-xs text-gray-500 mb-3">Slide to have some fun!</div>
+                <div class="flex items-center gap-2">
+                  <div class="wf-arrow">&lt;</div>
+                  <div class="grid grid-cols-3 gap-3 flex-1">
+                    <div class="wf-card p-2" x-for="nm in ['Dolphin Swim','Mythical Journey','Shark Seatrek']" :key="nm">
+                      <span class="wf-badge bg-orange-100 text-orange-700 mb-1">Extra Paid</span>
+                      <div class="wf-img h-20 mb-2">Gorsel</div>
+                      <div class="text-xs text-gray-400">Theme Park</div>
+                      <div class="text-xs font-medium text-gray-800" x-text="nm"></div>
+                      <span class="wf-btn mt-1 text-xs">Buy &rarr;</span>
+                    </div>
+                  </div>
+                  <div class="wf-arrow">&gt;</div>
+                </div>
+              </div>
+            </template>
+            <!-- V2: Hotel Privileges -->
+            <template x-if="av===2">
+              <div>
+                <div class="wf-section mb-3">Hotel Privileges</div>
+                <div class="flex items-center gap-2">
+                  <div class="wf-arrow">&lt;</div>
+                  <div class="grid grid-cols-3 gap-3 flex-1">
+                    <div class="wf-card p-2" x-for="nm in ['Theme Park Entrance','50% Discount WFK','FastTrack Access']" :key="nm">
+                      <div class="flex gap-1 mb-1"><span class="wf-badge bg-gray-100 text-gray-600">Badge</span></div>
+                      <div class="wf-img h-20 mb-2">Gorsel</div>
+                      <div class="text-xs text-gray-400">Kingdom Hotel</div>
+                      <div class="text-xs font-medium text-gray-800" x-text="nm"></div>
+                    </div>
+                  </div>
+                  <div class="wf-arrow">&gt;</div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- #8 DualCardGrid -->
+          <div x-show="slug==='dual-card-grid'" x-cloak class="wf-preview">
+            <!-- V0: Lands -->
+            <template x-if="av===0">
+              <div>
+                <div class="flex items-center justify-between mb-3"><span class="wf-section">Lands</span><span class="wf-link">Discover Now &rarr;</span></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-card overflow-hidden">
+                    <div class="wf-img h-36">Gorsel</div>
+                    <div class="p-3"><div class="flex gap-1 mb-1"><span class="wf-badge bg-green-100 text-green-700">New</span><span class="wf-badge bg-blue-100 text-blue-700">6+ Entertainment</span></div><div class="text-sm font-semibold">Nickelodeon Land</div><div class="text-xs text-gray-500 mb-2">The Land of Legends...</div><span class="wf-btn text-xs">Discover Park &rarr;</span></div>
+                  </div>
+                  <div class="wf-card overflow-hidden">
+                    <div class="wf-img h-36">Gorsel</div>
+                    <div class="p-3"><div class="text-xs text-gray-400 mb-1">10:00-12:00</div><div class="text-sm font-semibold">Adventure Land</div><div class="text-xs text-gray-500 mb-2">The Land of Legends...</div><span class="wf-btn text-xs">Discover Park</span></div>
+                  </div>
+                </div>
+              </div>
+            </template>
+            <!-- V1: Hotels -->
+            <template x-if="av===1">
+              <div>
+                <div class="flex items-center justify-between mb-1"><span class="wf-section">Rixos Hotels</span><span class="wf-link">Discover &rarr;</span></div>
+                <div class="text-xs text-gray-400 mb-3">Grands full access to the Theme Park with...</div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Rixos Premium Belek</div><span class="wf-btn text-xs mt-2">Book Now</span></div></div>
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Club Prive by Rixos</div><span class="wf-btn text-xs mt-2">Book Now</span></div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V2: A La Carte -->
+            <template x-if="av===2">
+              <div>
+                <div class="flex items-center justify-between mb-3"><span class="wf-section">A La Carte</span><span class="wf-link">See All &rarr;</span></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">MykOrini</div><span class="wf-btn text-xs mt-2">Make Reservation</span></div></div>
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Ala Aksam</div><span class="wf-btn text-xs mt-2">Make Reservation</span></div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V3: Similar Activities -->
+            <template x-if="av===3">
+              <div>
+                <div class="flex items-center gap-3 mb-3"><span class="wf-section">Similar Activities</span><span class="text-xs text-rose-500">&#10084; Those who rode in this unit liked these!</span></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-card overflow-hidden"><div class="text-xs text-gray-400 px-2 pt-2">10:00-18:00</div><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Dolphin Swim</div></div></div>
+                  <div class="wf-card overflow-hidden"><div class="text-xs text-gray-400 px-2 pt-2">10:00-18:00</div><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Mythical Journey</div></div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V4: Other Restaurants -->
+            <template x-if="av===4">
+              <div>
+                <div class="flex items-center justify-between mb-3"><span class="wf-section">Other Restaurant & Bars</span><span class="wf-link">See All &rarr;</span></div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Burger Stop</div><span class="wf-btn text-xs mt-2">Discover &rarr;</span></div></div>
+                  <div class="wf-card overflow-hidden"><div class="wf-img h-28">Gorsel</div><div class="p-3"><div class="text-sm font-semibold">Tropical Bar</div><span class="wf-btn text-xs mt-2">Discover &rarr;</span></div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V5: Your Privileges -->
+            <template x-if="av===5">
+              <div>
+                <div class="wf-section mb-3">Your Privileges</div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Privilege 1</div></div>
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Privilege 2</div></div>
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Privilege 3</div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V6: What can you do -->
+            <template x-if="av===6">
+              <div>
+                <div class="wf-section mb-3">What can you do?</div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Activity 1</div></div>
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Activity 2</div></div>
+                  <div class="wf-card p-2"><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs text-gray-400">Tag</div><div class="text-xs font-medium">Activity 3</div></div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- #9 FilterableCardGrid -->
+          <div x-show="slug==='filterable-card-grid'" x-cloak class="wf-preview">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex gap-2"><span class="wf-chip active">All</span><span class="wf-chip">Restaurant</span><span class="wf-chip">Bar</span><span class="wf-chip">All in Hotel</span></div>
+              <select class="text-xs border border-gray-300 rounded px-2 py-1"><option>All Kitchen</option></select>
+            </div>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+              <div class="wf-card p-2" x-for="i in 4" :key="i"><div class="wf-badge bg-gray-100 text-gray-600 mb-1">KINGDOM POINT</div><div class="text-xs text-gray-400 mb-1">10:00-22:00</div><div class="wf-img h-20 mb-2">Gorsel</div><div class="text-xs font-medium">Restaurant Name</div><span class="wf-btn mt-1 text-xs">Discover</span></div>
+            </div>
+            <div class="text-center"><span class="wf-btn-s text-xs">See More</span></div>
+          </div>
+
+          <!-- #10 CertificateGrid -->
+          <div x-show="slug==='certificate-grid'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Certificates and Awards</div>
+            <div class="grid grid-cols-4 gap-4">
+              <div class="text-center" x-for="i in 7" :key="i"><div class="wf-img w-16 h-16 rounded-full mx-auto mb-1">Badge</div><div class="text-xs font-medium text-gray-700">Europe's Best</div><div class="text-xs text-gray-400">2020</div></div>
+            </div>
+          </div>
+
+          <!-- #11 ServiceGrid -->
+          <div x-show="slug==='service-grid'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Services</div>
+            <div class="grid grid-cols-4 gap-3">
+              <div class="text-center p-2" x-for="s in ['ATM','Parking','Wheelchair','Locker','Phone','Baby Care','Info','Shower']" :key="s"><div class="wf-img w-10 h-10 rounded-full mx-auto mb-1">&#9679;</div><div class="text-xs text-gray-600" x-text="s"></div></div>
+            </div>
+          </div>
+
+          <!-- #12 LogoStrip -->
+          <div x-show="slug==='logo-strip'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Brands</div>
+            <div class="flex flex-wrap gap-3 mb-2">
+              <div class="wf-img w-16 h-10 rounded" x-for="i in 6" :key="i">Logo</div>
+              <div class="bg-gray-800 text-white text-xs rounded px-3 flex items-center">168+ Store</div>
+            </div>
+            <div class="text-xs text-gray-400 italic text-center mt-2">Thank you for being together</div>
+          </div>
+
+          <!-- #13 DetailInfoSection -->
+          <div x-show="slug==='detail-info-section'" x-cloak class="wf-preview">
+            <!-- V0: Unite ucretsiz -->
+            <template x-if="av===0">
+              <div>
+                <div class="text-lg font-bold text-gray-900 mb-1">Shark Seatrek</div>
+                <div class="flex items-center gap-1 text-xs text-gray-500 mb-3">&#128205; Kadriye Mah. Ataturk Cad. No:1, 07506 Serik/Antalya</div>
+                <p class="text-sm text-gray-600 leading-relaxed">Nickelodeon Hotel offers comfort, entertainment, and peace all together with its colorful decoration, 401 fairy-tale rooms designed for children, specially designed suites...</p>
+              </div>
+            </template>
+            <!-- V1: Unite ucretli -->
+            <template x-if="av===1">
+              <div>
+                <div class="flex items-center gap-2 mb-1"><span class="text-lg font-bold text-gray-900">Shark Seatrek</span><span class="wf-badge bg-orange-100 text-orange-700">Extra Paid</span></div>
+                <div class="flex items-center gap-1 text-xs text-gray-500 mb-3">&#128205; Kadriye Mah. Ataturk Cad. No:1, 07506 Serik/Antalya</div>
+                <p class="text-sm text-gray-600 leading-relaxed mb-3">Nickelodeon Hotel offers comfort, entertainment, and peace all together...</p>
+                <span class="wf-btn">Buy Activity</span>
+              </div>
+            </template>
+            <!-- V2: Restoran centered -->
+            <template x-if="av===2">
+              <div class="text-center">
+                <div class="wf-img w-16 h-16 rounded-full mx-auto mb-2">Logo</div>
+                <div class="text-xs text-gray-400 mb-1">Theme Park</div>
+                <div class="text-lg font-bold text-gray-900 mb-2">Mungo Restaurant Open Buffet</div>
+                <div class="flex items-center justify-center gap-1 text-xs text-green-600 mb-3">&#10003; You can use this activity by purchasing a Daily Theme Park ticket.</div>
+                <p class="text-sm text-gray-600 mb-3">Lorem ipsum dolor sit amet consectetur...</p>
+                <span class="wf-btn">Buy &rarr;</span>
+              </div>
+            </template>
+            <!-- V3: Event centered -->
+            <template x-if="av===3">
+              <div class="text-center">
+                <div class="text-lg font-bold text-gray-900 mb-2">Masha & Bear Live Show</div>
+                <p class="text-sm text-gray-600 mb-3">Come and join the legendary show at the arena...</p>
+                <span class="wf-btn">Buy &rarr;</span>
+              </div>
+            </template>
+            <!-- V4: Event extra paid -->
+            <template x-if="av===4">
+              <div class="text-center">
+                <div class="flex items-center justify-center gap-2 mb-2"><span class="text-lg font-bold text-gray-900">Birthday Party Event</span><span class="wf-badge bg-orange-100 text-orange-700">Extra Paid</span></div>
+                <p class="text-sm text-gray-600 mb-3">Celebrate your special day at the park...</p>
+                <span class="wf-btn-s">Contact Us</span>
+              </div>
+            </template>
+          </div>
+
+          <!-- #14 HotelInfoSection -->
+          <div x-show="slug==='hotel-info-section'" x-cloak class="wf-preview">
+            <div class="flex gap-6">
+              <div class="flex-1">
+                <div class="text-lg font-bold text-gray-900 mb-1">Nickelodeon Hotels & Resorts Antalya</div>
+                <div class="text-xs text-gray-500 mb-3">&#128205; Kadriye Mah. Ataturk Cad. No:1, 07506 Serik/Antalya</div>
+                <div class="flex gap-2 mb-3">
+                  <div class="wf-card p-2 text-center" x-for="p in ['TripAdvisor','Booking.com','HolidayCheck','Hotels.com']" :key="p"><div class="wf-img w-8 h-8 rounded mx-auto mb-1">Logo</div><div class="text-xs font-bold text-gray-700">4.5/5</div></div>
+                </div>
+                <p class="text-sm text-gray-600">SpongeBob, Dora, TMNT, Star Trek and Paw Patrol themes in every detail, 238 rooms... <span class="text-indigo-500 text-xs cursor-pointer">See more</span></p>
+              </div>
+              <div class="wf-img w-28 h-28 rounded-lg flex-shrink-0">Dekoratif Gorsel</div>
+            </div>
+          </div>
+
+          <!-- #15 SpecGrid -->
+          <div x-show="slug==='spec-grid'" x-cloak class="wf-preview">
+            <div class="flex items-center gap-2 mb-2"><span class="wf-section">Unit Rules</span></div>
+            <div class="bg-amber-50 border border-amber-200 rounded px-3 py-2 text-xs text-amber-700 mb-3">&#128179; You can use this activity by purchasing a Daily Theme Park ticket.</div>
+            <div class="grid grid-cols-4 gap-2">
+              <div class="wf-card p-3 text-center" x-for="s in [{l:'Capacity',v:'40 People'},{l:'Max Speed',v:'20 Km/h'},{l:'Duration',v:'5 min'},{l:'Height (min)',v:'130 cm'},{l:'Height (max)',v:'190 cm'},{l:'Line Length',v:'287 m'},{l:'Opening',v:'10:00'},{l:'Closing',v:'19:00'}]" :key="s.l">
+                <div class="wf-img w-8 h-8 rounded-full mx-auto mb-1">&#9679;</div>
+                <div class="text-xs text-gray-500" x-text="s.l"></div>
+                <div class="text-sm font-semibold text-gray-900" x-text="s.v"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #16 FeatureChips -->
+          <div x-show="slug==='feature-chips'" x-cloak class="wf-preview">
+            <div class="flex flex-wrap gap-2">
+              <span class="wf-chip" x-for="c in ['Family','Musical Show','Average 1 hour','Legends Arena']" :key="c"><span class="w-4 h-4 bg-gray-300 rounded-full inline-block"></span><span x-text="c"></span></span>
+            </div>
+          </div>
+
+          <!-- #17 CampaignDetailSection -->
+          <div x-show="slug==='campaign-detail-section'" x-cloak class="wf-preview">
+            <div class="flex gap-6">
+              <div class="flex-1">
+                <div class="text-xl font-bold text-gray-900 mb-2">Legendary Days Starts on November 15th!</div>
+                <div class="wf-badge bg-gray-100 text-gray-600 mb-2">Validity: 12/06/2023</div>
+                <div class="text-sm font-medium text-gray-700 mb-2">Buy your 2025 Theme Park ticket with 50% discount!</div>
+                <p class="text-sm text-gray-500 mb-3">Don't miss the 50% discount on 2025 theme park tickets...</p>
+                <div class="flex gap-2"><span class="wf-btn-s">Contact Us</span><span class="wf-btn">Add to Cart</span></div>
+              </div>
+              <div class="flex-shrink-0 flex gap-1"><div class="wf-img w-16 h-16 rounded-full">IMG</div><div class="wf-img w-14 h-14 rounded-full mt-4">IMG</div><div class="wf-img w-12 h-12 rounded-full mt-2">IMG</div></div>
+            </div>
+          </div>
+
+          <!-- #18 PackageComparisonCard -->
+          <div x-show="slug==='package-comparison-card'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Birthday Privileges</div>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="wf-card p-4">
+                <div class="font-semibold text-sm mb-2">Base Package</div>
+                <div class="text-xs text-gray-500 mb-2">Package Includes:</div>
+                <div class="space-y-2">
+                  <div class="flex gap-2 text-xs"><span class="text-yellow-500">&#10022;</span><div><div class="font-medium">1 Character on Demand</div><div class="text-gray-400">Aciklama metni...</div></div></div>
+                  <div class="flex gap-2 text-xs"><span class="text-yellow-500">&#10022;</span><div><div class="font-medium">Balloons</div><div class="text-gray-400">Aciklama metni...</div></div></div>
+                </div>
+                <div class="mt-3 text-xs text-gray-500">&#9201; 10 min session</div>
+              </div>
+              <div class="wf-card p-4 border-2 border-indigo-200">
+                <div class="font-semibold text-sm mb-2">Advanced Package</div>
+                <div class="text-xs text-gray-500 mb-2">Package Includes:</div>
+                <div class="space-y-2">
+                  <div class="flex gap-2 text-xs"><span class="text-yellow-500">&#10022;</span><div><div class="font-medium">3 Characters</div><div class="text-gray-400">Aciklama metni...</div></div></div>
+                  <div class="flex gap-2 text-xs"><span class="text-yellow-500">&#10022;</span><div><div class="font-medium">Balloons</div><div class="text-gray-400">Aciklama metni...</div></div></div>
+                  <div class="flex gap-2 text-xs"><span class="text-yellow-500">&#10022;</span><div><div class="font-medium">Keepsake + Birthday Cake</div><div class="text-gray-400">Aciklama metni...</div></div></div>
+                </div>
+                <div class="mt-3 text-xs text-gray-500">&#9201; 20 min session</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #19 RichContentBlock -->
+          <div x-show="slug==='rich-content-block'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Accessible Adventure</div>
+            <p class="text-sm text-gray-600 mb-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <div class="text-sm font-semibold text-gray-800 mb-2">Alt Baslik</div>
+            <p class="text-sm text-gray-600 mb-3">Paragraf metni devami...</p>
+            <ul class="text-sm text-gray-600 list-disc list-inside space-y-1 mb-3"><li>Madde 1 — Onemli bilgi</li><li>Madde 2 — Detay aciklamasi</li><li>Madde 3 — Ek bilgi</li></ul>
+          </div>
+
+          <!-- #20 AccordionBlock -->
+          <div x-show="slug==='accordion-block'" x-cloak class="wf-preview">
+            <!-- V0: Otel Information -->
+            <template x-if="av===0">
+              <div class="space-y-2">
+                <div class="wf-card"><div class="flex items-center justify-between p-3 cursor-pointer"><span class="text-sm font-medium">What's Included</span><span class="text-gray-400">&#9650;</span></div><div class="px-3 pb-3 text-xs text-gray-600"><ul class="list-disc list-inside space-y-1"><li>Private Offer Breakfast & Dinner</li><li>Rate Description: Theme park tickets + Buffet Breakfast...</li></ul></div></div>
+                <div class="wf-card"><div class="flex items-center justify-between p-3 cursor-pointer"><span class="text-sm font-medium">Additional Information</span><span class="text-gray-400">&#9660;</span></div></div>
+                <div class="wf-card"><div class="flex items-center justify-between p-3 cursor-pointer"><span class="text-sm font-medium">Cancellation Policy</span><span class="text-gray-400">&#9660;</span></div></div>
+              </div>
+            </template>
+            <!-- V1: FAQ -->
+            <template x-if="av===1">
+              <div>
+                <div class="flex gap-2 mb-3"><span class="wf-chip active">General</span><span class="wf-chip">Tickets</span><span class="wf-chip">Hotels</span><span class="wf-chip">Theme Park</span></div>
+                <div class="text-xs text-gray-500 font-semibold mb-2">Kingdom Hotel</div>
+                <div class="space-y-2">
+                  <div class="wf-card"><div class="flex items-center justify-between p-3"><span class="text-sm font-medium">How do I buy tickets?</span><span class="text-gray-400">&#9660;</span></div></div>
+                  <div class="wf-card"><div class="flex items-center justify-between p-3"><span class="text-sm font-medium">Can I get a refund?</span><span class="text-gray-400">&#9660;</span></div></div>
+                  <div class="wf-card"><div class="flex items-center justify-between p-3"><span class="text-sm font-medium">What are the park hours?</span><span class="text-gray-400">&#9660;</span></div></div>
+                </div>
+              </div>
+            </template>
+            <!-- V2: App Tanitim -->
+            <template x-if="av===2">
+              <div class="space-y-2">
+                <div class="wf-card"><div class="flex items-center justify-between p-3"><span class="text-sm font-medium">Explore Rides & Shows</span><span class="text-gray-400">&#9650;</span></div><div class="px-3 pb-3 flex gap-3"><div class="text-xs text-gray-600 flex-1">Discover all the amazing rides and shows available at the park...</div><div class="wf-img w-16 h-16 flex-shrink-0">IMG</div></div></div>
+                <div class="wf-card"><div class="flex items-center justify-between p-3"><span class="text-sm font-medium">Mobile Ordering</span><span class="text-gray-400">&#9660;</span></div></div>
+              </div>
+            </template>
+          </div>
+
+          <!-- #21 ContactBanner -->
+          <div x-show="slug==='contact-banner'" x-cloak class="wf-preview">
+            <div class="bg-gray-50 rounded-lg p-4 text-center">
+              <div class="text-sm font-semibold text-gray-800 mb-2">Need Assistance?</div>
+              <div class="text-xs text-gray-500 mb-3">&#9993; info@landoflegend.com</div>
+              <span class="wf-btn text-xs">Contact Us &rarr;</span>
+            </div>
+          </div>
+
+          <!-- #22 MusicPlatformBanner -->
+          <div x-show="slug==='music-platform-banner'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Volume Up and download!</div>
+            <div class="grid grid-cols-2 gap-3 max-w-sm">
+              <div class="wf-card p-3 flex items-center gap-2"><div class="wf-img w-10 h-10 rounded">Logo</div><div class="text-xs font-medium">Spotify Music</div></div>
+              <div class="wf-card p-3 flex items-center gap-2"><div class="wf-img w-10 h-10 rounded">Logo</div><div class="text-xs font-medium">Apple Music</div></div>
+            </div>
+            <div class="text-xs text-gray-300 mt-2 italic">&#9835; &#9834; dekoratif muzik notalari</div>
+          </div>
+
+          <!-- #23 TicketSelector -->
+          <div x-show="slug==='ticket-selector'" x-cloak class="wf-preview">
+            <div class="text-center">
+              <div class="flex justify-center gap-2 mb-3"><span class="wf-chip active">Theme Park</span><span class="wf-chip">Accommodation</span><span class="wf-chip">Flight + Hotel</span></div>
+              <div class="text-xs text-gray-500 mb-4">Choose your ticket and Be a Part of Legends</div>
+              <div class="flex justify-center gap-4 mb-3">
+                <div class="wf-card p-3 w-32 text-center"><div class="wf-img h-20 mb-2 rounded">Gorsel</div><div class="text-xs font-medium">Family Card</div></div>
+                <div class="wf-card p-3 w-32 text-center border-2 border-indigo-300"><div class="wf-img h-20 mb-2 rounded">Gorsel</div><div class="text-xs font-medium">All Day Ticket</div><div class="wf-badge bg-indigo-100 text-indigo-700 mt-1">Popular</div></div>
+                <div class="wf-card p-3 w-32 text-center"><div class="wf-img h-20 mb-2 rounded">Gorsel</div><div class="text-xs font-medium">Legendary Card</div></div>
+              </div>
+              <div class="wf-dots mb-3"><span></span><span></span><span></span></div>
+              <span class="wf-btn">Continue</span>
+            </div>
+          </div>
+
+          <!-- #24 StoreShowcase -->
+          <div x-show="slug==='store-showcase'" x-cloak class="wf-preview">
+            <div class="flex items-center justify-between mb-3"><span class="wf-section">Legends Store</span><span class="wf-link">Discover Now &rarr;</span></div>
+            <div class="flex gap-4">
+              <div class="wf-img w-36 h-44 flex-shrink-0 rounded-lg">Dekoratif Gorsel</div>
+              <div class="flex-1 flex items-center gap-2">
+                <div class="wf-arrow">&lt;</div>
+                <div class="grid grid-cols-3 gap-2 flex-1">
+                  <div class="wf-card p-2" x-for="nm in ['Colorful Bottle','Nick T-Shirt','Legend Cap']" :key="nm">
+                    <div class="flex gap-1 mb-1"><span class="wf-badge bg-gray-100 text-gray-600">New</span></div>
+                    <div class="wf-img h-16 mb-1 rounded relative"><div class="absolute bottom-0 left-0 right-0 flex justify-between px-1 text-gray-400 text-xs">&lt; &gt;</div></div>
+                    <div class="text-xs text-gray-400">Theme Park</div>
+                    <div class="text-xs font-medium" x-text="nm"></div>
+                    <div class="text-xs font-bold text-gray-800">&#8378;1,000.56</div>
+                    <div class="text-xs text-gray-400 line-through">&euro;8,000.56</div>
+                  </div>
+                </div>
+                <div class="wf-arrow">&gt;</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #25 CampaignShowcase -->
+          <div x-show="slug==='campaign-showcase'" x-cloak class="wf-preview">
+            <div class="flex items-center justify-between mb-2"><span class="wf-section">Campaigns</span><span class="wf-link">See All &rarr;</span></div>
+            <div class="flex flex-wrap gap-1 mb-3"><span class="wf-chip active">Theme Park</span><span class="wf-chip">Shopping Avenue</span><span class="wf-chip">Kingdom Hotel</span><span class="wf-chip">Nickelodeon</span><span class="wf-chip">Legends Store</span><span class="wf-chip">Rixos Hotels</span></div>
+            <div class="flex gap-4">
+              <div class="wf-img w-28 h-36 flex-shrink-0 rounded-lg">Dekoratif Gorsel</div>
+              <div class="flex-1 grid grid-cols-2 gap-3">
+                <div class="wf-card p-2"><div class="wf-badge bg-gray-100 text-gray-600 mb-1">Rixos Downtown</div><div class="wf-img h-20 mb-2 rounded">Gorsel</div><div class="text-xs font-medium">Educational packs for children</div><div class="text-xs text-gray-400 mb-2">Aciklama metni...</div><span class="wf-btn text-xs">Add to Cart</span></div>
+                <div class="wf-card p-2"><div class="wf-badge bg-gray-100 text-gray-600 mb-1">Rixos Club Belek</div><div class="wf-img h-20 mb-2 rounded">Gorsel</div><div class="text-xs font-medium">50% discount on tickets</div><div class="text-xs text-gray-400 mb-2">Aciklama metni...</div><span class="wf-btn text-xs">Add to Cart</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #26 EventTimeline -->
+          <div x-show="slug==='event-timeline'" x-cloak class="wf-preview">
+            <div class="wf-section mb-4">Entertainment Schedule</div>
+            <div class="space-y-0">
+              <div class="flex gap-4" x-for="e in [{t:'10:00',s:'Ongoing',n:'Masha & Bear Live Show',l:'Theme Park | Legends Arena',sc:'bg-blue-100 text-blue-700'},{t:'11:00',s:'Upcoming',n:'Nickelodeon Character Meet',l:'Theme Park | Nick Central',sc:'bg-amber-100 text-amber-700'},{t:'14:00',s:'Upcoming',n:'SpongeBob Dance Party',l:'Theme Park | Bikini Bottom',sc:'bg-amber-100 text-amber-700'},{t:'20:00',s:'Finished',n:'Fireworks Show',l:'Theme Park',sc:'bg-gray-100 text-gray-500'}]" :key="e.t">
+                <div class="w-12 text-xs font-mono text-gray-500 pt-2 text-right" x-text="e.t"></div>
+                <div class="flex flex-col items-center w-4"><div class="w-2 h-2 rounded-full bg-gray-400 mt-3"></div><div class="w-0.5 bg-gray-200 flex-1"></div></div>
+                <div class="flex-1 wf-card p-3 mb-3 flex gap-3"><div class="wf-img w-14 h-14 flex-shrink-0 rounded">Gorsel</div><div class="flex-1"><div class="flex items-center gap-2 mb-1"><span class="wf-badge" :class="e.sc" x-text="e.s"></span></div><div class="text-sm font-medium text-gray-900" x-text="e.n"></div><div class="text-xs text-gray-400" x-text="e.l"></div><span class="wf-link text-xs mt-1">Details &rarr;</span></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #27 LocationMap -->
+          <div x-show="slug==='location-map'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Where's the Mungo?</div>
+            <div class="wf-card p-4">
+              <div class="flex items-start justify-between mb-3">
+                <span class="wf-badge bg-gray-100 text-gray-600">Theme Park</span>
+                <span class="flex items-center gap-1 text-xs text-red-500">&#128205; Mungo</span>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="text-sm text-gray-600 mb-3">Want to explore the adventure from a bird's eye view?</p><span class="wf-btn text-xs">Discover Map &rarr;</span></div>
+                <div class="wf-img w-48 h-32 flex-shrink-0 rounded">Kus Bakisi Harita</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- #28 FilterModal -->
+          <div x-show="slug==='filter-modal'" x-cloak class="wf-preview">
+            <div class="max-w-sm mx-auto wf-card p-4">
+              <div class="flex items-center justify-between mb-4"><span class="text-sm font-semibold">Filters</span><span class="text-gray-400 cursor-pointer">&times;</span></div>
+              <div class="mb-4">
+                <div class="text-xs text-gray-600 mb-1">Choose Height</div>
+                <div class="text-xs font-semibold text-center mb-1">140 cm</div>
+                <div class="h-1.5 bg-gray-200 rounded-full relative"><div class="absolute left-1/3 top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-gray-400 rounded-full"></div></div>
+              </div>
+              <div class="mb-4">
+                <div class="text-xs text-gray-600 mb-1">Choose Weight</div>
+                <div class="text-xs font-semibold text-center mb-1">90 KG</div>
+                <div class="h-1.5 bg-gray-200 rounded-full relative"><div class="absolute left-1/2 top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-gray-400 rounded-full"></div></div>
+              </div>
+              <div class="space-y-2 mb-4">
+                <label class="flex items-center gap-2 text-xs"><input type="checkbox" checked class="rounded"> Accompanied by an adult</label>
+                <label class="flex items-center gap-2 text-xs"><input type="checkbox" checked class="rounded"> You may get wet</label>
+                <label class="flex items-center gap-2 text-xs"><input type="checkbox" class="rounded"> Suitable for pregnant women</label>
+              </div>
+              <div class="bg-blue-50 border border-blue-200 rounded p-2 text-xs text-blue-700 mb-2">Free for 0-3.99 year babies. Please bring your ID.</div>
+              <div class="bg-blue-50 border border-blue-200 rounded p-2 text-xs text-blue-700 mb-4">Access Adventures Without Limits — See Our Policy</div>
+              <div class="text-center"><span class="wf-btn">Apply</span><div class="text-xs text-gray-400 mt-2 cursor-pointer">Clear Filters</div></div>
+            </div>
+          </div>
+
+          <!-- #29 ContactFormPage -->
+          <div x-show="slug==='contact-form-page'" x-cloak class="wf-preview">
+            <div class="text-center mb-4">
+              <div class="wf-img w-20 h-20 rounded-full mx-auto mb-3">Karakter Gorseli</div>
+              <div class="text-lg font-bold text-gray-900 mb-1">Guarantee Your Theme!</div>
+              <p class="text-sm text-gray-500 max-w-lg mx-auto">All of our rooms at Nickelodeon Hotels & Resorts Antalya and Kingdom Hotel are themed...</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 max-w-lg mx-auto">
+              <input type="text" placeholder="Name" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="Surname" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="Phone" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="E-Mail" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="ID Number" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <select class="text-xs border border-gray-300 rounded px-3 py-2"><option>Nationality</option></select>
+              <input type="text" placeholder="Booking Agency" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="Reservation Number" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <input type="text" placeholder="Check-in / Check-out" class="text-xs border border-gray-300 rounded px-3 py-2">
+              <select class="text-xs border border-gray-300 rounded px-3 py-2"><option>Hotel</option></select>
+              <select class="text-xs border border-gray-300 rounded px-3 py-2"><option>Room Type</option></select>
+              <select class="text-xs border border-gray-300 rounded px-3 py-2"><option>Room Theme</option></select>
+            </div>
+            <div class="text-center mt-4"><span class="wf-btn">Send</span></div>
+          </div>
+
+          <!-- #30 TabbedContentSection -->
+          <div x-show="slug==='tabbed-content-section'" x-cloak class="wf-preview">
+            <div class="wf-section mb-3">Hotel Details</div>
+            <div class="flex flex-wrap gap-1 border-b border-gray-200 pb-2 mb-4">
+              <span class="text-xs font-medium px-3 py-1.5 border-b-2 border-indigo-500 text-indigo-600">Room Types</span>
+              <span class="text-xs px-3 py-1.5 text-gray-500 hover:text-gray-700">Campaigns</span>
+              <span class="text-xs px-3 py-1.5 text-gray-500">Your Privileges</span>
+              <span class="text-xs px-3 py-1.5 text-gray-500">Restaurant & Bar</span>
+              <span class="text-xs px-3 py-1.5 text-gray-500">What can you do?</span>
+              <span class="text-xs px-3 py-1.5 text-gray-500">Information</span>
+            </div>
+            <div class="bg-gray-100 rounded-lg p-6 text-center text-xs text-gray-400">[Tab icerigi burada — ThemeFilterChips + RoomCard veya diger block'lar]</div>
+          </div>
+
+          <!-- #31 ThemeFilterChips -->
+          <div x-show="slug==='theme-filter-chips'" x-cloak class="wf-preview">
+            <div class="flex flex-wrap gap-2">
+              <span class="wf-chip active"><span class="w-5 h-5 bg-gray-600 rounded-full inline-block"></span>Dora Rooms</span>
+              <span class="wf-chip"><span class="w-5 h-5 bg-gray-300 rounded-full inline-block"></span>PAW Patrol Rooms</span>
+              <span class="wf-chip"><span class="w-5 h-5 bg-gray-300 rounded-full inline-block"></span>SpongeBob Rooms</span>
+              <span class="wf-chip"><span class="w-5 h-5 bg-gray-300 rounded-full inline-block"></span>Star Trek Rooms</span>
+              <span class="wf-chip"><span class="w-5 h-5 bg-gray-300 rounded-full inline-block"></span>TMNT Rooms</span>
+            </div>
+          </div>
+
+          <!-- #32 RoomCard -->
+          <div x-show="slug==='room-card'" x-cloak class="wf-preview">
+            <div class="text-xs text-gray-500 mb-2">&#128197; May 25-27, 2024</div>
+            <div class="wf-card p-4 flex gap-4">
+              <div class="wf-img w-44 h-36 flex-shrink-0 rounded-lg relative">
+                <div class="absolute bottom-1 left-0 right-0 flex justify-between px-2 text-gray-400 text-sm">&lt; &gt;</div>
+                Oda Gorseli
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-bold text-gray-900 mb-1">Themed Deluxe Room</div>
+                <p class="text-xs text-gray-500 mb-2">SpongeBob, Dora, PAW Patrol, TMNT or Star Trek themed special design... <span class="text-indigo-500">See more</span></p>
+                <div class="text-xs text-gray-500 font-medium mb-1">Room Features</div>
+                <div class="flex flex-wrap gap-1 mb-3">
+                  <span class="wf-chip text-xs">42" LED TV</span><span class="wf-chip text-xs">PlayStation</span><span class="wf-chip text-xs">Mini Bar</span><span class="wf-chip text-xs">55 m&sup2;</span>
+                </div>
+                <div class="text-xs text-gray-400">Starting from</div>
+                <div class="flex items-center gap-3"><span class="text-lg font-bold text-gray-900">2,002.00&euro;</span><span class="wf-btn">Check Availability</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Not found fallback -->
+          <div x-show="!B[slug]" x-cloak class="text-center py-8 text-gray-400">
+            <div class="text-sm">Block bulunamadi</div>
+            <a :href="'blok-katalogu.html?theme='+th" class="text-indigo-500 text-sm mt-2 inline-block">Kataloga don</a>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CMS Fields Table -->
+      <div class="mb-8" x-show="B[slug]">
+        <h2 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">CMS Alanlari</h2>
+        <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50"><tr><th class="text-left px-4 py-2 font-medium text-gray-600">Alan</th><th class="text-left px-4 py-2 font-medium text-gray-600">Tip</th><th class="text-center px-4 py-2 font-medium text-gray-600">4 Dil</th></tr></thead>
+            <tbody>
+              <template x-for="(fl,i) in b.f" :key="i"><tr class="border-t border-gray-100"><td class="px-4 py-2 text-gray-900" x-text="fl.n"></td><td class="px-4 py-2 text-gray-500" x-text="fl.t"></td><td class="px-4 py-2 text-center" x-text="fl.l?'Evet':'Hayir'"></td></tr></template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="../../tool/js/tool-icons.js"></script>
+<script src="../../tool/js/toolbar.js"></script>
+<script src="../../tool/js/comments.js"></script>
+</body>
+</html>

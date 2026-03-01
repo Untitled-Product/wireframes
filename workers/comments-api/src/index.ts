@@ -6,6 +6,10 @@
 export interface Env {
   DB: D1Database;
   ALLOWED_ORIGINS: string;
+  CLICKUP_API_KEY: string;
+  CLICKUP_WORKSPACE_ID: string;
+  CLICKUP_CHANNEL_ID: string;
+  WIREFRAME_BASE_URL: string;
 }
 
 interface Comment {
@@ -32,6 +36,142 @@ interface Reply {
   author_email?: string;
   content: string;
   created_at?: string;
+}
+
+// Page → Task code mapping (from index.html card badges)
+const PAGE_TASK_MAP: Record<string, string[]> = {
+  'sprint1-login-phone': ['K-001'],
+  'sprint1-login-otp': ['K-001'],
+  'sprint1-login-locked': ['K-001'],
+  'sprint1-user-list-v2': ['K-002', 'K-003'],
+  'sprint1-user-form-v2': ['K-002', 'K-003'],
+  'sprint-a-siparis-listesi': ['D-A01', 'A-004'],
+  'sprint-a-siparis-detay': ['D-A01', 'A-005'],
+  'sprint-a-iptal-iade-listesi': ['D-A03', 'A-011'],
+  'sprint-a-iptal-iade-detay': ['D-A03', 'A-011'],
+  'sprint-c-sayfa-listesi': ['C-001', 'C-003'],
+  'sprint-c-sayfa-builder': ['C-003'],
+  'sprint-c-icerik-editoru': ['C-002'],
+  'sprint-c-onizleme': ['C-007'],
+  'sprint-c-banner-listesi': ['C-001'],
+  'sprint-c-banner-form': ['C-002'],
+  'sprint-c-medya-kutuphanesi': ['C-006'],
+  'sprint-c-faq-listesi': ['C-001'],
+  'sprint-c-faq-form': ['C-002'],
+  'sprint-c-koleksiyon-listesi': ['C-001'],
+  'sprint-c-koleksiyon-form': ['C-002'],
+  'sprint-c-menu-yonetimi': ['C-004'],
+  'sprint-c-site-ayarlari': ['C-004'],
+  'sprint-c-cms-dashboard': ['D-C01'],
+  'sprint-c-etkinlik-takvimi': ['C-005'],
+  'sprint-c-etkinlik-zamanlama': ['C-005'],
+  'sprint-b-urun-listesi': ['D-B01'],
+  'sprint-b-bilet-form': ['D-B01'],
+  'sprint-b-fiyat-takvimi': ['D-B01'],
+  'sprint-b-eklenti-form': ['D-B01'],
+  'sprint-b-fnb-form': ['D-B01'],
+  'sprint-b-experience-form': ['D-B01'],
+  'sprint-b-kullanici-davet': ['D-B01'],
+  'public-forms-school-form': ['F1-170'],
+  'public-forms-agency-form': ['F1-171'],
+  'public-forms-ticket-request': ['F1-172'],
+  // Sprint D - Kampanya & Raporlama
+  'sprint-d-kampanya-listesi': ['D-001', 'D-003'],
+  'sprint-d-kampanya-form': ['D-002', 'D-003'],
+  'sprint-d-kampanya-dashboard': ['D-004'],
+  'sprint-d-satis-raporlari': ['D-005'],
+  'sprint-d-gelir-analizi': ['D-006'],
+};
+
+// ClickUp Chat notification
+async function notifyClickUpChat(env: Env, data: {
+  type: 'comment' | 'reply';
+  commentId: number;
+  pageId: string;
+  authorName: string;
+  content: string;
+  priority?: string;
+  originalAuthor?: string;
+  clickupMessageId?: string;
+}): Promise<void> {
+  if (!env.CLICKUP_API_KEY || !env.CLICKUP_WORKSPACE_ID || !env.CLICKUP_CHANNEL_ID) return;
+
+  // pageId format: "sprint-c-site-ayarlari" → path: "sprint-c/site-ayarlari"
+  // Klasör adını regex ile tanı (sprint1, sprint-a, admin, public-forms, diagrams vb.)
+  const folderMatch = data.pageId.match(/^(sprint\d+|sprint-[a-z]+|admin|public-forms|public|diagrams)-(.+)$/);
+  const pagePath = folderMatch
+    ? `${folderMatch[1]}/${folderMatch[2]}`
+    : data.pageId;
+  const pageUrl = `${env.WIREFRAME_BASE_URL}/src/pages/${pagePath.replace('public-forms', 'public/forms')}.html`;
+  const taskCodes = PAGE_TASK_MAP[data.pageId];
+  const taskLabel = taskCodes ? ` | ${taskCodes.join(', ')}` : '';
+
+  try {
+    const headers = {
+      'Authorization': env.CLICKUP_API_KEY,
+      'Content-Type': 'application/json',
+    };
+
+    if (data.type === 'reply' && data.clickupMessageId) {
+      // Thread reply — parent mesajın altına yanıt olarak gider
+      const replyContent = `💬 ${data.authorName}:\n"${data.content.slice(0, 800)}"`;
+      const url = `https://api.clickup.com/api/v3/workspaces/${env.CLICKUP_WORKSPACE_ID}/chat/messages/${data.clickupMessageId}/replies`;
+      await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ content: replyContent }),
+      });
+    } else {
+      // Yeni top-level mesaj
+      const content = data.type === 'comment'
+        ? `📝 ${data.authorName} yorum bıraktı` +
+          (data.priority && data.priority !== 'normal' ? ` [${data.priority.toUpperCase()}]` : '') +
+          `\n📄 ${data.pageId}${taskLabel}\n\n"${data.content.slice(0, 600)}"\n\n🔗 ${pageUrl}`
+        : `💬 ${data.authorName} yanıt verdi` +
+          (data.originalAuthor ? ` (→ ${data.originalAuthor})` : '') +
+          `\n📄 ${data.pageId}${taskLabel}\n\n"${data.content.slice(0, 600)}"\n\n🔗 ${pageUrl}`;
+
+      const url = `https://api.clickup.com/api/v3/workspaces/${env.CLICKUP_WORKSPACE_ID}/chat/channels/${env.CLICKUP_CHANNEL_ID}/messages`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ content }),
+      });
+
+      if (res.ok && data.type === 'comment') {
+        const resData = await res.json() as any;
+        const messageId = resData?.id || resData?.data?.id;
+        if (messageId) {
+          await env.DB.prepare('UPDATE comments SET clickup_message_id = ? WHERE id = ?')
+            .bind(String(messageId), data.commentId)
+            .run();
+        }
+      }
+    }
+  } catch (err) {
+    console.error('ClickUp Chat notification failed:', err);
+  }
+}
+
+// ClickUp Chat reaction
+async function addClickUpReaction(env: Env, messageId: string, emoji = 'white_check_mark'): Promise<void> {
+  if (!env.CLICKUP_API_KEY || !env.CLICKUP_WORKSPACE_ID || !messageId) return;
+
+  try {
+    await fetch(
+      `https://api.clickup.com/api/v3/workspaces/${env.CLICKUP_WORKSPACE_ID}/chat/messages/${messageId}/reactions`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': env.CLICKUP_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ reaction: emoji }),
+      }
+    );
+  } catch (err) {
+    console.error('ClickUp reaction failed:', err);
+  }
 }
 
 // CORS headers
@@ -64,7 +204,7 @@ function errorResponse(message: string, status = 400, headers: HeadersInit = {})
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin') || '';
     const cors = corsHeaders(origin, env.ALLOWED_ORIGINS || '*');
@@ -84,8 +224,8 @@ export default {
         const pageId = url.searchParams.get('page_id');
         const status = url.searchParams.get('status');
 
-        let query = 'SELECT * FROM comments WHERE 1=1';
-        const params: any[] = [];
+        let query = 'SELECT * FROM comments WHERE status != ?';
+        const params: any[] = ['deleted'];
 
         if (pageId) {
           query += ' AND page_id = ?';
@@ -167,6 +307,15 @@ export default {
           .bind(result.meta.last_row_id)
           .first();
 
+        ctx.waitUntil(notifyClickUpChat(env, {
+          type: 'comment',
+          commentId: result.meta.last_row_id as number,
+          pageId: body.page_id,
+          authorName: body.author_name,
+          content: body.content,
+          priority: body.priority,
+        }));
+
         return jsonResponse({ comment: newComment, message: 'Comment created' }, 201, cors);
       }
 
@@ -215,14 +364,35 @@ export default {
           .bind(id)
           .first();
 
+        if (body.status === 'resolved' && (updated as any)?.clickup_message_id) {
+          ctx.waitUntil(addClickUpReaction(env, (updated as any).clickup_message_id));
+        }
+
         return jsonResponse({ comment: updated, message: 'Comment updated' }, 200, cors);
       }
 
-      // DELETE /comments/:id - Delete comment
+      // DELETE /comments/:id - Soft delete comment
       if (path.match(/^\/comments\/\d+$/) && method === 'DELETE') {
         const id = path.split('/')[2];
 
-        await env.DB.prepare('DELETE FROM comments WHERE id = ?').bind(id).run();
+        const comment = await env.DB
+          .prepare('SELECT * FROM comments WHERE id = ?')
+          .bind(id)
+          .first();
+
+        if (!comment) {
+          return errorResponse('Comment not found', 404, cors);
+        }
+
+        await env.DB
+          .prepare('UPDATE comments SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+          .bind('deleted', id)
+          .run();
+
+        const msgId = (comment as any).clickup_message_id;
+        if (msgId) {
+          ctx.waitUntil(addClickUpReaction(env, msgId, 'x'));
+        }
 
         return jsonResponse({ message: 'Comment deleted' }, 200, cors);
       }
@@ -236,9 +406,9 @@ export default {
           return errorResponse('author_name and content are required', 400, cors);
         }
 
-        // Check if comment exists
+        // Check if comment exists (also fetch page_id, author, clickup_message_id for notification)
         const comment = await env.DB
-          .prepare('SELECT id FROM comments WHERE id = ?')
+          .prepare('SELECT id, page_id, author_name, clickup_message_id FROM comments WHERE id = ?')
           .bind(commentId)
           .first();
 
@@ -259,6 +429,16 @@ export default {
           .bind(result.meta.last_row_id)
           .first();
 
+        ctx.waitUntil(notifyClickUpChat(env, {
+          type: 'reply',
+          commentId: Number(commentId),
+          pageId: (comment as any).page_id,
+          authorName: body.author_name,
+          content: body.content,
+          originalAuthor: (comment as any).author_name,
+          clickupMessageId: (comment as any).clickup_message_id || undefined,
+        }));
+
         return jsonResponse({ reply: newReply, message: 'Reply added' }, 201, cors);
       }
 
@@ -266,11 +446,12 @@ export default {
       if (path === '/stats' && method === 'GET') {
         const pageId = url.searchParams.get('page_id');
 
-        let whereClause = '';
+        const deletedFilter = "status != 'deleted'";
+        let whereClause = `WHERE ${deletedFilter}`;
         const params: any[] = [];
 
         if (pageId) {
-          whereClause = 'WHERE page_id = ?';
+          whereClause += ' AND page_id = ?';
           params.push(pageId);
         }
 
@@ -280,12 +461,12 @@ export default {
           .first();
 
         const openResult = await env.DB
-          .prepare(`SELECT COUNT(*) as count FROM comments ${whereClause ? whereClause + ' AND' : 'WHERE'} status = 'open'`)
+          .prepare(`SELECT COUNT(*) as count FROM comments ${whereClause} AND status = 'open'`)
           .bind(...params)
           .first();
 
         const resolvedResult = await env.DB
-          .prepare(`SELECT COUNT(*) as count FROM comments ${whereClause ? whereClause + ' AND' : 'WHERE'} status = 'resolved'`)
+          .prepare(`SELECT COUNT(*) as count FROM comments ${whereClause} AND status = 'resolved'`)
           .bind(...params)
           .first();
 
@@ -294,6 +475,7 @@ export default {
             SELECT page_id, COUNT(*) as count,
                    SUM(CASE WHEN status = 'open' THEN 1 ELSE 0 END) as open_count
             FROM comments
+            WHERE ${deletedFilter}
             GROUP BY page_id
             ORDER BY count DESC
           `)

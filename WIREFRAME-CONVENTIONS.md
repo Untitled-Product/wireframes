@@ -435,7 +435,7 @@ wireframe-kit/
 cd wireframe-kit && npx tailwindcss -i ./src/styles/base.css -o ./dist/output.css --minify && npx wrangler pages deploy . --project-name=legends-wireframes
 ```
 
-URL: https://legends-wireframes.pages.dev
+URL: https://wireframes.untitledproduct.com/legends
 
 ---
 

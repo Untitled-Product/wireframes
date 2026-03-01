@@ -61,6 +61,28 @@ class ToolToolbar {
           }
         ]
       },
+      'kampanya-form': {
+        versions: [
+          {
+            version: 'v1',
+            file: 'kampanya-form.html',
+            label: 'V1 - Orijinal',
+            isDefault: true
+          },
+          {
+            version: 'v2',
+            file: 'kampanya-form.html',
+            label: 'V2 - ClickUp Fixes',
+            changeNote: 'ClickUp yorum duzeltmeleri'
+          },
+          {
+            version: 'v3',
+            file: 'kampanya-form-v3.html',
+            label: 'V3 - Shopify Esitleme',
+            changeNote: 'Shopify discount flow esitlemesi: Tip modal, method tab toggle, tip-bazli kartlar'
+          }
+        ]
+      },
       'user-form': {
         versions: [
           {
@@ -91,27 +113,12 @@ class ToolToolbar {
   getToolBasePath() {
     const path = window.location.pathname;
 
-    // Calculate relative path to src/tool based on current page location
-    // From src/pages/X/ -> ../../tool/
-    if (path.includes('/src/pages/admin/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/public/forms/')) {
-      return '../../../tool/';
-    } else if (path.includes('/src/pages/public/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/sprint1/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/sprint2/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/sprint3/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/sprint-a/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/pages/sprint-c/')) {
-      return '../../tool/';
-    } else if (path.includes('/src/components/')) {
-      return '../tool/';
-    }
+    // 4-level deep: src/pages/public/forms/
+    if (path.includes('/src/pages/public/forms/')) return '../../../tool/';
+    // 3-level deep: src/pages/X/ (sprint*, admin, public, diagrams)
+    if (path.match(/\/src\/pages\/[^/]+\//)) return '../../tool/';
+    // 2-level deep: src/components/
+    if (path.includes('/src/components/')) return '../tool/';
     return 'src/tool/';
   }
 
@@ -211,28 +218,19 @@ class ToolToolbar {
   getIndexPath() {
     const path = window.location.pathname;
 
-    // Sprint sayfalarından o sprint'in index'ine dön
-    if (path.includes('/src/pages/sprint1/')) {
-      return '../../../index.html#sprint1';
-    } else if (path.includes('/src/pages/sprint2/')) {
-      return '../../../index.html#sprint2';
-    } else if (path.includes('/src/pages/sprint3/')) {
-      return '../../../index.html#sprint3';
-    } else if (path.includes('/src/pages/sprint-a/')) {
-      return '../../../index.html#sprint-a';
-    } else if (path.includes('/src/pages/sprint-c/')) {
-      return '../../../index.html#sprint-c';
-    } else if (path.includes('/src/pages/admin/')) {
-      return '../../../index.html';
-    } else if (path.includes('/src/pages/public/forms/')) {
-      return '../../../../index.html';
-    } else if (path.includes('/src/pages/public/')) {
-      return '../../../index.html';
-    } else if (path.includes('/src/pages/diagrams/')) {
-      return '../../../index.html#diagrams';
-    } else if (path.includes('/src/components/')) {
-      return '../../index.html';
+    // Dinamik: path'ten klasör adını çıkar, hash olarak kullan
+    // src/pages/public/forms/ → 4 level deep, özel durum
+    if (path.includes('/src/pages/public/forms/')) return '../../../../index.html';
+    // src/components/ → 2 level deep
+    if (path.includes('/src/components/')) return '../../index.html';
+
+    // src/pages/X/ → klasör adını çıkar, hash yap
+    const folderMatch = path.match(/\/src\/pages\/([^/]+)\//);
+    if (folderMatch) {
+      const folder = folderMatch[1]; // sprint1, sprint-a, admin, public, diagrams...
+      return `../../../index.html#${folder}`;
     }
+
     return 'index.html';
   }
 

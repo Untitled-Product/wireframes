@@ -1,12 +1,12 @@
 <!--
-  Wireframe: siparis-listesi (V2)
+  Wireframe: siparis-listesi (V3)
   Task: A-004, D-A01
   Karar Versiyonu: -
-  Son Guncelleme: 2026-02-24
+  Son Guncelleme: 2026-02-27
 
-  V2 Figma Kaynak: Yeni ekran goruntuleri (4 adet)
-  - 6 kolonlu tablo (Satis Tarihi, Bilet Giris Tarihi, PNR, Musteri, E Posta, Telefon)
-  - Horizontal scroll (20 veri alani, lazy load asagi)
+  V3 Guncelleme: Kolon sirasi ve icerik revizyonu
+  - 7 kolonlu tablo (Musteri Ismi, Durum, PNR Bilgileri, E-Posta, Telefon, Olusturma Tarihi, Bilet Tarihi)
+  - Durum kolonu eklendi (Beklemede/Onaylandi/Tamamlandi/Iptal/Basarisiz badge)
   - Kimlik-bazli filtre drawer (10 alan)
   - PNR 3 durum: PNR kodu + copy, PNR Olustur badge, - (dash)
   - Satis Kanali filtresi (Web globe / App telefon ikonu)
@@ -107,13 +107,13 @@
               <tr>
                 <th>
                   <div class="flex items-center gap-1 cursor-pointer select-none">
-                    Satis Tarihi
+                    Musteri Ismi
                     <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
                   </div>
                 </th>
                 <th>
                   <div class="flex items-center gap-1 cursor-pointer select-none">
-                    Bilet Giris Tarihi
+                    Durum
                     <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
                   </div>
                 </th>
@@ -125,340 +125,360 @@
                 </th>
                 <th>
                   <div class="flex items-center gap-1 cursor-pointer select-none">
-                    Musteri Ismi
+                    E-Posta
                     <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
                   </div>
                 </th>
                 <th>
                   <div class="flex items-center gap-1 cursor-pointer select-none">
-                    E Posta Adresi
+                    Telefon
                     <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
                   </div>
                 </th>
                 <th>
                   <div class="flex items-center gap-1 cursor-pointer select-none">
-                    Telefon Numarasi
+                    Olusturma Tarihi
+                    <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
+                  </div>
+                </th>
+                <th>
+                  <div class="flex items-center gap-1 cursor-pointer select-none">
+                    Bilet Tarihi
                     <svg class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 10l5-5 5 5"/><path d="M7 14l5 5 5-5"/></svg>
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <!-- Row 1 - PNR var -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-16</div>
-                  <div class="text-xs text-gray-400">12:40:09</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-20</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 1 - Onaylandi, PNR var -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Ahmet Yilmaz</span>
                   </div>
                 </td>
-                <td class="text-sm text-gray-600">ahmet.yilmaz@email.com</td>
-                <td class="text-sm text-gray-600">+90 0532 123 45 67</td>
-              </tr>
-
-              <!-- Row 2 - PNR var -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-15</div>
-                  <div class="text-xs text-gray-400">09:22:31</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-03-01</td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">Onaylandi</span></td>
                 <td>
                   <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-ABC456</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-XYZ789</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
                       <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                     </button>
                   </div>
                 </td>
+                <td class="text-sm text-gray-600">ahmet.yilmaz@email.com</td>
+                <td class="text-sm text-gray-600">+90 532 123 45 67</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-16</div>
+                  <div class="text-xs text-gray-400">12:40:09</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-20</td>
+              </tr>
+
+              <!-- Row 2 - Tamamlandi, PNR var -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Merve Kaya</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Tamamlandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-ABC456</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">merve.kaya@email.com</td>
-                <td class="text-sm text-gray-600">+90 0541 987 65 43</td>
+                <td class="text-sm text-gray-600">+90 541 987 65 43</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-15</div>
+                  <div class="text-xs text-gray-400">09:22:31</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-01</td>
               </tr>
 
-              <!-- Row 3 - PNR Olustur -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-14</div>
-                  <div class="text-xs text-gray-400">16:55:12</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-03-15</td>
-                <td>
-                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
-                    PNR Olustur
-                  </button>
-                </td>
+              <!-- Row 3 - Beklemede, PNR Olustur -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Burak Can</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">Beklemede</span></td>
+                <td>
+                  <button @click.stop="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
                 <td class="text-sm text-gray-600">burak.can@email.com</td>
-                <td class="text-sm text-gray-600">+90 0555 444 33 22</td>
+                <td class="text-sm text-gray-600">+90 555 444 33 22</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-14</div>
+                  <div class="text-xs text-gray-400">16:55:12</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-15</td>
               </tr>
 
-              <!-- Row 4 - PNR var, RU -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-13</div>
-                  <div class="text-xs text-gray-400">11:08:44</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-28</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-RUS102</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 4 - Onaylandi, PNR var, RU -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge" style="background: #dbeafe; color: #2563eb;">RU</span>
                     <span class="text-sm font-medium text-gray-900">Vladimir Petrov</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">Onaylandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-RUS102</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">vladimir@example.com</td>
                 <td class="text-sm text-gray-600">+7 916 123 45 67</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-13</div>
+                  <div class="text-xs text-gray-400">11:08:44</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-28</td>
               </tr>
 
-              <!-- Row 5 - PNR yok (dash) -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-12</div>
-                  <div class="text-xs text-gray-400">08:30:55</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-04-01</td>
-                <td class="text-sm text-gray-400">-</td>
+              <!-- Row 5 - Basarisiz, PNR yok -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Elif Demir</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">Basarisiz</span></td>
+                <td class="text-sm text-gray-400">-</td>
                 <td class="text-sm text-gray-600">elif.demir@email.com</td>
-                <td class="text-sm text-gray-600">+90 0533 222 11 00</td>
+                <td class="text-sm text-gray-600">+90 533 222 11 00</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-12</div>
+                  <div class="text-xs text-gray-400">08:30:55</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-01</td>
               </tr>
 
-              <!-- Row 6 - PNR var -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-11</div>
-                  <div class="text-xs text-gray-400">14:17:03</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-15</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-DEF321</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 6 - Tamamlandi, PNR var -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Zeynep Arslan</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Tamamlandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-DEF321</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">zeynep.arslan@email.com</td>
-                <td class="text-sm text-gray-600">+90 0542 678 90 12</td>
+                <td class="text-sm text-gray-600">+90 542 678 90 12</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-11</div>
+                  <div class="text-xs text-gray-400">14:17:03</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-15</td>
               </tr>
 
-              <!-- Row 7 - PNR Olustur, DE -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-10</div>
-                  <div class="text-xs text-gray-400">19:45:28</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-03-20</td>
-                <td>
-                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
-                    PNR Olustur
-                  </button>
-                </td>
+              <!-- Row 7 - Beklemede, PNR Olustur, DE -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge" style="background: #fef3c7; color: #d97706;">DE</span>
                     <span class="text-sm font-medium text-gray-900">Hans Mueller</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">Beklemede</span></td>
+                <td>
+                  <button @click.stop="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
                 <td class="text-sm text-gray-600">hans.mueller@web.de</td>
                 <td class="text-sm text-gray-600">+49 176 234 56 78</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-10</div>
+                  <div class="text-xs text-gray-400">19:45:28</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-20</td>
               </tr>
 
-              <!-- Row 8 - PNR yok (dash) -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-09</div>
-                  <div class="text-xs text-gray-400">07:12:39</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-25</td>
-                <td class="text-sm text-gray-400">-</td>
+              <!-- Row 8 - Iptal, PNR yok -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Mehmet Oz</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">Iptal</span></td>
+                <td class="text-sm text-gray-400">-</td>
                 <td class="text-sm text-gray-600">mehmet.oz@email.com</td>
-                <td class="text-sm text-gray-600">+90 0544 333 22 11</td>
+                <td class="text-sm text-gray-600">+90 544 333 22 11</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-09</div>
+                  <div class="text-xs text-gray-400">07:12:39</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-25</td>
               </tr>
 
-              <!-- Row 9 - PNR var, GB -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-08</div>
-                  <div class="text-xs text-gray-400">22:03:17</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-04-10</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-GBR055</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 9 - Onaylandi, PNR var, GB -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge" style="background: #ede9fe; color: #7c3aed;">GB</span>
                     <span class="text-sm font-medium text-gray-900">James Wilson</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">Onaylandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-GBR055</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">james.wilson@mail.co.uk</td>
                 <td class="text-sm text-gray-600">+44 7700 123 456</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-08</div>
+                  <div class="text-xs text-gray-400">22:03:17</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-10</td>
               </tr>
 
-              <!-- Row 10 - PNR Olustur -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-07</div>
-                  <div class="text-xs text-gray-400">13:28:51</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-03-05</td>
-                <td>
-                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
-                    PNR Olustur
-                  </button>
-                </td>
+              <!-- Row 10 - Beklemede, PNR Olustur -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Ayse Celik</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">Beklemede</span></td>
+                <td>
+                  <button @click.stop="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
                 <td class="text-sm text-gray-600">ayse.celik@email.com</td>
-                <td class="text-sm text-gray-600">+90 0536 111 22 33</td>
+                <td class="text-sm text-gray-600">+90 536 111 22 33</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-07</div>
+                  <div class="text-xs text-gray-400">13:28:51</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-05</td>
               </tr>
 
-              <!-- Row 11 - PNR var -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-06</div>
-                  <div class="text-xs text-gray-400">10:55:06</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-18</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-TRK890</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 11 - Tamamlandi, PNR var -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Hakan Dogan</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">Tamamlandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-TRK890</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">hakan.dogan@email.com</td>
-                <td class="text-sm text-gray-600">+90 0537 444 55 66</td>
+                <td class="text-sm text-gray-600">+90 537 444 55 66</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-06</div>
+                  <div class="text-xs text-gray-400">10:55:06</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-18</td>
               </tr>
 
-              <!-- Row 12 - PNR yok (dash) -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-05</div>
-                  <div class="text-xs text-gray-400">15:33:42</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-03-12</td>
-                <td class="text-sm text-gray-400">-</td>
+              <!-- Row 12 - Basarisiz, PNR yok -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Selin Yildiz</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700">Basarisiz</span></td>
+                <td class="text-sm text-gray-400">-</td>
                 <td class="text-sm text-gray-600">selin.yildiz@email.com</td>
-                <td class="text-sm text-gray-600">+90 0538 777 88 99</td>
+                <td class="text-sm text-gray-600">+90 538 777 88 99</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-05</div>
+                  <div class="text-xs text-gray-400">15:33:42</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-03-12</td>
               </tr>
 
-              <!-- Row 13 - PNR var, RU -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-04</div>
-                  <div class="text-xs text-gray-400">18:21:09</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-04-05</td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <span class="text-sm font-medium text-gray-900">PNR-2026-KZN441</span>
-                    <button class="wf-v2-copy-btn" title="Kopyala">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                    </button>
-                  </div>
-                </td>
+              <!-- Row 13 - Onaylandi, PNR var, RU -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge" style="background: #dbeafe; color: #2563eb;">RU</span>
                     <span class="text-sm font-medium text-gray-900">Dmitri Ivanov</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">Onaylandi</span></td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-900">PNR-2026-KZN441</span>
+                    <button @click.stop class="wf-v2-copy-btn" title="Kopyala">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    </button>
+                  </div>
+                </td>
                 <td class="text-sm text-gray-600">dmitri.ivanov@yandex.ru</td>
                 <td class="text-sm text-gray-600">+7 926 555 44 33</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-04</div>
+                  <div class="text-xs text-gray-400">18:21:09</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-04-05</td>
               </tr>
 
-              <!-- Row 14 - PNR Olustur -->
-              <tr>
-                <td>
-                  <div class="text-sm text-gray-600">2026-01-03</div>
-                  <div class="text-xs text-gray-400">06:47:33</div>
-                </td>
-                <td class="text-sm text-gray-600">2026-02-22</td>
-                <td>
-                  <button @click="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
-                    PNR Olustur
-                  </button>
-                </td>
+              <!-- Row 14 - Beklemede, PNR Olustur -->
+              <tr class="cursor-pointer hover:bg-gray-50 transition-colors" @click="window.location.href='siparis-detay.html?theme=' + (new URLSearchParams(window.location.search).get('theme') || 'teal')">
                 <td>
                   <div class="flex items-center gap-2">
                     <span class="wf-v2-country-badge">TR</span>
                     <span class="text-sm font-medium text-gray-900">Fatma Sahin</span>
                   </div>
                 </td>
+                <td><span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700">Beklemede</span></td>
+                <td>
+                  <button @click.stop="pnrModalOpen = true" class="wf-v2-badge wf-v2-badge-success cursor-pointer hover:opacity-80 transition-opacity">
+                    PNR Olustur
+                  </button>
+                </td>
                 <td class="text-sm text-gray-600">fatma.sahin@email.com</td>
-                <td class="text-sm text-gray-600">+90 0539 666 77 88</td>
+                <td class="text-sm text-gray-600">+90 539 666 77 88</td>
+                <td>
+                  <div class="text-sm text-gray-600">2026-01-03</div>
+                  <div class="text-xs text-gray-400">06:47:33</div>
+                </td>
+                <td class="text-sm text-gray-600">2026-02-22</td>
               </tr>
             </tbody>
           </table>

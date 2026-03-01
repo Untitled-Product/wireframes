@@ -135,6 +135,19 @@ class WireframeLayout {
     return { path, filename, sprint };
   }
 
+  getHomePath() {
+    const path = window.location.pathname;
+
+    if (path.includes('/src/pages/public/forms/')) return '../../../../index.html';
+
+    const folderMatch = path.match(/\/src\/pages\/([^/]+)\//);
+    if (folderMatch) {
+      return `../../../index.html#${folderMatch[1]}`;
+    }
+
+    return '../../../index.html';
+  }
+
   getLayoutConfig() {
     const config = pageConfigs[this.currentPage.filename];
     if (!config) return null;
@@ -266,7 +279,7 @@ class WireframeLayout {
       <!-- Right Actions -->
       <div class="flex items-center gap-4">
         <!-- Back to Home -->
-        <a href="../../../index.html" class="wf-btn text-sm py-1">
+        <a href="${this.getHomePath()}" class="wf-btn text-sm py-1">
           ← Ana Sayfa
         </a>
 

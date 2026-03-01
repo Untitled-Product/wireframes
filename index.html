@@ -444,7 +444,7 @@
   selectedSprint: (function() {
     // Check hash first (e.g., #sprint1)
     const hash = window.location.hash.replace('#', '');
-    if (['sprint1', 'sprint2', 'sprint3', 'sprint-a', 'sprint-c', 'diagrams'].includes(hash)) return hash;
+    if (['sprint1', 'sprint2', 'sprint3', 'sprint-a', 'sprint-c', 'sprint-d', 'diagrams'].includes(hash)) return hash;
     // Then check query param
     const param = new URLSearchParams(window.location.search).get('sprint');
     if (param) return param;
@@ -495,12 +495,28 @@
       >SA</button>
 
       <button
+        @click="selectedSprint = 'sprint-b'"
+        :class="selectedSprint === 'sprint-b' ? 'active' : ''"
+        class="index-sprint-btn"
+        title="Sprint B - CMS & Content Management"
+        style="font-size: 11px;"
+      >SB</button>
+
+      <button
         @click="selectedSprint = 'sprint-c'"
         :class="selectedSprint === 'sprint-c' ? 'active' : ''"
         class="index-sprint-btn"
-        title="Sprint C - CMS & Content Management"
+        title="Sprint C - Tema Park Urun Yonetimi"
         style="font-size: 11px;"
       >SC</button>
+
+      <button
+        @click="selectedSprint = 'sprint-d'"
+        :class="selectedSprint === 'sprint-d' ? 'active' : ''"
+        class="index-sprint-btn"
+        title="Sprint D - Kampanya & Raporlama"
+        style="font-size: 11px;"
+      >SD</button>
 
       <!-- Theme Colors -->
       <div class="index-theme-picker">
@@ -517,11 +533,11 @@
       <!-- Header -->
       <header class="index-header">
         <div class="flex items-center">
-          <h1 x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : (selectedSprint === 'sprint2' ? 'Sprint 2' : (selectedSprint === 'sprint3' ? 'Sprint 3' : (selectedSprint === 'sprint-a' ? 'Sprint A' : 'Sprint C')))"></h1>
-          <span class="index-header-subtitle" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : (selectedSprint === 'sprint2' ? 'Ticketing & Add-ons' : (selectedSprint === 'sprint3' ? 'Campaigns' : (selectedSprint === 'sprint-a' ? 'Golden Circle: Order Management' : 'CMS & Content Management')))"></span>
+          <h1 x-text="selectedSprint === 'sprint1' ? 'Sprint 1' : (selectedSprint === 'sprint2' ? 'Sprint 2' : (selectedSprint === 'sprint3' ? 'Sprint 3' : (selectedSprint === 'sprint-a' ? 'Sprint A' : (selectedSprint === 'sprint-b' ? 'Sprint B' : (selectedSprint === 'sprint-d' ? 'Sprint D' : 'Sprint C')))))"></h1>
+          <span class="index-header-subtitle" x-text="selectedSprint === 'sprint1' ? 'Auth & Users' : (selectedSprint === 'sprint2' ? 'Ticketing & Add-ons' : (selectedSprint === 'sprint3' ? 'Campaigns' : (selectedSprint === 'sprint-a' ? 'Golden Circle: Order Management' : (selectedSprint === 'sprint-b' ? 'CMS & Content Management' : (selectedSprint === 'sprint-d' ? 'Kampanya & Raporlama' : 'Tema Park Urun Yonetimi')))))"></span>
         </div>
         <div class="flex items-center gap-4">
-          <span class="index-badge" x-text="selectedSprint === 'sprint1' ? '8/8 Complete' : (selectedSprint === 'sprint2' ? '11/11 Complete' : (selectedSprint === 'sprint3' ? '4/4 Complete' : (selectedSprint === 'sprint-a' ? '3/3 Complete' : '16/16 Complete')))"></span>
+          <span class="index-badge" x-text="selectedSprint === 'sprint1' ? '8/8 Complete' : (selectedSprint === 'sprint2' ? '11/11 Complete' : (selectedSprint === 'sprint3' ? '4/4 Complete' : (selectedSprint === 'sprint-a' ? '3/3 Complete' : (selectedSprint === 'sprint-b' ? '16/16 Complete' : (selectedSprint === 'sprint-d' ? '0/5 In Progress' : '7/7 Complete')))))"></span>
           <a href="src/components/form-elements.html" class="index-components-btn">
             <span class="tool-icon" data-tool-icon="Settings Gear" data-size="16"></span>
             Components
@@ -907,15 +923,189 @@
 
         </div>
 
-        <!-- ==================== SPRINT C (CMS) ==================== -->
+        <!-- ==================== SPRINT C (Tema Park Urun Yonetimi) ==================== -->
         <div x-show="selectedSprint === 'sprint-c'" x-cloak>
+
+          <!-- Urun Yonetimi Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Coupon-Cut" data-size="24"></span>
+              Urun Yonetimi
+              <span class="index-badge">Sprint C</span>
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-b/urun-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Coupon-Cut" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Urun Listesi</div>
+                <div class="index-card-desc">D-B01 #1-2 | Birlesik liste, 5 tab filtre, Ekle dropdown, 8 kolon tablo</div>
+              </a>
+
+              <a :href="'src/pages/sprint-b/bilet-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Bilet Formu</div>
+                <div class="index-card-desc">D-B01 #3+5 | Temel Bilgiler + Musteri Gorunumu, donem kartlari, dil tablari</div>
+              </a>
+
+              <a :href="'src/pages/sprint-b/fiyat-takvimi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Calendar" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Fiyat Takvimi</div>
+                <div class="index-card-desc">D-B01 #4 | 3 zoom (Haftalik/Aylik/Yillik), heat map, slot detay modal</div>
+              </a>
+
+              <a :href="'src/pages/sprint-b/eklenti-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Add Sign Bold" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Eklenti Formu</div>
+                <div class="index-card-desc">D-B01 #6+7 | Uyumluluk modu, coklu gorsel galeri, bilet eslestirme</div>
+              </a>
+
+              <a :href="'src/pages/sprint-b/fnb-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Coffee Cup" data-size="20"></span>
+                </div>
+                <div class="index-card-title">F&B Formu</div>
+                <div class="index-card-desc">D-B01 #8 | Servis noktasi, gunluk kapasite, eklenti bazli form</div>
+              </a>
+
+              <a :href="'src/pages/sprint-b/experience-form.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Star" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Experience Formu</div>
+                <div class="index-card-desc">D-B01 #9 | Seans/slot dropdown, 30dk aralik, Pax kapasite</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Kullanici & Dashboard Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="App Window User" data-size="24"></span>
+              Kullanici Yonetimi
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-b/kullanici-davet.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="App Window User" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kullanici Davet</div>
+                <div class="index-card-desc">D-B01 #10 | Slide panel, yetki matrisi, quick actions, davet formu</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint B Info -->
+          <div class="index-info-card">
+            <div class="index-info-icon">
+              <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+            </div>
+            <div class="index-info-content">
+              <h4>Sprint C: Tema Park Urun Yonetimi + Kullanici Yonetimi</h4>
+              <p>Bilet, Eklenti, F&B, Experience CRUD formlari. Fiyatlandirma takvimi (3 zoom), birlesik urun listesi, kullanici davet + yetki matrisi.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== SPRINT D (Kampanya & Raporlama) ==================== -->
+        <div x-show="selectedSprint === 'sprint-d'" x-cloak>
+
+          <!-- Kampanya Yonetimi Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Tags" data-size="24"></span>
+              Kampanya Yonetimi
+              <span class="index-badge">Sprint D</span>
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-d/kampanya-listesi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Tags" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kampanya Listesi</div>
+                <div class="index-card-desc">D-001, D-003 | Otomatik + Kupon + Bundle tek liste</div>
+              </a>
+
+              <a :href="'src/pages/sprint-d/kampanya-form-v3.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Pencil" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kampanya Form</div>
+                <div class="index-card-desc">D-002, D-003 | Shopify esitlemeli, tip-bazli form</div>
+              </a>
+
+              <a :href="'src/pages/sprint-d/kampanya-dashboard.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Layers" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Kampanya Dashboard</div>
+                <div class="index-card-desc">D-004 | KPI, grafikler, performans analizi</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Raporlama Section -->
+          <div class="index-section">
+            <h2 class="index-section-title">
+              <span class="tool-icon" data-tool-icon="Layers" data-size="24"></span>
+              Raporlama
+            </h2>
+            <div class="index-card-grid">
+
+              <a :href="'src/pages/sprint-d/satis-raporlari.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Floppy Disk" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Satis Raporlari</div>
+                <div class="index-card-desc">D-005 | Tarih filtre, tablo, CSV/Excel export</div>
+              </a>
+
+              <a :href="'src/pages/sprint-d/gelir-analizi.html?theme=' + selectedTheme" class="index-card">
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Certificate" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Gelir Analizi</div>
+                <div class="index-card-desc">D-006 | Grafik, trend, doviz toggle</div>
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Sprint D Info -->
+          <div class="index-info-card">
+            <div class="index-info-icon">
+              <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
+            </div>
+            <div class="index-info-content">
+              <h4>Sprint D: Kampanya Yonetimi & Raporlama</h4>
+              <p>24 Mar - 3 Nis 2026 | Kampanya/kupon birlestirmesi (Shopify modeli), otomatik indirim + kupon kodu + bundle tek entity. Satis raporlari ve gelir analizi.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ==================== SPRINT B (CMS) ==================== -->
+        <div x-show="selectedSprint === 'sprint-b'" x-cloak>
 
           <!-- Page Management Section -->
           <div class="index-section">
             <h2 class="index-section-title">
               <span class="tool-icon" data-tool-icon="Layout Grid" data-size="24"></span>
               Sayfa Yonetimi
-              <span class="index-badge">Sprint C</span>
+              <span class="index-badge">Sprint B</span>
             </h2>
             <div class="index-card-grid">
 
@@ -949,6 +1139,15 @@
                 </div>
                 <div class="index-card-title">Onizleme</div>
                 <div class="index-card-desc">C-007 | Cihaz/dil toggle</div>
+              </a>
+
+              <a :href="'src/pages/sprint-c/blok-katalogu.html?theme=' + selectedTheme" class="index-card relative">
+                <span class="index-card-badge">32 Block</span>
+                <div class="index-card-icon">
+                  <span class="tool-icon" data-tool-icon="Certificate" data-size="20"></span>
+                </div>
+                <div class="index-card-title">Block Katalogu</div>
+                <div class="index-card-desc">Referans | 32 generic CMS block, 6 kategori, varyasyonlar, CMS alanlari</div>
               </a>
 
             </div>
@@ -1100,7 +1299,7 @@
               <span class="tool-icon" data-tool-icon="Lifebuoy" data-size="20"></span>
             </div>
             <div class="index-info-content">
-              <h4>Sprint C: CMS & Content Management</h4>
+              <h4>Sprint B: CMS & Content Management</h4>
               <p>24 Sub - 9 Mar 2026 | Sayfa builder, banner yonetimi, medya kutuphanesi, FAQ, koleksiyonlar, menu/site ayarlari, etkinlik takvimi. 32 generic CMS blogu icin admin panel.</p>
             </div>
           </div>

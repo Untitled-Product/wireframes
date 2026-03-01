@@ -1,0 +1,891 @@
+<!--
+  Wireframe: fiyat-takvimi
+  Task: D-B01 (#4), B-006
+  Karar Versiyonu: -
+  Son Guncelleme: 2026-02-27
+
+  Fiyatlandirma & Kapasite Takvimi (tum urun tipleri ortak)
+  - 3 zoom: Haftalik (saatlik slot) / Aylik (gunluk) / Yillik (aylik + sezon gruplari)
+  - Slot detay modal: fiyat + kapasite + doluluk bar + App fiyat
+  - Heat map: Yesil (0-50%) / Turuncu (50-80%) / Kirmizi (80-100%) / Gri (kapali)
+  - Tarih navigasyonu: onceki/sonraki
+-->
+<!DOCTYPE html>
+<html lang="tr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiyat Takvimi - Legends DXP Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .fonts-loading { opacity: 0; }
+    .fonts-loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+  </style>
+  <script>
+    document.documentElement.classList.add('fonts-loading');
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    } else {
+      window.addEventListener('load', () => {
+        document.documentElement.classList.remove('fonts-loading');
+        document.documentElement.classList.add('fonts-loaded');
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="../../../dist/output.css">
+  <link rel="stylesheet" href="../../wireframe/css/wireframe.css">
+  <script src="../../wireframe/js/icons.js"></script>
+  <script src="../../wireframe/js/layout-components-v2.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const theme = urlParams.get('theme') || 'teal';
+    document.documentElement.classList.add('theme-' + theme);
+  </script>
+  <style>
+    .price-calendar {
+      display: grid;
+      grid-template-columns: 60px repeat(7, 1fr);
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .price-calendar .time-label {
+      padding: 8px 4px;
+      text-align: right;
+      font-size: 11px;
+      color: #9ca3af;
+      border-bottom: 1px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+    }
+    .price-calendar .day-header {
+      padding: 10px 4px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+    .price-calendar .time-header {
+      padding: 10px 4px;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+    }
+    .price-calendar .slot-cell {
+      padding: 6px;
+      border-bottom: 1px solid #f3f4f6;
+      border-right: 1px solid #f3f4f6;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .price-calendar .slot-cell:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="min-h-screen wireframe-page" x-data="{
+  sidebarOpen: true,
+  mobileMenu: false,
+  activeZoom: 'haftalik',
+  slotModalOpen: false,
+  slotData: {
+    date: '15 Mart 2026, Pazartesi',
+    time: '14:00',
+    occupancy: 80,
+    capacity: 100,
+    webYetiskinTL: '750',
+    webCocukTL: '100',
+    webYetiskinEUR: '500',
+    webCocukEUR: '20',
+    appYetiskinTL: '650',
+    appCocukTL: '80',
+    appYetiskinEUR: '450',
+    appCocukEUR: '15',
+    slotClosed: false
+  }
+}">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar Component (V2) -->
+    <div data-component="sidebar"></div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0">
+      <!-- Header Component (V2) -->
+      <div data-component="header"></div>
+
+      <!-- Page Content -->
+      <main class="p-6 flex-1">
+
+        <!-- Top Bar -->
+        <div class="flex items-center justify-between mb-6">
+          <div class="text-sm text-gray-500">Gunluk Bilet (Web) &mdash; TKT-007</div>
+          <a href="bilet-form.html" class="wf-v2-btn inline-flex items-center gap-2">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            Forma Don
+          </a>
+        </div>
+
+        <!-- Zoom Tabs + Date Navigation -->
+        <div class="flex items-center justify-between mb-5">
+          <!-- Zoom Tabs -->
+          <div class="flex gap-0 border border-gray-200 rounded-lg overflow-hidden">
+            <button @click="activeZoom = 'haftalik'" :class="activeZoom === 'haftalik' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'" class="px-4 py-2 text-sm font-medium">Haftalik</button>
+            <button @click="activeZoom = 'aylik'" :class="activeZoom === 'aylik' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'" class="px-4 py-2 text-sm font-medium border-l border-gray-200">Aylik</button>
+            <button @click="activeZoom = 'yillik'" :class="activeZoom === 'yillik' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'" class="px-4 py-2 text-sm font-medium border-l border-gray-200">Yillik</button>
+          </div>
+
+          <!-- Date Navigation -->
+          <div class="flex items-center gap-3">
+            <button class="wf-v2-btn wf-v2-btn-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <span class="text-sm font-medium text-gray-700" x-show="activeZoom === 'haftalik'">10 - 16 Mart 2026</span>
+            <span class="text-sm font-medium text-gray-700" x-show="activeZoom === 'aylik'">Mart 2026</span>
+            <span class="text-sm font-medium text-gray-700" x-show="activeZoom === 'yillik'">2026</span>
+            <button class="wf-v2-btn wf-v2-btn-icon">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Heat Map Legend -->
+        <div class="flex items-center gap-4 mb-4 text-xs text-gray-500">
+          <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded" style="background: #dcfce7;"></span> 0-50%</div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded" style="background: #fef3c7;"></span> 50-80%</div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded" style="background: #fee2e2;"></span> 80-100%</div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded" style="background: #f3f4f6;"></span> Kapali</div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- HAFTALIK (Weekly) View                       -->
+        <!-- ============================================ -->
+        <div x-show="activeZoom === 'haftalik'">
+          <div class="price-calendar">
+            <!-- Header Row -->
+            <div class="time-header"></div>
+            <div class="day-header">
+              <div>Pzt 10</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Sal 11</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Car 12</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Per 13</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Cum 14</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Cmt 15</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+            <div class="day-header">
+              <div>Paz 16</div>
+              <div class="text-xs font-normal text-gray-400">Mart</div>
+            </div>
+
+            <!-- 09:00 Row -->
+            <div class="time-label">09:00</div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">20/100</div>
+              <div class="text-gray-500">%20</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">15/100</div>
+              <div class="text-gray-500">%15</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">30/100</div>
+              <div class="text-gray-500">%30</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">10/100</div>
+              <div class="text-gray-500">%10</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">45/100</div>
+              <div class="text-gray-500">%45</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">65/100</div>
+              <div class="text-gray-500">%65</div>
+              <div class="text-gray-600">900&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">70/100</div>
+              <div class="text-gray-500">%70</div>
+              <div class="text-gray-600">900&#8378;</div>
+            </div>
+
+            <!-- 10:00 Row -->
+            <div class="time-label">10:00</div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">35/100</div>
+              <div class="text-gray-500">%35</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">55/100</div>
+              <div class="text-gray-500">%55</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">40/100</div>
+              <div class="text-gray-500">%40</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">25/100</div>
+              <div class="text-gray-500">%25</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">60/100</div>
+              <div class="text-gray-500">%60</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">85/100</div>
+              <div class="text-gray-500">%85</div>
+              <div class="text-gray-600">1.200&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">90/100</div>
+              <div class="text-gray-500">%90</div>
+              <div class="text-gray-600">1.200&#8378;</div>
+            </div>
+
+            <!-- 11:00 Row -->
+            <div class="time-label">11:00</div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">55/100</div>
+              <div class="text-gray-500">%55</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">60/100</div>
+              <div class="text-gray-500">%60</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">70/100</div>
+              <div class="text-gray-500">%70</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">45/100</div>
+              <div class="text-gray-500">%45</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">82/100</div>
+              <div class="text-gray-500">%82</div>
+              <div class="text-gray-600">1.000&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">95/100</div>
+              <div class="text-gray-500">%95</div>
+              <div class="text-gray-600">1.500&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">98/100</div>
+              <div class="text-gray-500">%98</div>
+              <div class="text-gray-600">1.500&#8378;</div>
+            </div>
+
+            <!-- 12:00 Row -->
+            <div class="time-label">12:00</div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">65/100</div>
+              <div class="text-gray-500">%65</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">72/100</div>
+              <div class="text-gray-500">%72</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">88/100</div>
+              <div class="text-gray-500">%88</div>
+              <div class="text-gray-600">1.000&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">58/100</div>
+              <div class="text-gray-500">%58</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">91/100</div>
+              <div class="text-gray-500">%91</div>
+              <div class="text-gray-600">1.200&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">100/100</div>
+              <div class="text-gray-500">%100</div>
+              <div class="text-gray-600">1.500&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">100/100</div>
+              <div class="text-gray-500">%100</div>
+              <div class="text-gray-600">1.500&#8378;</div>
+            </div>
+
+            <!-- 13:00 Row -->
+            <div class="time-label">13:00</div>
+            <div class="slot-cell" style="background: #f3f4f6;">
+              <div class="font-medium text-gray-400">Kapali</div>
+            </div>
+            <div class="slot-cell" style="background: #f3f4f6;">
+              <div class="font-medium text-gray-400">Kapali</div>
+            </div>
+            <div class="slot-cell" style="background: #f3f4f6;">
+              <div class="font-medium text-gray-400">Kapali</div>
+            </div>
+            <div class="slot-cell" style="background: #f3f4f6;">
+              <div class="font-medium text-gray-400">Kapali</div>
+            </div>
+            <div class="slot-cell" style="background: #f3f4f6;">
+              <div class="font-medium text-gray-400">Kapali</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">75/100</div>
+              <div class="text-gray-500">%75</div>
+              <div class="text-gray-600">1.000&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">68/100</div>
+              <div class="text-gray-500">%68</div>
+              <div class="text-gray-600">1.000&#8378;</div>
+            </div>
+
+            <!-- 14:00 Row -->
+            <div class="time-label">14:00</div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">40/100</div>
+              <div class="text-gray-500">%40</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">38/100</div>
+              <div class="text-gray-500">%38</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">52/100</div>
+              <div class="text-gray-500">%52</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">30/100</div>
+              <div class="text-gray-500">%30</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">58/100</div>
+              <div class="text-gray-500">%58</div>
+              <div class="text-gray-600">800&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">88/100</div>
+              <div class="text-gray-500">%88</div>
+              <div class="text-gray-600">1.200&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fee2e2;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">82/100</div>
+              <div class="text-gray-500">%82</div>
+              <div class="text-gray-600">1.200&#8378;</div>
+            </div>
+
+            <!-- 15:00 Row -->
+            <div class="time-label">15:00</div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">28/100</div>
+              <div class="text-gray-500">%28</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">22/100</div>
+              <div class="text-gray-500">%22</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">35/100</div>
+              <div class="text-gray-500">%35</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">18/100</div>
+              <div class="text-gray-500">%18</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #dcfce7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">42/100</div>
+              <div class="text-gray-500">%42</div>
+              <div class="text-gray-600">750&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">62/100</div>
+              <div class="text-gray-500">%62</div>
+              <div class="text-gray-600">900&#8378;</div>
+            </div>
+            <div class="slot-cell" style="background: #fef3c7;" @click="slotModalOpen = true">
+              <div class="font-medium text-gray-700">55/100</div>
+              <div class="text-gray-500">%55</div>
+              <div class="text-gray-600">900&#8378;</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- AYLIK (Monthly) View                         -->
+        <!-- ============================================ -->
+        <div x-show="activeZoom === 'aylik'" style="display: none;">
+          <div class="grid grid-cols-7 border border-gray-200 rounded-lg overflow-hidden">
+            <!-- Day Headers -->
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Pzt</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Sal</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Car</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Per</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Cum</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Cmt</div>
+            <div class="bg-gray-50 p-2 text-center text-xs font-semibold text-gray-600 border-b border-gray-200">Paz</div>
+
+            <!-- Week 1: March 2026 starts on Sunday -->
+            <!-- Feb 23 - Feb 28 (prev month) + Mar 1 -->
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">23</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">24</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">25</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">26</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">27</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">28</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">1</div>
+              <div class="text-xs text-gray-500 mt-1">%25</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+
+            <!-- Week 2: Mar 2 - 8 -->
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">2</div>
+              <div class="text-xs text-gray-500 mt-1">%30</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">3</div>
+              <div class="text-xs text-gray-500 mt-1">%35</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">4</div>
+              <div class="text-xs text-gray-500 mt-1">%40</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">5</div>
+              <div class="text-xs text-gray-500 mt-1">%28</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">6</div>
+              <div class="text-xs text-gray-500 mt-1">%55</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">7</div>
+              <div class="text-xs text-gray-500 mt-1">%65</div>
+              <div class="text-xs text-gray-600">900&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">8</div>
+              <div class="text-xs text-gray-500 mt-1">%70</div>
+              <div class="text-xs text-gray-600">900&#8378;</div>
+            </div>
+
+            <!-- Week 3: Mar 9 - 15 -->
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">9</div>
+              <div class="text-xs text-gray-500 mt-1">%32</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">10</div>
+              <div class="text-xs text-gray-500 mt-1">%38</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">11</div>
+              <div class="text-xs text-gray-500 mt-1">%58</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">12</div>
+              <div class="text-xs text-gray-500 mt-1">%42</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">13</div>
+              <div class="text-xs text-gray-500 mt-1">%62</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fee2e2;">
+              <div class="text-xs font-medium text-gray-700">14</div>
+              <div class="text-xs text-gray-500 mt-1">%88</div>
+              <div class="text-xs text-gray-600">1.200&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fee2e2;">
+              <div class="text-xs font-medium text-gray-700">15</div>
+              <div class="text-xs text-gray-500 mt-1">%92</div>
+              <div class="text-xs text-gray-600">1.500&#8378;</div>
+            </div>
+
+            <!-- Week 4: Mar 16 - 22 -->
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">16</div>
+              <div class="text-xs text-gray-500 mt-1">%35</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #dcfce7;">
+              <div class="text-xs font-medium text-gray-700">17</div>
+              <div class="text-xs text-gray-500 mt-1">%40</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #f3f4f6;">
+              <div class="text-xs font-medium text-gray-400">18</div>
+              <div class="text-xs text-gray-400 mt-1">Kapali</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">19</div>
+              <div class="text-xs text-gray-500 mt-1">%52</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fef3c7;">
+              <div class="text-xs font-medium text-gray-700">20</div>
+              <div class="text-xs text-gray-500 mt-1">%68</div>
+              <div class="text-xs text-gray-600">900&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fee2e2;">
+              <div class="text-xs font-medium text-gray-700">21</div>
+              <div class="text-xs text-gray-500 mt-1">%85</div>
+              <div class="text-xs text-gray-600">1.200&#8378;</div>
+            </div>
+            <div @click="slotModalOpen = true" class="p-2 min-h-20 border-b border-r border-gray-100 cursor-pointer hover:bg-gray-50" style="background: #fee2e2;">
+              <div class="text-xs font-medium text-gray-700">22</div>
+              <div class="text-xs text-gray-500 mt-1">%90</div>
+              <div class="text-xs text-gray-600">1.500&#8378;</div>
+            </div>
+
+            <!-- Week 5: Mar 23 - 29 -->
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">23</div>
+              <div class="text-xs text-gray-500 mt-1">%45</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">24</div>
+              <div class="text-xs text-gray-500 mt-1">%38</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">25</div>
+              <div class="text-xs text-gray-500 mt-1">%50</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">26</div>
+              <div class="text-xs text-gray-500 mt-1">%55</div>
+              <div class="text-xs text-gray-600">800&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">27</div>
+              <div class="text-xs text-gray-500 mt-1">%72</div>
+              <div class="text-xs text-gray-600">900&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">28</div>
+              <div class="text-xs text-gray-500 mt-1">%82</div>
+              <div class="text-xs text-gray-600">1.200&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">29</div>
+              <div class="text-xs text-gray-500 mt-1">%78</div>
+              <div class="text-xs text-gray-600">1.000&#8378;</div>
+            </div>
+
+            <!-- Week 6: Mar 30 - 31 + Apr placeholders -->
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">30</div>
+              <div class="text-xs text-gray-500 mt-1">%42</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-700">31</div>
+              <div class="text-xs text-gray-500 mt-1">%48</div>
+              <div class="text-xs text-gray-600">750&#8378;</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">1</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">2</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">3</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">4</div>
+            </div>
+            <div class="p-2 min-h-20 border-b border-r border-gray-100 bg-white">
+              <div class="text-xs font-medium text-gray-300">5</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- YILLIK (Yearly) View                         -->
+        <!-- ============================================ -->
+        <div x-show="activeZoom === 'yillik'" style="display: none;">
+          <div class="space-y-4">
+
+            <!-- Season Group: Low Season -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <div class="px-4 py-2 text-sm font-medium" style="background: #dbeafe; color: #2563eb;">Low Season</div>
+              <div class="grid grid-cols-4 gap-px bg-gray-200">
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Ocak</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">750&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Subat</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">750&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Mart</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">800&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Kasim</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">700&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Season Group: Shoulder Season -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <div class="px-4 py-2 text-sm font-medium" style="background: #fef3c7; color: #d97706;">Shoulder Season</div>
+              <div class="grid grid-cols-4 gap-px bg-gray-200">
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Nisan</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.000&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Mayis</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.100&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Eylul</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.050&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Ekim</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">950&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Season Group: High Season -->
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <div class="px-4 py-2 text-sm font-medium" style="background: #fee2e2; color: #dc2626;">High Season</div>
+              <div class="grid grid-cols-4 gap-px bg-gray-200">
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Haziran</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.500&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Temmuz</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.800&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Agustos</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.800&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+                <div class="bg-white p-4 text-center">
+                  <div class="text-sm font-medium text-gray-700">Aralik</div>
+                  <div class="text-lg font-semibold text-gray-900 mt-1">1.400&#8378;</div>
+                  <div class="text-xs text-gray-500">Ort. Yetiskin</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- Slot Detail Modal                            -->
+  <!-- ============================================ -->
+  <div x-show="slotModalOpen" class="fixed inset-0 z-50 flex items-center justify-center" style="display: none;">
+    <div class="fixed inset-0" style="background: rgba(0,0,0,0.3);" @click="slotModalOpen = false"></div>
+    <div class="wf-v2-modal relative z-10 w-full max-w-lg">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="text-base font-semibold text-gray-900">Slot Detayi</h3>
+        <button @click="slotModalOpen = false" class="p-1 rounded hover:bg-gray-100 text-gray-400">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Date/Time -->
+      <div class="flex items-center gap-2 mb-5 text-sm text-gray-600">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span x-text="slotData.date"></span> &mdash; <span x-text="slotData.time"></span>
+      </div>
+
+      <!-- Occupancy Bar -->
+      <div class="mb-5">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-sm font-medium text-gray-700">Doluluk</span>
+          <span class="text-sm text-gray-600"><span x-text="slotData.occupancy"></span>/<span x-text="slotData.capacity"></span> (%<span x-text="Math.round(slotData.occupancy/slotData.capacity*100)"></span>)</span>
+        </div>
+        <div class="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full rounded-full transition-all"
+            :style="'width: ' + (slotData.occupancy/slotData.capacity*100) + '%; background: ' + (slotData.occupancy/slotData.capacity > 0.8 ? '#ef4444' : slotData.occupancy/slotData.capacity > 0.5 ? '#f59e0b' : '#22c55e')">
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Inputs: Web + App side by side -->
+      <div class="grid grid-cols-2 gap-6 mb-5">
+        <div>
+          <h4 class="text-sm font-medium text-gray-700 mb-3">Web Fiyat</h4>
+          <div class="space-y-2">
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.webYetiskinTL">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.webCocukTL">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.webYetiskinEUR">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.webCocukEUR">
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 class="text-sm font-medium text-gray-700 mb-3">App Fiyat</h4>
+          <div class="space-y-2">
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Yetiskin TL</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.appYetiskinTL">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Cocuk TL</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.appCocukTL">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Yetiskin EUR</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.appYetiskinEUR">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">Cocuk EUR</label>
+              <input type="text" class="wf-v2-input" x-model="slotData.appCocukEUR">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacity -->
+      <div class="mb-5">
+        <label class="text-sm font-medium text-gray-700 mb-1.5 block">Kapasite</label>
+        <input type="number" class="wf-v2-input" style="width: 8rem;" x-model="slotData.capacity">
+      </div>
+
+      <!-- Close Slot Checkbox -->
+      <div class="mb-5">
+        <label class="flex items-center gap-2">
+          <input type="checkbox" x-model="slotData.slotClosed" class="rounded text-purple-600">
+          <span class="text-sm text-gray-700">Bu Slotu Kapat</span>
+        </label>
+      </div>
+
+      <!-- View Reservations Link -->
+      <div class="mb-6">
+        <a href="#" class="text-sm text-purple-600 hover:text-purple-700 inline-flex items-center gap-1">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Rezervasyonlari Gor
+        </a>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3 justify-end pt-4 border-t border-gray-200">
+        <button @click="slotModalOpen = false" class="wf-v2-btn">iptal</button>
+        <button @click="slotModalOpen = false" class="wf-v2-btn wf-v2-btn-primary">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Toolbar & Comments -->
+  <script src="../../tool/js/tool-icons.js"></script>
+  <script src="../../tool/js/toolbar.js"></script>
+  <script src="../../tool/js/comments.js"></script>
+
+</body>
+</html>
