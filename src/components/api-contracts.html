@@ -326,6 +326,56 @@
     .response-4xx { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .response-5xx { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
 
+    /* Sprint Badges */
+    .sprint-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .sprint-mvp { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+    .sprint-s1 { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .sprint-b { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .sprint-c { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+    .sprint-d { background: rgba(236, 72, 153, 0.2); color: #ec4899; }
+
+    .wireframe-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.1);
+      color: #818cf8;
+      font-size: 11px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      transition: all 0.2s;
+      margin-left: 4px;
+    }
+    .wireframe-link:hover {
+      background: rgba(99, 102, 241, 0.25);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+    .wireframe-link::after {
+      content: '↗';
+      font-size: 10px;
+    }
+
+    .section-title .sprint-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+    }
+
     /* Header Info */
     .header-info {
       background: rgba(59, 130, 246, 0.1);
@@ -352,7 +402,7 @@
     <aside class="api-sidebar">
       <div class="sidebar-header">
         <h1>API Contracts</h1>
-        <p>Legends DXP v1.0</p>
+        <p>Legends DXP v3.1 — Wireframe Schema Aligned (2026-03-03)</p>
       </div>
 
       <nav class="sidebar-nav">
@@ -366,11 +416,17 @@
         <a href="#project-auth" class="nav-item" :class="{ 'active': activeSection === 'project-auth' }" @click="activeSection = 'project-auth'">Project Admin - Auth</a>
         <a href="#project-permissions" class="nav-item" :class="{ 'active': activeSection === 'project-permissions' }" @click="activeSection = 'project-permissions'">Project Admin - Permissions</a>
 
+        <p class="nav-category">Admin Panel (Openspec)</p>
+        <a href="#admin-orders" class="nav-item" :class="{ 'active': activeSection === 'admin-orders' }" @click="activeSection = 'admin-orders'">Admin - Orders</a>
+        <a href="#admin-capacity" class="nav-item" :class="{ 'active': activeSection === 'admin-capacity' }" @click="activeSection = 'admin-capacity'">Admin - Capacity</a>
+        <a href="#admin-pricing" class="nav-item" :class="{ 'active': activeSection === 'admin-pricing' }" @click="activeSection = 'admin-pricing'">Admin - Pricing</a>
+
         <p class="nav-category">Client</p>
         <a href="#client-auth" class="nav-item" :class="{ 'active': activeSection === 'client-auth' }" @click="activeSection = 'client-auth'">Client - Auth</a>
         <a href="#client-profile" class="nav-item" :class="{ 'active': activeSection === 'client-profile' }" @click="activeSection = 'client-profile'">Client - Profile</a>
 
         <p class="nav-category">Products</p>
+        <a href="#product-list" class="nav-item" :class="{ 'active': activeSection === 'product-list' }" @click="activeSection = 'product-list'">Product List (Unified)</a>
         <a href="#events" class="nav-item" :class="{ 'active': activeSection === 'events' }" @click="activeSection = 'events'">Events</a>
         <a href="#tickets" class="nav-item" :class="{ 'active': activeSection === 'tickets' }" @click="activeSection = 'tickets'">Tickets</a>
         <a href="#experiences" class="nav-item" :class="{ 'active': activeSection === 'experiences' }" @click="activeSection = 'experiences'">Experiences</a>
@@ -378,12 +434,33 @@
         <a href="#unites" class="nav-item" :class="{ 'active': activeSection === 'unites' }" @click="activeSection = 'unites'">Unites (Rooms)</a>
         <a href="#addons" class="nav-item" :class="{ 'active': activeSection === 'addons' }" @click="activeSection = 'addons'">Addons</a>
         <a href="#catalog" class="nav-item" :class="{ 'active': activeSection === 'catalog' }" @click="activeSection = 'catalog'">Product Catalog</a>
+        <a href="#product-pricing" class="nav-item" :class="{ 'active': activeSection === 'product-pricing' }" @click="activeSection = 'product-pricing'">Pricing Calendar</a>
+        <a href="#product-images" class="nav-item" :class="{ 'active': activeSection === 'product-images' }" @click="activeSection = 'product-images'">Product Images</a>
+        <a href="#product-content" class="nav-item" :class="{ 'active': activeSection === 'product-content' }" @click="activeSection = 'product-content'">Product Content (i18n)</a>
+        <a href="#reference-data" class="nav-item" :class="{ 'active': activeSection === 'reference-data' }" @click="activeSection = 'reference-data'">Reference Data</a>
 
         <p class="nav-category">Sessions</p>
         <a href="#sessions" class="nav-item" :class="{ 'active': activeSection === 'sessions' }" @click="activeSection = 'sessions'">Session Management</a>
 
+        <p class="nav-category">User Management</p>
+        <a href="#user-invite" class="nav-item" :class="{ 'active': activeSection === 'user-invite' }" @click="activeSection = 'user-invite'">User Invitation</a>
+        <a href="#permission-matrix" class="nav-item" :class="{ 'active': activeSection === 'permission-matrix' }" @click="activeSection = 'permission-matrix'">Permission Matrix</a>
+
+        <p class="nav-category">CMS</p>
+        <a href="#cms-dashboard" class="nav-item" :class="{ 'active': activeSection === 'cms-dashboard' }" @click="activeSection = 'cms-dashboard'">Dashboard</a>
+        <a href="#cms-pages" class="nav-item" :class="{ 'active': activeSection === 'cms-pages' }" @click="activeSection = 'cms-pages'">Pages + Builder</a>
+        <a href="#cms-blocks" class="nav-item" :class="{ 'active': activeSection === 'cms-blocks' }" @click="activeSection = 'cms-blocks'">Blocks</a>
+        <a href="#cms-media" class="nav-item" :class="{ 'active': activeSection === 'cms-media' }" @click="activeSection = 'cms-media'">Media Library</a>
+        <a href="#cms-banners" class="nav-item" :class="{ 'active': activeSection === 'cms-banners' }" @click="activeSection = 'cms-banners'">Banners + Slides</a>
+        <a href="#cms-faq" class="nav-item" :class="{ 'active': activeSection === 'cms-faq' }" @click="activeSection = 'cms-faq'">FAQ</a>
+        <a href="#cms-collections" class="nav-item" :class="{ 'active': activeSection === 'cms-collections' }" @click="activeSection = 'cms-collections'">Collections</a>
+        <a href="#cms-menus" class="nav-item" :class="{ 'active': activeSection === 'cms-menus' }" @click="activeSection = 'cms-menus'">Menus</a>
+        <a href="#cms-settings" class="nav-item" :class="{ 'active': activeSection === 'cms-settings' }" @click="activeSection = 'cms-settings'">Site Settings</a>
+        <a href="#cms-events" class="nav-item" :class="{ 'active': activeSection === 'cms-events' }" @click="activeSection = 'cms-events'">Event Calendar</a>
+
         <p class="nav-category">Commerce</p>
         <a href="#campaigns" class="nav-item" :class="{ 'active': activeSection === 'campaigns' }" @click="activeSection = 'campaigns'">Campaigns</a>
+        <a href="#coupons" class="nav-item" :class="{ 'active': activeSection === 'coupons' }" @click="activeSection = 'coupons'">Coupons</a>
         <a href="#checkout" class="nav-item" :class="{ 'active': activeSection === 'checkout' }" @click="activeSection = 'checkout'">Checkout</a>
         <a href="#orders" class="nav-item" :class="{ 'active': activeSection === 'orders' }" @click="activeSection = 'orders'">Orders</a>
         <a href="#payments" class="nav-item" :class="{ 'active': activeSection === 'payments' }" @click="activeSection = 'payments'">Payments</a>
@@ -429,6 +506,26 @@
             <span class="auth-badge auth-admin">Admin</span>
             <span>Admin yetkisi gerekli</span>
           </div>
+          <div class="legend-item">
+            <span class="sprint-badge sprint-mvp">MVP</span>
+            <span>Openspec MVP</span>
+          </div>
+          <div class="legend-item">
+            <span class="sprint-badge sprint-s1">S1</span>
+            <span>Sprint 1 (IAM)</span>
+          </div>
+          <div class="legend-item">
+            <span class="sprint-badge sprint-b">S-B</span>
+            <span>Sprint B (Tema Park)</span>
+          </div>
+          <div class="legend-item">
+            <span class="sprint-badge sprint-c">S-C</span>
+            <span>Sprint C (CMS)</span>
+          </div>
+          <div class="legend-item">
+            <span class="sprint-badge sprint-d">S-D</span>
+            <span>Sprint D (Kampanya)</span>
+          </div>
         </div>
       </div>
 
@@ -436,9 +533,22 @@
         <strong>Required Headers:</strong> Tum endpoint'ler (system-admin haric) <code>X-Tenant-ID</code> header'i gerektirir. Lokalizasyon icin <code>Accept-Language</code> (tr-TR, en-US) kullanilabilir.
       </div>
 
+      <div class="header-info" style="border-color: rgba(168, 85, 247, 0.3); background: rgba(168, 85, 247, 0.1); color: #c084fc;">
+        <strong>Admin Endpoint Convention (Openspec):</strong> Tum admin panel endpoint'leri <code>/api/admin/</code> prefix'i altinda bulunur. JWT token'da <code>role: super_admin | admin</code> ve <code>tenant_id</code> zorunludur. Endpoint'ler tenant_id ile scope'lanir.
+      </div>
+
+      <div class="header-info" style="border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1); color: #fbbf24;">
+        <strong>Sprint Layer Guide:</strong>
+        <span class="sprint-badge sprint-mvp">MVP</span> Openspec'te tanimli, backend oncelikli &nbsp;
+        <span class="sprint-badge sprint-s1">S1</span> Sprint 1 (IAM: Auth + Permissions) &nbsp;
+        <span class="sprint-badge sprint-b">S-B</span> Sprint B (5 Urun Tipi + Pricing) &nbsp;
+        <span class="sprint-badge sprint-c">S-C</span> Sprint C (CMS + Page Builder) &nbsp;
+        <span class="sprint-badge sprint-d">S-D</span> Sprint D (Shopify-like Campaigns)
+      </div>
+
       <!-- ==================== HEALTH & STATUS ==================== -->
       <section id="health" class="api-section">
-        <h2 class="section-title">Health & Status</h2>
+        <h2 class="section-title">Health & Status <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">API durum ve saglik kontrol endpoint'leri</p>
 
         <div class="api-card">
@@ -483,7 +593,7 @@
 
       <!-- ==================== SYSTEM ADMIN - TENANTS ==================== -->
       <section id="system-tenants" class="api-section">
-        <h2 class="section-title">System Admin - Tenants</h2>
+        <h2 class="section-title">System Admin - Tenants <span class="sprint-badge sprint-s1">S1</span></h2>
         <p class="section-desc">Tenant (kiracı) yonetimi. Sadece System Admin yetkisi gerektirir.</p>
 
         <div class="api-card">
@@ -595,7 +705,7 @@
 
       <!-- ==================== SYSTEM ADMIN - AUTH ==================== -->
       <section id="system-auth" class="api-section">
-        <h2 class="section-title">System Admin - Auth</h2>
+        <h2 class="section-title">System Admin - Auth <span class="sprint-badge sprint-s1">S1</span></h2>
         <p class="section-desc">System Admin kimlik dogrulama. Email veya SMS ile OTP.</p>
 
         <div class="api-card">
@@ -717,7 +827,7 @@
 
       <!-- ==================== SYSTEM ADMIN - PERMISSIONS ==================== -->
       <section id="system-permissions" class="api-section">
-        <h2 class="section-title">System Admin - Permissions</h2>
+        <h2 class="section-title">System Admin - Permissions <span class="sprint-badge sprint-s1">S1</span></h2>
         <p class="section-desc">Yetki yonetimi. Granuler permission sistemi.</p>
 
         <div class="api-card">
@@ -806,7 +916,7 @@
 
       <!-- ==================== PROJECT ADMIN - AUTH ==================== -->
       <section id="project-auth" class="api-section">
-        <h2 class="section-title">Project Admin - Auth</h2>
+        <h2 class="section-title">Project Admin - Auth <span class="sprint-badge sprint-s1">S1</span></h2>
         <p class="section-desc">Project Admin (tenant bazli) kimlik dogrulama</p>
 
         <div class="api-card">
@@ -856,7 +966,7 @@
 
       <!-- ==================== PROJECT ADMIN - PERMISSIONS ==================== -->
       <section id="project-permissions" class="api-section">
-        <h2 class="section-title">Project Admin - Permissions</h2>
+        <h2 class="section-title">Project Admin - Permissions <span class="sprint-badge sprint-s1">S1</span></h2>
         <p class="section-desc">Tenant bazli yetki yonetimi</p>
 
         <div class="api-card">
@@ -904,9 +1014,507 @@
         </div>
       </section>
 
+      <!-- ==================== ADMIN - ORDER MANAGEMENT ==================== -->
+      <section id="admin-orders" class="api-section">
+        <h2 class="section-title">Admin - Order Management <span class="sprint-badge sprint-mvp">MVP</span></h2>
+        <p class="section-desc">Siparis yonetimi dashboard. Openspec REQ-ADMIN-01 + REQ-ADMIN-02. Filtreleme, arama, CSV export, iptal, iade, email gonderimi.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/orders</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis listesi — filtreleme, arama, sayfalama (25/sayfa)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">status</td><td class="param-type">string</td><td>completed | pending | cancelled | refunded</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>PNR, email, telefon, isim ile arama</td></tr>
+                  <tr><td class="param-name">dateFrom</td><td class="param-type">string</td><td>Baslangic tarihi (YYYY-MM-DD)</td></tr>
+                  <tr><td class="param-name">dateTo</td><td class="param-type">string</td><td>Bitis tarihi (YYYY-MM-DD)</td></tr>
+                  <tr><td class="param-name">page</td><td class="param-type">number</td><td>Sayfa (default: 1)</td></tr>
+                  <tr><td class="param-name">limit</td><td class="param-type">number</td><td>Sayfa basi (default: 25)</td></tr>
+                  <tr><td class="param-name">sort</td><td class="param-type">string</td><td>created_at | total_amount | status</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "pnr": "NK-A3B9C2",
+      "customerName": "Ahmet Yilmaz",
+      "customerEmail": "ahmet@example.com",
+      "customerPhone": "+905551234567",
+      "visitDate": "2026-07-15",
+      "slotTime": "09:00-12:00",
+      "items": [
+        { "type": "adult", "quantity": 2, "unitPrice": 500, "lineTotal": 1000 },
+        { "type": "child", "quantity": 1, "unitPrice": 300, "lineTotal": 300 }
+      ],
+      "subtotal": 1300,
+      "discountAmount": 130,
+      "totalAmount": 1170,
+      "paymentStatus": "paid",
+      "status": "completed",
+      "createdAt": "2026-07-10T14:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 25,
+    "total": 142,
+    "totalPages": 6
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/orders/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis detayi — musteri bilgi, biletler, add-on'lar, odeme durumu, audit log</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/admin/orders/{id}/resend-email</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis onay emaili tekrar gonder (< 3 saniye)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">200 Email Sent</span>
+                <span class="response-code response-4xx">404 Order Not Found</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/admin/orders/{id}/cancel</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparis iptal — gelecek tarihli siparisler icin. Iade kaydı olusturur, iptal emaili gonderir.</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "reason": "Musteri talebi ile iptal"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">200 Cancelled</span>
+                <span class="response-code response-4xx">400 Visit Date Passed</span>
+                <span class="response-code response-4xx">404 Order Not Found</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/admin/orders/{id}/refund</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Iade baslat (MVP: manuel iade kaydı, Phase 1: Ziraat Bank otomatik iade)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "amount": 1170,
+  "reason": "Tam iade"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/orders/export</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siparisleri CSV olarak export et (Content-Type: text/csv). < 5 saniye / 1000 siparis.</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">dateFrom</td><td class="param-type">string</td><td>Baslangic tarihi</td></tr>
+                  <tr><td class="param-name">dateTo</td><td class="param-type">string</td><td>Bitis tarihi</td></tr>
+                  <tr><td class="param-name">status</td><td class="param-type">string</td><td>Status filtre (optional)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">CSV Columns</h4>
+              <div class="code-block">PNR, Customer Name, Email, Phone, Visit Date, Slot Time,
+Tickets (Adult x2, Child x1), Add-ons, Subtotal, Discount,
+Total, Payment Status, Order Status, Created At</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ADMIN - CAPACITY MANAGEMENT ==================== -->
+      <section id="admin-capacity" class="api-section">
+        <h2 class="section-title">Admin - Capacity Management <span class="sprint-badge sprint-mvp">MVP</span></h2>
+        <p class="section-desc">Kapasite yonetimi. Openspec REQ-ADMIN-04. Gunluk kapasite, slot bazli kapasite, takvim gorunumu, tarih ozel override.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/capacity/daily</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Varsayilan gunluk kapasite ayarlarini getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "defaultDailyCapacity": 5000,
+  "slotBasedEnabled": true,
+  "slots": [
+    { "time": "09:00-12:00", "capacity": 1500 },
+    { "time": "12:00-15:00", "capacity": 1500 },
+    { "time": "15:00-18:00", "capacity": 1500 },
+    { "time": "18:00-21:00", "capacity": 500 }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/admin/capacity/daily</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Varsayilan gunluk kapasiteyi guncelle (gelecek tarihler icin uygulanir)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "defaultDailyCapacity": 6000
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/capacity/slots</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slot konfigurasyonunu getir</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/admin/capacity/slots</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slot konfigurasyonunu guncelle (zaman, kapasite ekle/cikar)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "slots": [
+    { "time": "09:00-12:00", "capacity": 1500 },
+    { "time": "12:00-15:00", "capacity": 1800 },
+    { "time": "15:00-18:00", "capacity": 1500 },
+    { "time": "18:00-21:00", "capacity": 1000 },
+    { "time": "21:00-23:00", "capacity": 500 }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/capacity/calendar/{year}/{month}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kapasite takvimi — aylik gorunum. Renk kodlu: yesil (>50%), sari (20-50%), kirmizi (&lt;20%).</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "year": 2026,
+  "month": 7,
+  "days": [
+    {
+      "date": "2026-07-01",
+      "totalCapacity": 6000,
+      "bookedCount": 3200,
+      "availableCount": 2800,
+      "utilizationPercent": 53,
+      "status": "available",
+      "hasOverride": false,
+      "slots": [
+        { "time": "09:00-12:00", "capacity": 1500, "booked": 980, "available": 520 },
+        { "time": "12:00-15:00", "capacity": 1500, "booked": 1200, "available": 300 },
+        { "time": "15:00-18:00", "capacity": 1500, "booked": 800, "available": 700 },
+        { "time": "18:00-21:00", "capacity": 500, "booked": 220, "available": 280 }
+      ]
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/admin/capacity/override</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Belirli tarih icin kapasite override (tatil, ozel etkinlik)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "date": "2026-12-31",
+  "dailyCapacity": 8000,
+  "slotOverrides": {
+    "09:00-12:00": 2000,
+    "12:00-15:00": 2500,
+    "15:00-18:00": 2000,
+    "18:00-21:00": 1500
+  },
+  "reason": "Yilbasi ozel kapasite artisi"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">201 Created</span>
+                <span class="response-code response-4xx">400 Past Date</span>
+                <span class="response-code response-4xx">409 Override Exists (use PUT)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ADMIN - PRICING MANAGEMENT ==================== -->
+      <section id="admin-pricing" class="api-section">
+        <h2 class="section-title">Admin - Pricing Management <span class="sprint-badge sprint-mvp">MVP</span></h2>
+        <p class="section-desc">Fiyat yonetimi. Openspec REQ-ADMIN-05 + REQ-CAMPAIGN-04. Taban fiyat, sezonluk donemler (multiplier/fixed), fiyat takvimi.</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/pricing/base</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Taban bilet fiyatlarini getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "prices": {
+    "adult": 500,
+    "child": 300,
+    "infant": 0
+  },
+  "currency": "TRY",
+  "lastUpdatedAt": "2026-01-15T10:00:00Z",
+  "lastUpdatedBy": "admin@tersanenick.com"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/admin/pricing/base</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Taban fiyatlari guncelle (yeni siparisler icin aninda gecerli)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "adult": 550,
+  "child": 330,
+  "infant": 0
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/pricing/periods</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sezonluk fiyat donemlerini listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "periods": [
+    {
+      "id": "uuid",
+      "name": "Peak Season (Summer)",
+      "startDate": "2026-07-01",
+      "endDate": "2026-08-31",
+      "pricingType": "multiplier",
+      "multiplier": 1.5,
+      "overridePrices": null,
+      "priority": 10,
+      "preview": { "adult": 750, "child": 450, "infant": 0 }
+    },
+    {
+      "id": "uuid",
+      "name": "Off-Peak (Autumn)",
+      "startDate": "2026-10-01",
+      "endDate": "2026-11-30",
+      "pricingType": "multiplier",
+      "multiplier": 0.8,
+      "overridePrices": null,
+      "priority": 5,
+      "preview": { "adult": 400, "child": 240, "infant": 0 }
+    },
+    {
+      "id": "uuid",
+      "name": "New Year's Eve Special",
+      "startDate": "2026-12-31",
+      "endDate": "2026-12-31",
+      "pricingType": "fixed",
+      "multiplier": null,
+      "overridePrices": { "adult": 800, "child": 500, "infant": 0 },
+      "priority": 20
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/admin/pricing/periods</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni sezonluk fiyat donemi olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": "Peak Season (Summer)",
+  "startDate": "2026-07-01",
+  "endDate": "2026-08-31",
+  "pricingType": "multiplier",
+  "multiplier": 1.5,
+  "priority": 10
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Alternatif: Fixed Price</h4>
+              <div class="code-block">{
+  "name": "New Year's Eve Special",
+  "startDate": "2026-12-31",
+  "endDate": "2026-12-31",
+  "pricingType": "fixed",
+  "overridePrices": { "adult": 800, "child": 500, "infant": 0 },
+  "priority": 20
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/admin/pricing/periods/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Fiyat donemini guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/admin/pricing/periods/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Fiyat donemini sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/admin/pricing/calendar/{year}/{month}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Fiyat takvimi — hangi tarihte hangi donem gecerli, final fiyatlar</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "year": 2026,
+  "month": 7,
+  "basePrices": { "adult": 500, "child": 300, "infant": 0 },
+  "days": [
+    {
+      "date": "2026-07-15",
+      "activePeriod": {
+        "id": "uuid",
+        "name": "Peak Season (Summer)",
+        "multiplier": 1.5
+      },
+      "finalPrices": { "adult": 750, "child": 450, "infant": 0 },
+      "hasOverride": false
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ==================== CLIENT - AUTH ==================== -->
       <section id="client-auth" class="api-section">
-        <h2 class="section-title">Client - Auth</h2>
+        <h2 class="section-title">Client - Auth <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">Son kullanici kimlik dogrulama. Email OTP veya guest session.</p>
 
         <div class="api-card">
@@ -993,7 +1601,7 @@
 
       <!-- ==================== CLIENT - PROFILE ==================== -->
       <section id="client-profile" class="api-section">
-        <h2 class="section-title">Client - Profile</h2>
+        <h2 class="section-title">Client - Profile <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">Kullanici profil yonetimi</p>
 
         <div class="api-card">
@@ -1030,9 +1638,68 @@
         </div>
       </section>
 
+      <!-- ==================== PRODUCT LIST (UNIFIED) ==================== -->
+      <section id="product-list" class="api-section">
+        <h2 class="section-title">Product List (Unified) <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Tum urun tiplerini tek endpoint'ten listele. <a href="../pages/sprint-b/urun-listesi.html" target="_blank" class="wireframe-link">urun-listesi.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Birlesik urun listesi — 5 urun tipini tek tablo'da goster</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">type</td><td class="param-type">string</td><td>ticket | addon | experience | fnb | unite (bos = tumu)</td></tr>
+                  <tr><td class="param-name">status</td><td class="param-type">string</td><td>active | passive | draft</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>Urun adi arama</td></tr>
+                  <tr><td class="param-name">page</td><td class="param-type">number</td><td>Sayfa numarasi (default: 1)</td></tr>
+                  <tr><td class="param-name">limit</td><td class="param-type">number</td><td>Sayfa basi kayit (default: 20)</td></tr>
+                  <tr><td class="param-name">sort</td><td class="param-type">string</td><td>name | createdAt | price (default: createdAt)</td></tr>
+                  <tr><td class="param-name">order</td><td class="param-type">string</td><td>asc | desc (default: desc)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "turId": "TKT-001",
+      "type": "ticket",
+      "name": { "tr": "Yetiskin Bileti", "en": "Adult Ticket" },
+      "subType": "VIP",
+      "capacity": { "value": 500, "unit": "daily" },
+      "compatibleTicket": null,
+      "prices": {
+        "webAdultTL": 750, "webChildTL": 100,
+        "webAdultEUR": 500, "webChildEUR": 20,
+        "appAdultTL": 650, "appChildTL": 80
+      },
+      "status": "active",
+      "createdAt": "2026-01-15T10:00:00Z"
+    }
+  ],
+  "meta": {
+    "total": 42, "page": 1, "limit": 20, "totalPages": 3,
+    "counts": { "ticket": 12, "addon": 8, "experience": 10, "fnb": 7, "unite": 5 }
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ==================== EVENTS ==================== -->
       <section id="events" class="api-section">
-        <h2 class="section-title">Events</h2>
+        <h2 class="section-title">Events <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Etkinlik yonetimi</p>
 
         <div class="api-card">
@@ -1116,8 +1783,8 @@
 
       <!-- ==================== TICKETS ==================== -->
       <section id="tickets" class="api-section">
-        <h2 class="section-title">Tickets</h2>
-        <p class="section-desc">Bilet urunleri yonetimi</p>
+        <h2 class="section-title">Tickets <span class="sprint-badge sprint-mvp">MVP</span> <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Bilet urunleri yonetimi. MVP: temel daily/slot ticket CRUD. Sprint B: 8 fiyat alani, usage periods, content i18n, park lands.</p>
 
         <div class="api-card">
           <div class="card-header">
@@ -1126,18 +1793,49 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Yeni bilet urunu olustur</p>
+            <p class="card-desc">Yeni bilet urunu olustur <a href="../pages/sprint-b/bilet-form.html" target="_blank" class="wireframe-link">bilet-form.html</a></p>
             <div class="subsection">
-              <h4 class="subsection-title">Request Body</h4>
+              <h4 class="subsection-title">Request Body (CreateTicketDto)</h4>
               <div class="code-block">{
-  "name": { "tr": "Yetiskin Bileti", "en": "Adult Ticket" },
-  "slug": "adult-ticket",
-  "description": { "tr": "...", "en": "..." },
-  "price": { "amount": 150, "currency": "TRY" },
-  "validFrom": "2026-01-01",
-  "validUntil": "2026-12-31",
-  "isPublic": true,
-  "maxQuantityPerOrder": 10
+  "panelName": "Yetiskin Gunluk Giris",
+  "dailyCapacity": 500,
+  "sameDayRule": "1_hour",
+  "listingType": "all_year",
+  "listingDays": ["mon","tue","wed","thu","fri","sat","sun"],
+  "salePeriod": {
+    "startDate": "2026-01-01", "endDate": "2026-12-31"
+  },
+  "usagePeriods": [
+    {
+      "startDate": "2026-01-01", "endDate": "2026-06-30",
+      "startTime": "09:00", "endTime": "18:00",
+      "prices": {
+        "webAdultTL": 750, "webChildTL": 100,
+        "webAdultEUR": 500, "webChildEUR": 20,
+        "appAdultTL": 650, "appChildTL": 80,
+        "appAdultEUR": 450, "appChildEUR": 15
+      }
+    }
+  ],
+  "advanceBookable": true,
+  "status": "draft",
+  "parkLandIds": ["uuid-1", "uuid-2"],
+  "includedProductIds": ["uuid-3"],
+  "image": {
+    "mediaId": "uuid-media",
+    "altText": { "tr": "Bilet gorseli", "en": "Ticket image" }
+  },
+  "content": {
+    "tr": {
+      "name": "Yetiskin Bileti",
+      "description": "Tam gun giris bileti",
+      "badge": "En Populer",
+      "rulesHtml": "&lt;p&gt;Kurallar...&lt;/p&gt;",
+      "webWarnings": ["Mobilde %20 indirim"],
+      "mobileWarnings": ["App'ten erken giris"]
+    },
+    "en": { "name": "Adult Ticket", "description": "...", "badge": "Most Popular" }
+  }
 }</div>
             </div>
             <div class="subsection">
@@ -1145,8 +1843,25 @@
               <div class="response-codes">
                 <span class="response-code response-2xx">201 Created</span>
                 <span class="response-code response-4xx">400 Validation Error</span>
-                <span class="response-code response-4xx">409 Slug Exists</span>
+                <span class="response-code response-4xx">409 TurID Exists</span>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/tickets/{id}/publish</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Bilet durumunu degistir (draft → active, active → passive)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "status": "active"
+}</div>
             </div>
           </div>
         </div>
@@ -1208,7 +1923,7 @@
 
       <!-- ==================== EXPERIENCES ==================== -->
       <section id="experiences" class="api-section">
-        <h2 class="section-title">Experiences</h2>
+        <h2 class="section-title">Experiences <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Deneyim urunleri (VIP, workshop, vb.)</p>
 
         <div class="api-card">
@@ -1218,7 +1933,50 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Yeni deneyim olustur</p>
+            <p class="card-desc">Yeni deneyim olustur <a href="../pages/sprint-b/experience-form.html" target="_blank" class="wireframe-link">experience-form.html</a></p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateExperienceDto)</h4>
+              <div class="code-block">{
+  "panelName": "VIP Karsilama Deneyimi",
+  "sameDayRule": "2_hours",
+  "listingType": "all_year",
+  "listingDays": ["mon","tue","wed","thu","fri","sat","sun"],
+  "salePeriod": { "startDate": "2026-01-01", "endDate": "2026-12-31" },
+  "usagePeriods": [
+    {
+      "startDate": "2026-01-01", "endDate": "2026-06-30",
+      "sessions": [
+        { "time": "10:00", "paxCapacity": 120 },
+        { "time": "13:30", "paxCapacity": 120 },
+        { "time": "16:00", "paxCapacity": 80 }
+      ],
+      "prices": {
+        "webAdultTL": 1200, "webChildTL": 600,
+        "webAdultEUR": 45, "webChildEUR": 25,
+        "appAdultTL": 1000, "appChildTL": 500,
+        "appAdultEUR": 40, "appChildEUR": 22
+      }
+    }
+  ],
+  "compatibility": {
+    "compatibleTicketIds": ["uuid-1", "uuid-4"],
+    "autoSuggest": true,
+    "isMandatory": false
+  },
+  "advanceBookable": true,
+  "status": "draft",
+  "images": [
+    { "mediaId": "uuid-img1", "isPrimary": true, "sortOrder": 0 },
+    { "mediaId": "uuid-img2", "isPrimary": false, "sortOrder": 1 }
+  ],
+  "content": {
+    "tr": {
+      "name": "VIP Karsilama", "description": "...",
+      "badge": "Ozel", "webWarnings": [], "mobileWarnings": []
+    }
+  }
+}</div>
+            </div>
           </div>
         </div>
 
@@ -1269,7 +2027,7 @@
 
       <!-- ==================== FOODS ==================== -->
       <section id="foods" class="api-section">
-        <h2 class="section-title">Foods</h2>
+        <h2 class="section-title">Foods <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Yiyecek-icecek urunleri</p>
 
         <div class="api-card">
@@ -1279,7 +2037,43 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Yeni F&B urunu olustur</p>
+            <p class="card-desc">Yeni F&B urunu olustur <a href="../pages/sprint-b/fnb-form.html" target="_blank" class="wireframe-link">fnb-form.html</a></p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateFoodDto)</h4>
+              <div class="code-block">{
+  "panelName": "Burger Paketi",
+  "sameDayRule": "none",
+  "servicePointId": "uuid-restoran-a",
+  "dailyCapacity": 200,
+  "compatibility": {
+    "mode": "auto_suggest",
+    "compatibleTicketIds": ["uuid-1"]
+  },
+  "listingType": "all_year",
+  "listingDays": ["mon","tue","wed","thu","fri","sat","sun"],
+  "salePeriod": { "startDate": "2026-01-01", "endDate": "2026-12-31" },
+  "usagePeriods": [
+    {
+      "startDate": "2026-01-01", "endDate": "2026-12-31",
+      "startTime": "11:00", "endTime": "22:00",
+      "prices": {
+        "webAdultTL": 250, "webChildTL": 150,
+        "webAdultEUR": 10, "webChildEUR": 6,
+        "appAdultTL": 220, "appChildTL": 130,
+        "appAdultEUR": 9, "appChildEUR": 5
+      }
+    }
+  ],
+  "advanceBookable": true,
+  "status": "draft",
+  "images": [
+    { "mediaId": "uuid-img1", "isPrimary": true, "sortOrder": 0 }
+  ],
+  "content": {
+    "tr": { "name": "Burger Paketi", "description": "...", "badge": "Yeni" }
+  }
+}</div>
+            </div>
           </div>
         </div>
 
@@ -1330,7 +2124,7 @@
 
       <!-- ==================== UNITES ==================== -->
       <section id="unites" class="api-section">
-        <h2 class="section-title">Unites (Rooms)</h2>
+        <h2 class="section-title">Unites (Rooms) <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Oda/Unite urunleri (party room, VIP lounge, vb.)</p>
 
         <div class="api-card">
@@ -1391,7 +2185,7 @@
 
       <!-- ==================== ADDONS ==================== -->
       <section id="addons" class="api-section">
-        <h2 class="section-title">Addons</h2>
+        <h2 class="section-title">Addons <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Eklenti urunleri (parking, locker, equipment, vb.)</p>
 
         <div class="api-card">
@@ -1401,7 +2195,47 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Yeni addon olustur</p>
+            <p class="card-desc">Yeni addon olustur <a href="../pages/sprint-b/eklenti-form.html" target="_blank" class="wireframe-link">eklenti-form.html</a></p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateAddonDto)</h4>
+              <div class="code-block">{
+  "panelName": "Otopark Pass",
+  "sameDayRule": "none",
+  "compatibility": {
+    "compatibleTicketIds": ["uuid-1", "uuid-4"],
+    "selectAll": false,
+    "autoSuggest": true,
+    "isMandatory": false
+  },
+  "listingType": "all_year",
+  "listingDays": ["mon","tue","wed","thu","fri","sat","sun"],
+  "salePeriod": { "startDate": "2026-01-01", "endDate": "2026-12-31" },
+  "usagePeriods": [
+    {
+      "startDate": "2026-01-01", "endDate": "2026-06-30",
+      "startTime": "08:00", "endTime": "23:00",
+      "prices": {
+        "webAdultTL": 200, "webChildTL": 0,
+        "webAdultEUR": 8, "webChildEUR": 0,
+        "appAdultTL": 180, "appChildTL": 0,
+        "appAdultEUR": 7, "appChildEUR": 0
+      }
+    }
+  ],
+  "advanceBookable": true,
+  "status": "draft",
+  "images": [
+    { "mediaId": "uuid-img1", "isPrimary": true, "sortOrder": 0 },
+    { "mediaId": "uuid-img2", "isPrimary": false, "sortOrder": 1 }
+  ],
+  "content": {
+    "tr": {
+      "name": "Otopark Pass", "description": "VIP otopark alani",
+      "badge": "", "webWarnings": [], "mobileWarnings": []
+    }
+  }
+}</div>
+            </div>
           </div>
         </div>
 
@@ -1452,7 +2286,7 @@
 
       <!-- ==================== CATALOG ==================== -->
       <section id="catalog" class="api-section">
-        <h2 class="section-title">Product Catalog</h2>
+        <h2 class="section-title">Product Catalog <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Satin alinabilir urunlerin birlesik katalogu</p>
 
         <div class="api-card">
@@ -1488,7 +2322,7 @@
 
       <!-- ==================== SESSIONS ==================== -->
       <section id="sessions" class="api-section">
-        <h2 class="section-title">Sessions</h2>
+        <h2 class="section-title">Sessions <span class="sprint-badge sprint-b">S-B</span></h2>
         <p class="section-desc">Urun bazli seans/slot yonetimi</p>
 
         <div class="api-card">
@@ -1606,10 +2440,1496 @@
         </div>
       </section>
 
+      <!-- ==================== PRODUCT PRICING CALENDAR ==================== -->
+      <section id="product-pricing" class="api-section">
+        <h2 class="section-title">Product Pricing Calendar <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Fiyat takvimi — 3 zoom seviyesi (haftalik/aylik/yillik), slot bazli fiyat/kapasite yonetimi. <a href="../pages/sprint-b/fiyat-takvimi.html" target="_blank" class="wireframe-link">fiyat-takvimi.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/{productId}/pricing/calendar</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Takvim gorunumu — haftalik/aylik/yillik zoom</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">zoom</td><td class="param-type">string</td><td>weekly | monthly | yearly <span class="param-required">required</span></td></tr>
+                  <tr><td class="param-name">date</td><td class="param-type">string</td><td>Referans tarih (YYYY-MM-DD, default: bugun)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (Weekly)</h4>
+              <div class="code-block">{
+  "zoom": "weekly",
+  "period": { "start": "2026-03-09", "end": "2026-03-15" },
+  "slots": [
+    {
+      "id": "uuid",
+      "date": "2026-03-10",
+      "time": "09:00",
+      "capacity": 100,
+      "occupancy": 80,
+      "occupancyPercent": 80,
+      "isClosed": false,
+      "prices": {
+        "webAdultTL": 750, "webChildTL": 100,
+        "webAdultEUR": 500, "webChildEUR": 20,
+        "appAdultTL": 650, "appChildTL": 80,
+        "appAdultEUR": 450, "appChildEUR": 15
+      }
+    }
+  ],
+  "heatMapLegend": {
+    "green": "0-50%", "orange": "50-80%",
+    "red": "80-100%", "gray": "Kapali"
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/products/{productId}/pricing/slots/{slotId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tek slot fiyat/kapasite guncelle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "capacity": 120,
+  "isClosed": false,
+  "prices": {
+    "webAdultTL": 800, "webChildTL": 120,
+    "webAdultEUR": 520, "webChildEUR": 25,
+    "appAdultTL": 700, "appChildTL": 100,
+    "appAdultEUR": 480, "appChildEUR": 20
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/pricing/slots/bulk</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Toplu slot olustur — tarih araligi icin fiyat ve kapasite ata</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "startDate": "2026-04-01",
+  "endDate": "2026-04-30",
+  "times": ["09:00", "12:00", "15:00"],
+  "capacity": 100,
+  "excludeDays": ["sun"],
+  "prices": {
+    "webAdultTL": 750, "webChildTL": 100,
+    "webAdultEUR": 500, "webChildEUR": 20,
+    "appAdultTL": 650, "appChildTL": 80,
+    "appAdultEUR": 450, "appChildEUR": 15
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PRODUCT IMAGES ==================== -->
+      <section id="product-images" class="api-section">
+        <h2 class="section-title">Product Images <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Urun gorsel yonetimi — tek gorsel (bilet) veya coklu galeri (addon/exp/fnb)</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/{productId}/images</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Urun gorsellerini listele (siralama dahil)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "images": [
+    {
+      "id": "uuid",
+      "mediaId": "uuid-media",
+      "url": "https://cdn.example.com/img.jpg",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "altText": { "tr": "Bilet gorseli", "en": "Ticket image" }
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/images</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Urun gorseli ekle (medya kutuphanesinden veya direkt upload)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "mediaId": "uuid-media",
+  "isPrimary": false,
+  "sortOrder": 1
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/products/{productId}/images/reorder</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Gorsel siralamasini guncelle (drag-and-drop)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "imageIds": ["uuid-1", "uuid-3", "uuid-2"],
+  "primaryImageId": "uuid-1"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/products/{productId}/images/{imageId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Urun gorselini kaldir</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PRODUCT CONTENT (i18n) ==================== -->
+      <section id="product-content" class="api-section">
+        <h2 class="section-title">Product Content (i18n) <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Cok dilli urun icerikleri — 4 dil (TR/EN/DE/RU), adi + aciklama + badge + kural metni + uyarilar</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/products/{productId}/content</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tum dillerdeki icerigi getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "languages": {
+    "tr": {
+      "name": "Yetiskin Bileti",
+      "description": "Tam gun giris bileti",
+      "badge": "En Populer",
+      "rulesHtml": "&lt;p&gt;Bilet kurallari...&lt;/p&gt;",
+      "webWarnings": ["Mobilde %20 indirim", "Online satin al, kuyruga girme"],
+      "mobileWarnings": ["App'ten erken giris"],
+      "isComplete": true
+    },
+    "en": {
+      "name": "Adult Ticket",
+      "description": "Full day entry ticket",
+      "badge": "Most Popular",
+      "rulesHtml": "",
+      "webWarnings": [],
+      "mobileWarnings": [],
+      "isComplete": false
+    },
+    "de": { "isComplete": false },
+    "ru": { "isComplete": false }
+  },
+  "completionStatus": { "tr": 100, "en": 60, "de": 0, "ru": 0 }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/products/{productId}/content/{lang}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Belirli dildeki icerigi guncelle (lang: tr | en | de | ru)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "name": "Yetiskin Bileti",
+  "description": "Tam gun giris bileti",
+  "badge": "En Populer",
+  "rulesHtml": "&lt;p&gt;Kurallar...&lt;/p&gt;",
+  "webWarnings": ["Mobilde %20 indirim"],
+  "mobileWarnings": ["App'ten erken giris"]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== REFERENCE DATA ==================== -->
+      <section id="reference-data" class="api-section">
+        <h2 class="section-title">Reference Data <span class="sprint-badge sprint-b">S-B</span></h2>
+        <p class="section-desc">Park alanlari, servis noktalari ve diger referans veriler</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/reference/park-lands</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tema park alanlari listesi (bilet formu icin)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "parkLands": [
+    { "id": "uuid", "name": "Hyper Coaster" },
+    { "id": "uuid", "name": "Adventure Land" },
+    { "id": "uuid", "name": "Water World" },
+    { "id": "uuid", "name": "Kids Kingdom" },
+    { "id": "uuid", "name": "Legends World" },
+    { "id": "uuid", "name": "Dark Rides" },
+    { "id": "uuid", "name": "Thrill Zone" },
+    { "id": "uuid", "name": "Fantasy Garden" },
+    { "id": "uuid", "name": "Food Court Area" },
+    { "id": "uuid", "name": "Entertainment Plaza" },
+    { "id": "uuid", "name": "VIP Lounge" },
+    { "id": "uuid", "name": "Aqua Park" }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/reference/service-points</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Servis noktalari listesi (F&B formu icin)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "servicePoints": [
+    { "id": "uuid", "name": "Restoran A", "type": "restaurant" },
+    { "id": "uuid", "name": "Restoran B", "type": "restaurant" },
+    { "id": "uuid", "name": "Kafe 1", "type": "cafe" },
+    { "id": "uuid", "name": "Kafe 2", "type": "cafe" },
+    { "id": "uuid", "name": "Food Court", "type": "food_court" }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== USER INVITATION ==================== -->
+      <section id="user-invite" class="api-section">
+        <h2 class="section-title">User Invitation <span class="sprint-badge sprint-s1">S1</span></h2>
+        <p class="section-desc">Kullanici davet sistemi. <a href="../pages/sprint-b/kullanici-davet.html" target="_blank" class="wireframe-link">kullanici-davet.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/users/invite</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni kullanici davet et (email gonderimi dahil)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (InviteUserDto)</h4>
+              <div class="code-block">{
+  "fullName": "Ahmet Yilmaz",
+  "email": "ahmet@tersanenick.com",
+  "phone": "+905551234567",
+  "isActive": true,
+  "permissions": [
+    { "category": "Urun Yonetimi", "name": "Bilet Yonetimi", "edit": true, "view": true },
+    { "category": "Urun Yonetimi", "name": "Eklenti Yonetimi", "edit": true, "view": true },
+    { "category": "Urun Yonetimi", "name": "F&amp;B Yonetimi", "edit": false, "view": true },
+    { "category": "Siparis Yonetimi", "name": "Siparis Goruntuleme", "edit": false, "view": true },
+    { "category": "Siparis Yonetimi", "name": "Siparis Iptal/Iade", "edit": true, "view": true },
+    { "category": "Kampanya &amp; Pazarlama", "name": "Kampanya Yonetimi", "edit": true, "view": true },
+    { "category": "Sistem", "name": "CMS Yonetimi", "edit": true, "view": true }
+  ]
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">201 Invited</span>
+                <span class="response-code response-4xx">400 Validation Error</span>
+                <span class="response-code response-4xx">409 Email Exists</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/users</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tenant kullanicilarini listele</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/users/{userId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullanici detayi (profil + izin matrisi)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/users/{userId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullanici bilgi + izin matrisi guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/users/{userId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullaniciyi deaktif et / sil</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PERMISSION MATRIX ==================== -->
+      <section id="permission-matrix" class="api-section">
+        <h2 class="section-title">Permission Matrix <span class="sprint-badge sprint-s1">S1</span></h2>
+        <p class="section-desc">Kategori bazli yetki matrisi</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/permissions/categories</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tum yetki kategorileri ve ogelerini getir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "categories": [
+    {
+      "name": "Urun Yonetimi",
+      "items": [
+        { "key": "tickets", "label": "Bilet Yonetimi", "supportsEdit": true, "supportsView": true },
+        { "key": "addons", "label": "Eklenti Yonetimi", "supportsEdit": true, "supportsView": true },
+        { "key": "fnb", "label": "F&amp;B Yonetimi", "supportsEdit": true, "supportsView": true },
+        { "key": "experiences", "label": "Experience Yonetimi", "supportsEdit": true, "supportsView": true }
+      ]
+    },
+    {
+      "name": "Siparis Yonetimi",
+      "items": [
+        { "key": "orders_view", "label": "Siparis Goruntuleme", "supportsEdit": false, "supportsView": true },
+        { "key": "orders_cancel", "label": "Siparis Iptal/Iade", "supportsEdit": true, "supportsView": true },
+        { "key": "pnr", "label": "PNR Olusturma", "supportsEdit": true, "supportsView": true }
+      ]
+    },
+    {
+      "name": "Kampanya &amp; Pazarlama",
+      "items": [
+        { "key": "campaigns", "label": "Kampanya Yonetimi" },
+        { "key": "coupons", "label": "Kupon Yonetimi" },
+        { "key": "reports", "label": "Raporlama" }
+      ]
+    },
+    {
+      "name": "Sistem",
+      "items": [
+        { "key": "users", "label": "Kullanici Yonetimi" },
+        { "key": "cms", "label": "CMS Yonetimi" },
+        { "key": "integrations", "label": "Entegrasyon Ayarlari" },
+        { "key": "system_settings", "label": "Sistem Ayarlari" }
+      ]
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/users/{userId}/permissions</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kullanici izin matrisini toplu guncelle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "permissions": {
+    "tickets": { "edit": true, "view": true },
+    "addons": { "edit": true, "view": true },
+    "fnb": { "edit": false, "view": true },
+    "campaigns": { "edit": true, "view": true },
+    "cms": { "edit": true, "view": true },
+    "system_settings": { "edit": false, "view": false }
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/users/{userId}/permissions/quick-action</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Hizli eylem: tumunu sec / tumunu kaldir / sadece goruntuleme</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "action": "view_only"
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS DASHBOARD ==================== -->
+      <section id="cms-dashboard" class="api-section">
+        <h2 class="section-title">CMS Dashboard <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">CMS yonetim paneli ozet verileri. <a href="../pages/sprint-c/cms-dashboard.html" target="_blank" class="wireframe-link">cms-dashboard.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/dashboard/stats</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">CMS ozet istatistikleri</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "pages": { "total": 12, "published": 9, "draft": 3 },
+  "banners": { "total": 9, "groups": 3 },
+  "faq": { "total": 24 },
+  "media": { "total": 156, "totalSizeMB": 284 },
+  "languageCompletion": { "tr": 100, "en": 85, "de": 45, "ru": 30 },
+  "recentChanges": [
+    {
+      "type": "page",
+      "name": "Ana Sayfa",
+      "description": "Hero banner guncellendi",
+      "editor": "Mehmet K.",
+      "updatedAt": "2026-02-28T14:30:00Z",
+      "status": "published"
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS PAGES ==================== -->
+      <section id="cms-pages" class="api-section">
+        <h2 class="section-title">CMS Pages + Builder <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Sayfa olusturma, blok yonetimi, yayinlama. <a href="../pages/sprint-c/sayfa-listesi.html" target="_blank" class="wireframe-link">sayfa-listesi.html</a> <a href="../pages/sprint-c/sayfa-builder.html" target="_blank" class="wireframe-link">sayfa-builder.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/pages</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfa listesi</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">templateType</td><td class="param-type">string</td><td>homepage | unit_detail | restaurant | events | hotel | campaign | faq | contact | static</td></tr>
+                  <tr><td class="param-name">status</td><td class="param-type">string</td><td>published | draft</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>Sayfa adi/slug arama</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Ana Sayfa",
+      "slug": "home",
+      "templateType": "homepage",
+      "status": "published",
+      "languageStatus": { "tr": "complete", "en": "partial", "de": "empty", "ru": "empty" },
+      "blockCount": 8,
+      "updatedAt": "2026-02-28T14:30:00Z"
+    }
+  ],
+  "meta": { "total": 12, "page": 1, "limit": 20 }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/pages</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni sayfa olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreatePageDto)</h4>
+              <div class="code-block">{
+  "name": "Yaz Kampanyasi",
+  "slug": "summer-campaign",
+  "templateType": "campaign",
+  "seo": {
+    "title": { "tr": "Yaz Kampanyasi", "en": "Summer Campaign" },
+    "description": { "tr": "...", "en": "..." },
+    "ogImage": "uuid-media",
+    "canonicalUrl": "/summer-campaign"
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/pages/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfa detay — bloklar dahil (builder icin)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/pages/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfa meta/SEO guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/pages/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfa sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/cms/pages/{id}/publish</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfayi yayinla (draft → published)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "status": "published"
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS BLOCKS ==================== -->
+      <section id="cms-blocks" class="api-section">
+        <h2 class="section-title">CMS Blocks <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Sayfa bloklari — 32 blok tipi, 5 config pattern (static/slide/datasource/repeatable/form). <a href="../pages/sprint-c/blok-katalogu.html" target="_blank" class="wireframe-link">blok-katalogu.html</a> <a href="../pages/sprint-c/blok-detay.html" target="_blank" class="wireframe-link">blok-detay.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/blocks/catalog</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Blok katalogu — 32 blok tipi (6 kategori: A-F)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "categories": [
+    {
+      "id": "A", "name": "Hero / Banner",
+      "blocks": [
+        { "slug": "HeroBanner", "name": "Hero Banner", "pattern": "slide", "fields": 8, "variations": 2 },
+        { "slug": "FeatureBannerSlider", "name": "Feature Banner Slider", "pattern": "slide", "fields": 6 }
+      ]
+    }
+  ],
+  "total": 32
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/pages/{pageId}/blocks</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Sayfaya blok ekle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "blockType": "HeroBanner",
+  "variation": null,                 // string | null — 5 blokta varyasyon (EventPromo:2, CardCarousel:3, DualCardGrid:7, DetailInfo:5, Accordion:3)
+  "displayOrder": 0,
+  "visible": true,
+  "configJson": {
+    // HeroBanner icin tam config — blok tipine gore degisir
+    "slider": {
+      "autoScroll": true,
+      "durationMs": 5000,
+      "transition": "fade",          // "fade" | "slide" | "zoom"
+      "showDots": true,
+      "showArrows": true
+    },
+    "badges": [
+      { "text": { "tr": "-%30", "en": "-30%" }, "color": "sari" }  // sari | mavi | yesil | kirmizi
+    ],
+    "cta": {
+      "primary": { "text": { "tr": "Kesfet", "en": "Explore" }, "url": "/kampanya", "style": "solid" },
+      "secondary": null              // { text(i18n), url, style: "solid"|"outline"|"ghost" } | null
+    },
+    "widgets": {
+      "weatherEnabled": false,
+      "backBtnEnabled": false,
+      "backBtnText": { "tr": "Geri", "en": "Back" },
+      "backBtnTarget": "previous_page",  // "previous_page" | "home" | "custom_url"
+      "overlayEnabled": true,
+      "overlayOpacity": 40           // 0-100
+    },
+    "appearance": {
+      "height": "full_screen",       // "full_screen" | "75_percent" | "50_percent"
+      "contentPosition": "bottom_left"  // "bottom_left" | "center" | "bottom_right"
+    }
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/pages/{pageId}/blocks/{blockId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Blok icerik/ayar guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/pages/{pageId}/blocks/{blockId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Blok sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/pages/{pageId}/blocks/reorder</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Blok siralamasini guncelle (drag-and-drop)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "blockIds": ["uuid-1", "uuid-3", "uuid-2", "uuid-4"]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/cms/pages/{pageId}/blocks/{blockId}/visibility</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Blok gorunurlugunu degistir</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "visible": false
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS MEDIA ==================== -->
+      <section id="cms-media" class="api-section">
+        <h2 class="section-title">CMS Media Library <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Medya kutuphanesi — gorsel/video/dokuman yukleme, 4 dil alt text, kullanim takibi. <a href="../pages/sprint-c/medya-kutuphanesi.html" target="_blank" class="wireframe-link">medya-kutuphanesi.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/media</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Medya dosyalarini listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">type</td><td class="param-type">string</td><td>image | video | document (bos = tumu)</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>Dosya adi arama</td></tr>
+                  <tr><td class="param-name">sort</td><td class="param-type">string</td><td>newest | oldest | name</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "name": "hero-summer.jpg",
+      "type": "image",
+      "url": "https://cdn.example.com/hero-summer.jpg",
+      "size": 245760,
+      "resolution": "1920x800",
+      "ext": "jpg",
+      "altText": { "tr": "Yaz sezonu", "en": "Summer season" },
+      "createdAt": "2026-02-15T10:00:00Z"
+    }
+  ],
+  "meta": { "total": 156, "totalSizeMB": 284 }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/media</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Medya dosyasi yukle (multipart/form-data)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (multipart/form-data)</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">file</td><td class="param-type">File</td><td>Dosya (max 10MB gorsel, 50MB video) <span class="param-required">required</span></td></tr>
+                  <tr><td class="param-name">altText[tr]</td><td class="param-type">string</td><td>Turkce alt text</td></tr>
+                  <tr><td class="param-name">altText[en]</td><td class="param-type">string</td><td>Ingilizce alt text</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/media/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Medya meta bilgilerini guncelle (alt text, isim)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/media/{id}/usage</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Medya kullanim yerlerini getir (silme oncesi uyari icin)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "usageCount": 3,
+  "locations": [
+    { "page": "Ana Sayfa", "block": "HeroBanner — Slide 2" },
+    { "page": "Yaz Kampanyasi", "block": "FeatureBannerSlider" },
+    { "page": "Bilet: Yetiskin", "block": "Urun Gorseli" }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/media/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Medya sil (kullaniliyorsa uyari doner, force=true ile zorlama)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">force</td><td class="param-type">boolean</td><td>Kullanilsa bile sil (default: false)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS BANNERS ==================== -->
+      <section id="cms-banners" class="api-section">
+        <h2 class="section-title">CMS Banners + Slides <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Banner gruplari ve slide yonetimi. <a href="../pages/sprint-c/banner-listesi.html" target="_blank" class="wireframe-link">banner-listesi.html</a> <a href="../pages/sprint-c/banner-form.html" target="_blank" class="wireframe-link">banner-form.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/banners</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Tum banner gruplarini listele (hero, feature, promo, event)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "groups": [
+    {
+      "type": "hero",
+      "name": "Hero Banner",
+      "settings": { "autoPlay": true, "interval": 5000, "transition": "slide" },
+      "slides": [
+        {
+          "id": "uuid",
+          "title": { "tr": "Yaz Sezonu", "en": "Summer Season" },
+          "subtitle": { "tr": "...", "en": "..." },
+          "ctaText": { "tr": "Bilet Al", "en": "Get Tickets" },
+          "ctaUrl": "/tickets",
+          "badgeText": { "tr": "Yeni", "en": "New" },
+          "badgeStyle": "primary",
+          "desktopImage": { "mediaId": "uuid", "url": "..." },
+          "mobileImage": { "mediaId": "uuid", "url": "..." },
+          "imagePosition": "center",
+          "overlayEnabled": true,
+          "sortOrder": 0,
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/banners/{groupType}/slides</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Gruba yeni slide ekle (groupType: hero | feature | promo | event)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateSlideDto)</h4>
+              <div class="code-block">{
+  "title": { "tr": "Yaz Indirimi", "en": "Summer Sale" },
+  "subtitle": { "tr": "...", "en": "..." },
+  "ctaText": { "tr": "Kesfet", "en": "Explore" },
+  "ctaUrl": "/campaign/summer",
+  "badgeText": { "tr": "-%30", "en": "-30%" },
+  "badgeStyle": "warning",          // "primary" | "secondary" | "warning"
+  "desktopImageId": "uuid-media",   // 1920x800
+  "mobileImageId": "uuid-media",    // 750x1000 (nullable)
+  "imagePosition": "center",        // "center" | "top" | "bottom"
+  "overlayEnabled": false,
+  "isActive": true,
+  "publishStartDate": "2026-06-01", // nullable — null = surekli aktif
+  "publishStartTime": "09:00",      // nullable
+  "publishEndDate": "2026-08-31",   // nullable
+  "publishEndTime": "23:59"         // nullable
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/banners/{groupType}/slides/{slideId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slide guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/banners/{groupType}/slides/{slideId}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slide sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/banners/{groupType}/slides/reorder</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Slide siralamasini guncelle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "slideIds": ["uuid-1", "uuid-3", "uuid-2"]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/banners/{groupType}/settings</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Banner grubu ayarlarini guncelle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "autoScroll": true,
+  "scrollDurationMs": 5000,
+  "transitionEffect": "slide",      // "slide" | "fade" | "zoom"
+  "showDots": true,
+  "showArrows": true
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS FAQ ==================== -->
+      <section id="cms-faq" class="api-section">
+        <h2 class="section-title">CMS FAQ <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">SSS yonetimi — kategori + alt kategori, siralama, cok dilli. <a href="../pages/sprint-c/faq-listesi.html" target="_blank" class="wireframe-link">faq-listesi.html</a> <a href="../pages/sprint-c/faq-form.html" target="_blank" class="wireframe-link">faq-form.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/faq</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">FAQ listesi</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">category</td><td class="param-type">string</td><td>theme_park | hotels | shopping | legends_store</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>Soru metni arama</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/faq</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Yeni FAQ olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateFaqDto)</h4>
+              <div class="code-block">{
+  "category": "theme_park",
+  "subcategory": "tickets",
+  "question": { "tr": "Bilet ne kadar?", "en": "How much is a ticket?" },
+  "answerHtml": { "tr": "&lt;p&gt;Biletler 750 TL'den baslar.&lt;/p&gt;", "en": "..." },
+  "defaultOpen": false,
+  "sortOrder": 1,
+  "isActive": true
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/faq/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">FAQ guncelle</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/faq/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">FAQ sil</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/faq/reorder</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">FAQ siralamasini guncelle (drag-and-drop)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "faqIds": ["uuid-1", "uuid-3", "uuid-2"]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS COLLECTIONS ==================== -->
+      <section id="cms-collections" class="api-section">
+        <h2 class="section-title">CMS Collections <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Koleksiyonlar — Logo, Hizmet, Sertifika. <a href="../pages/sprint-c/koleksiyon-listesi.html" target="_blank" class="wireframe-link">koleksiyon-listesi.html</a> <a href="../pages/sprint-c/koleksiyon-form.html" target="_blank" class="wireframe-link">koleksiyon-form.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/collections/{type}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Koleksiyon listesi (type: logos | services | certificates)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (logos)</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "name": { "tr": "Partner Logo", "en": "Partner Logo" },
+      "imageUrl": "https://cdn.example.com/logo.png",
+      "linkUrl": "https://partner.com",
+      "sortOrder": 0,
+      "isActive": true
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/collections/{type}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Koleksiyon ogesi ekle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (services)</h4>
+              <div class="code-block">{
+  "name": { "tr": "Ucretsiz Wi-Fi", "en": "Free Wi-Fi" },
+  "description": { "tr": "Tum alanlarda", "en": "All areas" },
+  "icon": "wifi",                    // Lucide icon key
+  "usageAreas": ["theme_park", "hotels"],
+  "groupId": "ServiceGrid-ThemePark", // Tip bazli grup enum
+  "sortOrder": 0,
+  "isActive": true
+}
+
+// Logo tipi:
+// { name(i18n), description(i18n), imageId(mediaRef 200x200), linkUrl(nullable),
+//   groupId: "LogoStrip-AnaSayfa"|"LogoStrip-Oteller"|"LogoStrip-Magaza", sortOrder, isActive }
+
+// Certificate tipi:
+// { name(i18n), description(i18n), imageId(mediaRef 200x200),
+//   year(int 2000-2030), category: "WaterRides"|"ThemeParks"|"Hotels"|"FamilyEntertainment",
+//   groupId: "CertificateGrid-Genel"|"CertificateGrid-Nickelodeon"|"CertificateGrid-Kingdom",
+//   sortOrder, isActive }</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/collections/{type}/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body"><p class="card-desc">Koleksiyon ogesi guncelle</p></div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/collections/{type}/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body"><p class="card-desc">Koleksiyon ogesi sil</p></div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/collections/{type}/reorder</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Siralama guncelle</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{ "itemIds": ["uuid-1", "uuid-3", "uuid-2"] }</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS MENUS ==================== -->
+      <section id="cms-menus" class="api-section">
+        <h2 class="section-title">CMS Menus <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Header ve Footer menu yonetimi. <a href="../pages/sprint-c/menu-yonetimi.html" target="_blank" class="wireframe-link">menu-yonetimi.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/menus/{type}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Menu getir (type: header | footer)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (header)</h4>
+              <div class="code-block">{
+  "type": "header",
+  "items": [
+    { "id": "uuid", "label": "Ana Sayfa", "url": "/", "visible": true, "sortOrder": 0 },
+    { "id": "uuid", "label": "Tema Park", "url": "/theme-park", "visible": true, "sortOrder": 1 },
+    { "id": "uuid", "label": "Oteller", "url": "/hotels", "visible": true, "sortOrder": 2 },
+    { "id": "uuid", "label": "Etkinlikler", "url": "/events", "visible": true, "sortOrder": 3 },
+    { "id": "uuid", "label": "Alisveris", "url": "/shopping", "visible": true, "sortOrder": 4 },
+    { "id": "uuid", "label": "Kampanyalar", "url": "/campaigns", "visible": false, "sortOrder": 5 }
+  ]
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (footer)</h4>
+              <div class="code-block">{
+  "type": "footer",
+  "columns": [
+    {
+      "title": "Kesfet",
+      "items": [
+        { "id": "uuid", "label": "Tema Park", "url": "/theme-park" },
+        { "id": "uuid", "label": "Oteller", "url": "/hotels" }
+      ]
+    },
+    { "title": "Bilgi", "items": [...] },
+    { "title": "Kampanyalar", "items": [...] },
+    { "title": "Magaza", "items": [...] }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/menus/{type}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Menu toplu guncelle (siralama + gorunurluk + icerik)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (header)</h4>
+              <div class="code-block">{
+  "items": [
+    { "id": "uuid", "label": "Ana Sayfa", "url": "/", "visible": true, "sortOrder": 0 },
+    { "id": "uuid", "label": "Tema Park", "url": "/theme-park", "visible": true, "sortOrder": 1 }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS SITE SETTINGS ==================== -->
+      <section id="cms-settings" class="api-section">
+        <h2 class="section-title">CMS Site Settings <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Site ayarlari — iletisim, sosyal medya, app, newsletter, hava durumu. <a href="../pages/sprint-c/site-ayarlari.html" target="_blank" class="wireframe-link">site-ayarlari.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/settings/{section}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Ayar bolumu getir (section: contact | social | apps | newsletter | weather)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (contact)</h4>
+              <div class="code-block">{
+  "phone": "+90 242 310 00 00",
+  "email": "info@landoflegends.com",
+  "address": "Kundu, 07110 Aksu/Antalya",
+  "mapsEmbedUrl": "https://maps.google.com/...",
+  "mapsCoordinates": "36.8531,30.8032"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (social)</h4>
+              <p class="card-desc" style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">Dinamik platform key-value listesi — admin panelden yeni platform eklenebilir</p>
+              <div class="code-block">{
+  "platforms": [
+    { "key": "facebook", "url": "https://facebook.com/..." },
+    { "key": "instagram", "url": "https://instagram.com/..." },
+    { "key": "youtube", "url": "https://youtube.com/..." },
+    { "key": "x", "url": "https://x.com/..." },
+    { "key": "tiktok", "url": "https://tiktok.com/..." }
+  ]
+  // Varsayilan platformlar: facebook, instagram, youtube, x, tiktok
+  // Admin panelden yeni platform eklenebilir (key + url)
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (newsletter)</h4>
+              <div class="code-block">{
+  "tr": { "title": "Bulten", "description": "...", "buttonText": "Abone Ol" },
+  "en": { "title": "Newsletter", "description": "...", "buttonText": "Subscribe" },
+  "de": { "title": "Newsletter", "description": "...", "buttonText": "Abonnieren" },
+  "ru": { "title": "Рассылка", "description": "...", "buttonText": "Подписаться" },
+  "kvkkConsentEnabled": true
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (weather)</h4>
+              <div class="code-block">{
+  "enabled": true,
+  "apiKey": "********",              // encrypted — admin panelde maskelenir
+  "location": "Antalya, TR"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response (appLinks)</h4>
+              <div class="code-block">{
+  "iosUrl": "https://apps.apple.com/...",
+  "androidUrl": "https://play.google.com/...",
+  "huaweiUrl": null                  // nullable
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/settings/{section}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Ayar bolumu guncelle (body = o bolumun tum alanlari)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CMS EVENT CALENDAR ==================== -->
+      <section id="cms-events" class="api-section">
+        <h2 class="section-title">CMS Event Calendar <span class="sprint-badge sprint-c">S-C</span></h2>
+        <p class="section-desc">Etkinlik takvimi + zamanlama. <a href="../pages/sprint-c/etkinlik-takvimi.html" target="_blank" class="wireframe-link">etkinlik-takvimi.html</a> <a href="../pages/sprint-c/etkinlik-zamanlama.html" target="_blank" class="wireframe-link">etkinlik-zamanlama.html</a></p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/cms/events/calendar</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Takvim gorunumu (haftalik/aylik/liste)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">view</td><td class="param-type">string</td><td>week | month | list</td></tr>
+                  <tr><td class="param-name">date</td><td class="param-type">string</td><td>Referans tarih (YYYY-MM-DD)</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "view": "week",
+  "period": { "start": "2026-03-09", "end": "2026-03-15" },
+  "events": [
+    {
+      "id": "uuid",
+      "name": "Su Gosterisi",
+      "time": "14:00 - 14:30",
+      "location": "Ana Havuz",
+      "repeatRule": "daily",
+      "validFrom": "2026-03-01",
+      "validTo": "2026-09-30",
+      "status": "active",
+      "color": "blue",
+      "displaySettings": {
+        "showOnTimeline": true,
+        "showOnPromoBanner": false,
+        "countdownEnabled": true
+      }
+    }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/cms/events/schedules</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Etkinlik zamanlama olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body (CreateScheduleDto)</h4>
+              <div class="code-block">{
+  "eventId": "uuid",
+  "locationId": "uuid",
+  "repeatType": "weekly",
+  "repeatDays": ["mon", "wed", "fri"],
+  "startTime": "14:00",
+  "endTime": "14:30",
+  "validFrom": "2026-03-01",
+  "validTo": "2026-09-30",
+  "displaySettings": {
+    "showOnTimeline": true,
+    "showOnPromoBanner": false,
+    "countdownEnabled": true
+  }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-put">PUT</span>
+            <code class="api-path">/api/cms/events/schedules/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body"><p class="card-desc">Zamanlama guncelle</p></div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-delete">DELETE</span>
+            <code class="api-path">/api/cms/events/schedules/{id}</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body"><p class="card-desc">Zamanlama sil</p></div>
+        </div>
+      </section>
+
       <!-- ==================== CAMPAIGNS ==================== -->
       <section id="campaigns" class="api-section">
-        <h2 class="section-title">Campaigns</h2>
-        <p class="section-desc">Kampanya ve indirim yonetimi</p>
+        <h2 class="section-title">Campaigns <span class="sprint-badge sprint-mvp">MVP</span> <span class="sprint-badge sprint-d">S-D</span></h2>
+        <p class="section-desc">MVP: Basit yuzde indirim + kupon (openspec). Sprint D: 3 tipli Shopify-like sistem (product/order/bogo). <a href="../pages/sprint-d/kampanya-form-v3.html" target="_blank" class="wireframe-link">kampanya-form-v3.html</a> <a href="../pages/sprint-d/kampanya-listesi.html" target="_blank" class="wireframe-link">kampanya-listesi.html</a></p>
 
         <div class="api-card">
           <div class="card-header">
@@ -1618,21 +3938,83 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Yeni kampanya olustur</p>
+            <p class="card-desc">Yeni kampanya olustur — discountType tip'e gore farkli alanlar aktif</p>
             <div class="subsection">
-              <h4 class="subsection-title">Request Body</h4>
+              <h4 class="subsection-title">Request Body — Urun Indirimi (CreateCampaignDto)</h4>
               <div class="code-block">{
-  "name": { "tr": "Yaz Indirimi", "en": "Summer Sale" },
-  "type": "PERCENTAGE",
-  "value": 20,
-  "validFrom": "2026-06-01T00:00:00Z",
-  "validUntil": "2026-08-31T23:59:59Z",
-  "rules": {
-    "minQuantity": 2,
-    "applicableProducts": ["ticket-uuid-1", "ticket-uuid-2"]
-  },
-  "isActive": true
+  "name": "Yaz Bilet Indirimi",
+  "description": "Tum biletlerde %20 indirim",
+  "discountType": "product",
+  "distributionMethod": "coupon",
+  "discountValueType": "percentage",
+  "discountValue": 20,
+  "maxDiscountAmount": 500,
+  "tieredDiscount": false,
+  "targetProducts": "specific",
+  "applicableProductIds": ["uuid-1", "uuid-2"],
+  "targetCustomers": "all",
+  "minPurchaseType": "amount",
+  "minPurchaseValue": 500,
+  "usageLimitTotal": 1000,
+  "usageLimitPerUser": 1,
+  "combineWithProductDiscounts": false,
+  "combineWithOrderDiscounts": true,
+  "salePeriod": { "start": "2026-06-01", "end": "2026-08-31" },
+  "usagePeriod": { "start": "2026-06-01", "end": "2026-09-15" },
+  "activeDays": ["mon","tue","wed","thu","fri","sat","sun"],
+  "channels": ["web", "app"],
+  "languages": ["tr", "en"],
+  "status": "draft"
 }</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body — X Al Y Ode (BOGO)</h4>
+              <div class="code-block">{
+  "name": "3 Al 1 Bedava",
+  "discountType": "bogo",
+  "distributionMethod": "automatic",
+  "bogo": {
+    "buyConditionType": "quantity",
+    "buyQuantity": 3,
+    "buyProductIds": ["uuid-ticket-1"],
+    "getQuantity": 1,
+    "getProductIds": ["uuid-ticket-1"],
+    "getDiscountType": "free",
+    "getDiscountValue": 0,
+    "maxUsesPerOrder": 1
+  },
+  "targetCustomers": "all",
+  "minPurchaseType": "none",
+  "combineWithProductDiscounts": false,
+  "combineWithOrderDiscounts": false,
+  "salePeriod": { "start": "2026-06-01", "end": "2026-08-31" },
+  "channels": ["web", "app", "kiosk"],
+  "languages": ["tr", "en", "de", "ru"],
+  "status": "draft"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body — Kademeli Indirim (Otomatik)</h4>
+              <div class="code-block">{
+  "name": "Cok Alan Kazanir",
+  "discountType": "product",
+  "distributionMethod": "automatic",
+  "tieredDiscount": true,
+  "tiers": [
+    { "minQuantity": 2, "discountValue": 10 },
+    { "minQuantity": 5, "discountValue": 20 },
+    { "minQuantity": 10, "discountValue": 30 }
+  ],
+  "targetProducts": "all",
+  "status": "draft"
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response Codes</h4>
+              <div class="response-codes">
+                <span class="response-code response-2xx">201 Created</span>
+                <span class="response-code response-4xx">400 Validation Error</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1644,7 +4026,42 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Tenant kampanyalarini listele</p>
+            <p class="card-desc">Kampanya listesi — tip, method, status filtreleme</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Query Parameters</h4>
+              <table class="param-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td class="param-name">discountType</td><td class="param-type">string</td><td>product | order | bogo</td></tr>
+                  <tr><td class="param-name">method</td><td class="param-type">string</td><td>coupon | automatic</td></tr>
+                  <tr><td class="param-name">status</td><td class="param-type">string</td><td>draft | active | scheduled | ended</td></tr>
+                  <tr><td class="param-name">search</td><td class="param-type">string</td><td>Kampanya adi</td></tr>
+                  <tr><td class="param-name">page</td><td class="param-type">number</td><td>Sayfa (default: 1)</td></tr>
+                  <tr><td class="param-name">limit</td><td class="param-type">number</td><td>Limit (default: 20)</td></tr>
+                  <tr><td class="param-name">sort</td><td class="param-type">string</td><td>createdAt | name | status</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Yaz Bilet Indirimi",
+      "discountType": "product",
+      "distributionMethod": "coupon",
+      "discountSummary": "%20 Indirim",
+      "status": "active",
+      "salePeriod": { "start": "2026-06-01", "end": "2026-08-31" },
+      "usageCount": 245,
+      "channels": ["web", "app"],
+      "createdAt": "2026-05-15T10:00:00Z"
+    }
+  ],
+  "meta": { "total": 12, "page": 1, "limit": 20 }
+}</div>
+            </div>
           </div>
         </div>
 
@@ -1655,7 +4072,7 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Kampanya detayi</p>
+            <p class="card-desc">Kampanya detay (form doldurmak icin tum alanlar)</p>
           </div>
         </div>
 
@@ -1666,7 +4083,7 @@
             <span class="auth-badge auth-admin">Admin</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Kampanya guncelle</p>
+            <p class="card-desc">Kampanya guncelle (POST body ile ayni schema)</p>
           </div>
         </div>
 
@@ -1680,11 +4097,187 @@
             <p class="card-desc">Kampanya sil</p>
           </div>
         </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/campaigns/{id}/publish</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanyayi simdi yayinla (draft → active)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/campaigns/{id}/schedule</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanyayi ileri tarihte planla (draft → scheduled)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "scheduledPublishDate": "2026-06-01T00:00:00Z"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-patch">PATCH</span>
+            <code class="api-path">/api/campaigns/{id}/draft</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanyayi taslaga cevir (active → draft)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/campaigns/{id}/duplicate</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanya kopyala (draft olarak yeni kampanya olusturur)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== COUPONS ==================== -->
+      <section id="coupons" class="api-section">
+        <h2 class="section-title">Coupons <span class="sprint-badge sprint-mvp">MVP</span> <span class="sprint-badge sprint-d">S-D</span></h2>
+        <p class="section-desc">MVP: Tek kullanim kupon (openspec). Sprint D: Jenerik/unique, bulk generate, import/export. Kupon kodu yonetimi — jenerik/unique olusturma, toplu islemler, dogrulama. <a href="../pages/sprint-d/kampanya-form-v3.html" target="_blank" class="wireframe-link">kampanya-form-v3.html</a> (kupon bölümü)</p>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/campaigns/{campaignId}/coupons</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kampanyanin kuponlarini listele</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "data": [
+    {
+      "id": "uuid",
+      "code": "SUMMER20",
+      "type": "generic",
+      "usageCount": 145,
+      "maxUsage": 1000,
+      "isActive": true,
+      "createdAt": "2026-05-15T10:00:00Z"
+    }
+  ],
+  "meta": { "total": 1 }
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/campaigns/{campaignId}/coupons/generate</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Jenerik kupon kodu olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "code": "SUMMER20",
+  "type": "generic"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/campaigns/{campaignId}/coupons/bulk-generate</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Toplu unique kupon kodu olustur</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "quantity": 500,
+  "prefix": "VIP-",
+  "length": 8,
+  "type": "unique"
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/campaigns/{campaignId}/coupons/import</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">CSV ile kupon import (multipart/form-data)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-get">GET</span>
+            <code class="api-path">/api/campaigns/{campaignId}/coupons/export</code>
+            <span class="auth-badge auth-admin">Admin</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kuponlari CSV olarak export et (Content-Type: text/csv)</p>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <div class="card-header">
+            <span class="method-badge method-post">POST</span>
+            <code class="api-path">/api/coupons/validate</code>
+            <span class="auth-badge auth-public">Public</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">Kupon kodu dogrula (checkout oncesi)</p>
+            <div class="subsection">
+              <h4 class="subsection-title">Request Body</h4>
+              <div class="code-block">{
+  "code": "SUMMER20",
+  "cartItems": [
+    { "productId": "uuid", "quantity": 2 }
+  ]
+}</div>
+            </div>
+            <div class="subsection">
+              <h4 class="subsection-title">Response</h4>
+              <div class="code-block">{
+  "valid": true,
+  "campaignId": "uuid",
+  "campaignName": "Yaz Bilet Indirimi",
+  "discountType": "product",
+  "discountSummary": "%20 Indirim",
+  "estimatedDiscount": 300,
+  "currency": "TRY"
+}</div>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ==================== CHECKOUT ==================== -->
       <section id="checkout" class="api-section">
-        <h2 class="section-title">Checkout</h2>
+        <h2 class="section-title">Checkout <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">Odeme oncesi sepet islemleri</p>
 
         <div class="api-card">
@@ -1694,14 +4287,14 @@
             <span class="auth-badge auth-public">Public</span>
           </div>
           <div class="card-body">
-            <p class="card-desc">Sepeti dogrula ve indirimli fiyat hesapla</p>
+            <p class="card-desc">Sepeti dogrula ve indirimli fiyat hesapla — otomatik kampanyalar + kupon kodu destegi</p>
             <div class="subsection">
               <h4 class="subsection-title">Required Headers</h4>
               <table class="param-table">
                 <thead><tr><th>Name</th><th>Description</th></tr></thead>
                 <tbody>
                   <tr><td class="param-name">X-Tenant-ID</td><td>Tenant ID</td></tr>
-                  <tr><td class="param-name">Accept-Language</td><td>tr-TR, en-US</td></tr>
+                  <tr><td class="param-name">Accept-Language</td><td>tr-TR, en-US, de-DE, ru-RU</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1711,19 +4304,48 @@
   "items": [
     { "productId": "uuid", "sessionId": "uuid", "quantity": 2 }
   ],
-  "couponCode": "SUMMER20"
+  "couponCode": "SUMMER20",
+  "channel": "web"
 }</div>
             </div>
             <div class="subsection">
               <h4 class="subsection-title">Response</h4>
               <div class="code-block">{
   "valid": true,
-  "items": [...],
-  "subtotal": 300,
-  "discount": 60,
-  "total": 240,
+  "items": [
+    {
+      "productId": "uuid",
+      "name": "Yetiskin Bileti",
+      "quantity": 2,
+      "unitPrice": 750,
+      "lineTotal": 1500
+    }
+  ],
+  "subtotal": 1500,
+  "appliedDiscounts": [
+    {
+      "campaignId": "uuid",
+      "campaignName": "Yaz Bilet Indirimi",
+      "discountType": "product",
+      "method": "coupon",
+      "couponCode": "SUMMER20",
+      "discountAmount": 300,
+      "description": "%20 Indirim"
+    },
+    {
+      "campaignId": "uuid-2",
+      "campaignName": "Cok Alan Kazanir",
+      "discountType": "product",
+      "method": "automatic",
+      "discountAmount": 0,
+      "description": "Min 5 urun gerekli (mevcut: 2)"
+    }
+  ],
+  "totalDiscount": 300,
+  "total": 1200,
   "currency": "TRY",
-  "appliedCampaigns": ["Summer Sale"]
+  "bogoItems": [],
+  "warnings": []
 }</div>
             </div>
           </div>
@@ -1753,7 +4375,7 @@
 
       <!-- ==================== ORDERS ==================== -->
       <section id="orders" class="api-section">
-        <h2 class="section-title">Orders</h2>
+        <h2 class="section-title">Orders <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">Siparis yonetimi</p>
 
         <div class="api-card">
@@ -1779,7 +4401,7 @@
               <h4 class="subsection-title">Response</h4>
               <div class="code-block">{
   "id": "uuid",
-  "orderNumber": "ORD-2026-001234",
+  "pnr": "NK-A3B9C2",
   "status": "CONFIRMED",
   "items": [...],
   "subtotal": 300,
@@ -1829,7 +4451,7 @@
 
       <!-- ==================== PAYMENTS ==================== -->
       <section id="payments" class="api-section">
-        <h2 class="section-title">Payments</h2>
+        <h2 class="section-title">Payments <span class="sprint-badge sprint-mvp">MVP</span></h2>
         <p class="section-desc">Odeme islemleri</p>
 
         <div class="api-card">

@@ -14,6 +14,7 @@ ALLOWED_ORIGINS = "*"
 CLICKUP_WORKSPACE_ID = "9018891584"
 CLICKUP_CHANNEL_ID = "8ct2qa0-12378"
 WIREFRAME_BASE_URL = "https://wireframes.untitledproduct.com/legends"
+REACT_APP_BASE_URL = "https://legends-wireframes-v2.pages.dev"
 
 # Development settings
 [dev]

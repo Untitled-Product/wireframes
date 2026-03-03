@@ -10,6 +10,7 @@ export interface Env {
   CLICKUP_WORKSPACE_ID: string;
   CLICKUP_CHANNEL_ID: string;
   WIREFRAME_BASE_URL: string;
+  REACT_APP_BASE_URL: string;
 }
 
 interface Comment {
@@ -102,7 +103,12 @@ async function notifyClickUpChat(env: Env, data: {
   const pagePath = folderMatch
     ? `${folderMatch[1]}/${folderMatch[2]}`
     : data.pageId;
-  const pageUrl = `${env.WIREFRAME_BASE_URL}/src/pages/${pagePath.replace('public-forms', 'public/forms')}.html`;
+
+  // React app'e migrate edilmiş sayfalar için React URL kullan
+  const isReactMigrated = data.pageId.startsWith('sprint-a-');
+  const pageUrl = isReactMigrated && env.REACT_APP_BASE_URL
+    ? `${env.REACT_APP_BASE_URL}/${pagePath}`
+    : `${env.WIREFRAME_BASE_URL}/src/pages/${pagePath.replace('public-forms', 'public/forms')}.html`;
   const taskCodes = PAGE_TASK_MAP[data.pageId];
   const taskLabel = taskCodes ? ` | ${taskCodes.join(', ')}` : '';
 
